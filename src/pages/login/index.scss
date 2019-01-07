@@ -1,2 +1,61 @@
-@import '~antd/dist/antd.css';
-.login {}
+.login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px;
+    .logo {
+        background: url(./../../static/logo.png);
+        width: 100px;
+        height: 120px;
+        background-size: contain;
+    }
+    .tit {
+        text-align: center;
+        width: 240px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        .ch {
+            color: #BCBCBC;
+            font-size: 20px;
+            margin-bottom: 0;
+            font-weight: 700;
+        }
+        .en {
+            color: #888888;
+            font-size: 14px;
+            transform: scale(0.85);
+        }
+    }
+    .form {
+        width: 210px;
+        input {
+            background-color: rgba(255, 255, 255, 0);
+            color: #CBD2DA !important;
+        }
+        .ant-input-prefix {
+            i{
+                color: #CBD2DA !important;
+            }
+        }
+        .userName {}
+        .password {}
+        .btn {
+            button{
+                width: 100%;
+                background-color: #4E8EAA;
+                border-color: #3A86BB;
+                
+            }
+        }
+    }
+    #components-form-demo-normal-login .login-form {
+        max-width: 300px;
+    }
+    #components-form-demo-normal-login .login-form-forgot {
+        float: right;
+    }
+    #components-form-demo-normal-login .login-form-button {
+        width: 100%;
+    }
+}
