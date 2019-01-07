@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import './index.scss'
+import { Input } from 'antd';
 
 class index extends Component {
     render() {
         return (
             <div>
-                login
+                <Input></Input>
             </div>
         );
     }

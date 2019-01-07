@@ -14,6 +14,9 @@ class frontendAuth extends Component {
             const { component } = targetRouterConfig;
             return <Route exact path={pathname} component={component} />
         }
+        if (pathname === '/') {
+            return <Redirect to='/login' />
+        }
         if (isLogin) {
             // 如果是登陆状态，想要跳转到登陆，重定向到主页
             if (pathname === '/login') {
