@@ -6,7 +6,7 @@ import nav1 from './../../static/nav1.jpg'
 import nav2 from './../../static/nav2.jpg'
 import nav3 from './../../static/nav3.jpg'
 
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { setUserName } from './../../redux/action'
 const mapState = state => {
     return {
@@ -24,14 +24,17 @@ class index extends Component {
             dispatch(setUserName(userName))
         }
     }
-    logout =async () => {
-        let {data} = await api.logout()
-        if(data.code === 20103) {
+    logout = async () => {
+        let { data } = await api.logout()
+        if (data.code === 20103) {
             Message.success('登出成功,请重新登录');
             sessionStorage.removeItem('token')
             sessionStorage.removeItem('userName')
             this.props.history.push('/login')
         }
+    }
+    goto = (path) => {
+        this.props.history.push(path)
     }
     showModal = () => {
         this.setState({
@@ -54,21 +57,21 @@ class index extends Component {
             <div className='nav-main'>
                 <div className="top">
                     <div className="nav-left">
-                        <div className="nav reserve">
+                        <div onClick={this.goto.bind(this, '/reserve')} className="nav">
                             <div className="img"><img src={nav1} alt="" /></div>
                             <div className="desc">
                                 <div className="ch">活动预约</div>
                                 <div className="en">Activity arrangement</div>
                             </div>
                         </div>
-                        <div className="nav analysis">
+                        <div onClick={this.goto.bind(this, '/analysis')} className="nav analysis">
                             <div className="img"><img src={nav2} alt="" /></div>
                             <div className="desc">
                                 <div className="ch">数据统计与分析</div>
                                 <div className="en">Data statistics and analysis</div>
                             </div>
                         </div>
-                        <div className="nav search">
+                        <div onClick={this.goto.bind(this, '/search')} className="nav search">
                             <div className="img"><img src={nav3} alt="" /></div>
                             <div className="desc">
                                 <div className="ch">搜索查询</div>

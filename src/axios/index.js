@@ -10,9 +10,9 @@ axios.defaults.baseURL = 'http://192.168.101.136:8880';
 // http request 拦截器
 axios.interceptors.request.use(
     config => {
-        let token = window.sessionStorage.getItem('token')
-        if(!token) {
-            config.headers.Authorization =`Bearer${token}`;
+        let token = sessionStorage.getItem('token')
+        if(token) {
+            config.headers.Authorization =`Bearer ${token}`;
         }
         return config;
     },
