@@ -1,11 +1,32 @@
 import React, { Component } from 'react';
+import api from './../../server'
 import './index.scss'
 import {
-    Form, Icon, Input, Button, Checkbox,
+    Form, Icon, Input, Button,message
 } from 'antd';
 
 
 class index extends Component {
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields(async (err, values) => {
+            if (!err) {
+                let options = {
+                    username: values.userName, password: values.password
+                }
+                let {data} = await api.login(options)
+                console.log(data);
+                if(data.code === 20102) {
+                    message.error(data.message);
+                }
+                if(data.code === 0) {
+                    message.success('登陆成功');
+                    window.sessionStorage.setItem('token', data.data.token)
+                    this.props.history.push('/main')
+                }
+            }
+        })
+    }
     render() {
         const formItemLayout = {
             labelCol: { span: 0 },
