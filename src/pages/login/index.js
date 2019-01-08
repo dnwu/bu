@@ -2,10 +2,17 @@ import React, { Component } from 'react';
 import api from './../../server'
 import './index.scss'
 import {
-    Form, Icon, Input, Button,message
+    Form, Icon, Input, Button, message
 } from 'antd';
 
+import { connect } from 'react-redux'
+import { setUserName } from './../../redux/action'
 
+const mapState = state => {
+    return {
+        userName: state.userName
+    }
+}
 class index extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
@@ -14,14 +21,16 @@ class index extends Component {
                 let options = {
                     username: values.userName, password: values.password
                 }
-                let {data} = await api.login(options)
-                console.log(data);
-                if(data.code === 20102) {
+                let { data } = await api.login(options)
+                if (data.code === 20102) {
                     message.error(data.message);
                 }
-                if(data.code === 0) {
-                    message.success('登陆成功');
-                    window.sessionStorage.setItem('token', data.data.token)
+                if (data.code === 0) {
+                    message.success("欢迎您, 尊贵的" + values.userName);
+                    const { dispatch } = this.props
+                    dispatch(setUserName(values.userName))
+                    sessionStorage.setItem('userName', values.userName)
+                    sessionStorage.setItem('token', data.data.token)
                     this.props.history.push('/main')
                 }
             }
@@ -67,5 +76,5 @@ class index extends Component {
         );
     }
 }
-const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(index);
+const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(connect(mapState)(index));
 export default WrappedNormalLoginForm;

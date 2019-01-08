@@ -5,15 +5,31 @@ import './index.scss'
 import nav1 from './../../static/nav1.jpg'
 import nav2 from './../../static/nav2.jpg'
 import nav3 from './../../static/nav3.jpg'
+
+import {connect} from 'react-redux'
+import { setUserName } from './../../redux/action'
+const mapState = state => {
+    return {
+        userName: state.userName
+    }
+}
 class index extends Component {
     state = {
         visible: false,
+    }
+    componentDidMount() {
+        if (!this.props.userName) {
+            let userName = sessionStorage.getItem('userName')
+            const { dispatch } = this.props
+            dispatch(setUserName(userName))
+        }
     }
     logout =async () => {
         let {data} = await api.logout()
         if(data.code === 20103) {
             Message.success('登出成功,请重新登录');
             sessionStorage.removeItem('token')
+            sessionStorage.removeItem('userName')
             this.props.history.push('/login')
         }
     }
@@ -70,7 +86,7 @@ class index extends Component {
                 </div>
                 <div className="bottom">
                     <div className="user-icon"><Icon type="user" /></div>
-                    <div className="username">terminus</div>
+                    <div className="username">{this.props.userName}</div>
                     <div className="logout" onClick={this.showModal}>登出</div>
                     {/* 登出model */}
                     <Modal
@@ -96,4 +112,4 @@ class index extends Component {
     }
 }
 
-export default index;
+export default connect(mapState)(index);
