@@ -16,7 +16,10 @@ class index extends Component {
         pageSize: 10,
         status: "", // status 1,2,3分别代表已预约, 进行中, 已结束 , 空表示全部
         activeInfo: {},
-        activesInfo: {},
+        activesInfo: {
+            total: 0,
+            totalThisMonth: 0
+        },
         activeList: [],
         activeInfo: {}
     }
@@ -60,16 +63,28 @@ class index extends Component {
             selectId: id
         })
     }
+    typeChage = (e) => {
+        this.setState({
+            activesInfo: {
+                total: 0,
+                totalThisMonth: 0
+            },
+            activeList: [],
+        }, () => {
+            console.log(this.state.activesInfo);
+            this.getActiveList(1, e.target.value)
+        })
+    }
     render() {
         return (
             <div className="reserve">
                 <Head></Head>
                 <div className="top-nav">
                     <div className="nav">
-                        <Radio.Group className="nav-btn" defaultValue="a" buttonStyle="solid">
-                            <Radio.Button value="a">全部</Radio.Button>
-                            <Radio.Button value="b">已预约</Radio.Button>
-                            <Radio.Button value="c">已结束</Radio.Button>
+                        <Radio.Group onChange={this.typeChage} className="nav-btn" defaultValue="" buttonStyle="solid">
+                            <Radio.Button value="">全部</Radio.Button>
+                            <Radio.Button value="1">已预约</Radio.Button>
+                            <Radio.Button value="3">已结束</Radio.Button>
                         </Radio.Group>
                         <div className="info">
                             <div className="box">
@@ -99,7 +114,7 @@ class index extends Component {
                             selectId={this.state.selectId}
                             change={this.getActiveInfo}
                             scrollEnd={this.downGetList}
-                            listInfo={this.state.activeInfo}
+                            listInfo={this.state.activesInfo}
                             list={this.state.activeList} />
                     </div>
                     <div className="contain">
