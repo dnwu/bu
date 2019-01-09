@@ -20,14 +20,21 @@ class api {
 
     /**
      * 获取活动列表
-     * status = 1 //全部
-     * status = 2 //已预约
+     * status = "" //全部
+     * status = 1 //已预约
+     * status = 2 //进行中
      * status = 3 //已完成
      * @param {offset, limit, status} options 
      */
     getActiveList(options) {
         return axios.get('/admin/activities', {
             params: options
+        })
+    }
+
+    getActiveInfo(id) {
+        return axios.get('/admin/activity', {
+            params: { id }
         })
     }
 }
