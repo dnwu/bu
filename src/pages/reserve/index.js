@@ -10,10 +10,11 @@ import tagSvg from './../../static/tag.svg'
 import positonSvg from './../../static/positon.svg'
 import pointSvg from './../../static/point.svg'
 import logoImg from './../../static/logo.png'
+
+let page = 1
+let pageSize = 10
 class index extends Component {
     state = {
-        page: 1,
-        pageSize: 10,
         status: "", // status 1,2,3分别代表已预约, 进行中, 已结束 , 空表示全部
         activeInfo: {},
         activesInfo: {
@@ -21,7 +22,7 @@ class index extends Component {
             totalThisMonth: 0
         },
         activeList: [],
-        activeInfo: {}
+        // control: true
     }
     componentDidMount() {
         this.getActiveList(1, 1)
@@ -30,8 +31,8 @@ class index extends Component {
         // status 1,2,3分别代表已预约, 进行中, 已结束 ,空表示全部
         // 
         let options = {
-            offset: (page - 1) * this.state.pageSize,
-            limit: this.state.pageSize,
+            offset: (page - 1) * pageSize,
+            limit: pageSize,
             status: status
         }
         let { data } = await api.getActiveList(options)
@@ -50,11 +51,11 @@ class index extends Component {
             })
         }
     }
-    downGetList = (info) => {
-        if (this.state.activeList.length === this.state.activeInfo.total) return
-        this.state.page++
-        this.getActiveList(this.state.page, this.state.status)
-        this.getActiveInfo(this.state.selectId)
+    downGetList =async (info) => {
+        if (this.state.activeList.length === this.state.activesInfo.total) return
+        page++
+        await this.getActiveList(page, this.state.status)
+        // this.getActiveInfo(this.state.selectId)
     }
     getActiveInfo = async (id) => {
         let { data } = await api.getActiveInfo(id)
@@ -64,6 +65,8 @@ class index extends Component {
         })
     }
     typeChage = (e) => {
+        page = 1
+        this.refs.IScroll.resetDOM()
         this.setState({
             activesInfo: {
                 total: 0,
@@ -71,7 +74,7 @@ class index extends Component {
             },
             activeList: [],
         }, () => {
-            console.log(this.state.activesInfo);
+            // console.log(this.state.activeList);
             this.getActiveList(1, e.target.value)
         })
     }
@@ -111,6 +114,8 @@ class index extends Component {
                 <div className="body-main">
                     <div className="body-main-left">
                         <IScroll
+                            ref="IScroll"
+                            // control={this.state.control}
                             selectId={this.state.selectId}
                             change={this.getActiveInfo}
                             scrollEnd={this.downGetList}
