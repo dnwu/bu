@@ -78,6 +78,9 @@ class index extends Component {
             this.getActiveList(1, e.target.value)
         })
     }
+    goto = (path) => {
+        this.props.history.push(path)
+    }
     render() {
         return (
             <div className="reserve">
@@ -102,7 +105,7 @@ class index extends Component {
                     </div>
                     <div className="create">
                         <div className="icon"><Icon type="ellipsis" /></div>
-                        <div className="btn"><Button>创建活动</Button></div>
+                        <div className="btn"><Button onClick={this.goto.bind(this,'/create-active')}>创建活动</Button></div>
                         <div className="icon"><Icon type="ellipsis" /></div>
                     </div>
                     <div className="manage">

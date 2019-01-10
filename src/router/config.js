@@ -2,6 +2,7 @@ import Login from '../pages/login';
 import Main from '../pages/main';
 import Manage from '../pages/manage';
 import Reserve from '../pages/reserve';
+import CreateActive from '../pages/creatActive'
 import NotFind from '../pages/404'
 
 
@@ -16,6 +17,10 @@ const routerConfig = [
     }, {
         path: '/manage',
         component: Manage,
+        auth: true,
+    }, {
+        path: '/create-active',
+        component: CreateActive,
         auth: true,
     }, {
         path: '/reserve',
