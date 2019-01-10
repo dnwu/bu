@@ -22,9 +22,6 @@ class index extends Component {
                     username: values.userName, password: values.password
                 }
                 let { data } = await api.login(options)
-                if (data.code === 20102) {
-                    message.error(data.message);
-                }
                 if (data.code === 0) {
                     message.success("欢迎您, 尊贵的" + values.userName);
                     const { dispatch } = this.props
@@ -32,6 +29,8 @@ class index extends Component {
                     sessionStorage.setItem('userName', values.userName)
                     sessionStorage.setItem('token', data.data.token)
                     this.props.history.push('/main')
+                } else {
+                    message.error(data.message);
                 }
             }
         })
