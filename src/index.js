@@ -5,6 +5,7 @@ import IRouter from './router'
 import { Provider } from 'react-redux'
 import configStore from './redux/store'
 import * as serviceWorker from './serviceWorker';
+import './config/css/scroll.scss'
 
 const store = configStore()
 

@@ -37,6 +37,39 @@ class api {
             params: { id }
         })
     }
+    // 获取城市列表
+    getCityList() {
+        return axios.get('/admin/cities')
+    }
+    // 获取详细地址列表
+    getDetailList(city_id) {
+        return axios.get('/admin/locations', {
+            params: { city_id }
+        })
+    }
+    /**
+     * 添加城市
+     * @param {name} name 
+     */
+    addCity(name) {
+        return axios.post('/admin/city', { name })
+    }
+
+    /**
+     * 添加详细地址
+     * @param {city_id, name} options 
+     */
+    addDetail(options) {
+        return axios.post('/admin/location',options)
+    }
+
+    /**
+     * 
+     * @param {name, startTime, finishTime, city_id, location_id, tags} options 
+     */
+    createActive(options) {
+        return axios.post('/admin/activity', options)
+    }
 }
 
 export default new api()
