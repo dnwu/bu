@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Radio, Button, Icon } from 'antd'
+import { Radio, Button, Icon, Spin } from 'antd'
 import api from './../../server'
 import tools from './../../tools'
 import './index.scss'
@@ -22,6 +22,7 @@ class index extends Component {
             totalThisMonth: 0
         },
         activeList: [],
+        loading: false,
         // control: true
     }
     componentDidMount() {
@@ -51,17 +52,22 @@ class index extends Component {
             })
         }
     }
-    downGetList =async (info) => {
+    downGetList = async (info) => {
         if (this.state.activeList.length === this.state.activesInfo.total) return
         page++
         await this.getActiveList(page, this.state.status)
         // this.getActiveInfo(this.state.selectId)
     }
+    // 获取右侧活动信息
     getActiveInfo = async (id) => {
+        this.setState({
+            loading: true
+        })
         let { data } = await api.getActiveInfo(id)
         this.setState({
             activeInfo: data.data,
-            selectId: id
+            selectId: id,
+            loading: false
         })
     }
     typeChage = (e) => {
@@ -105,7 +111,7 @@ class index extends Component {
                     </div>
                     <div className="create">
                         <div className="icon"><Icon type="ellipsis" /></div>
-                        <div className="btn"><Button onClick={this.goto.bind(this,'/create-active')}>创建活动</Button></div>
+                        <div className="btn"><Button onClick={this.goto.bind(this, '/create-active')}>创建活动</Button></div>
                         <div className="icon"><Icon type="ellipsis" /></div>
                     </div>
                     <div className="manage">
@@ -125,53 +131,55 @@ class index extends Component {
                             listInfo={this.state.activesInfo}
                             list={this.state.activeList} />
                     </div>
-                    <div className="contain">
-                        <div className="top">
-                            <div className="c-left">
-                                <h2>{this.state.activeInfo.name}</h2>
-                                {
-                                    this.state.activeInfo.tags ?
-                                        this.state.activeInfo.tags.map((v, i) => (
-                                            <span key={v} ><img src={tagSvg} alt="" />{v}</span>
-                                        )) : ''
-                                }
-                            </div>
-                            <div className="c-right">
-                                <Icon type="setting" />
-                                <p>编辑</p>
-                            </div>
-                        </div>
-                        <div className="info">
-                            <div className="info-left">
-                                <h3>{this.state.activeInfo.status === 1 ? '已预约' : this.state.activeInfo.status === 2 ? '已预约' : this.state.activeInfo.status === 3 ? '已结束' : '无状态'}</h3>
-                                <div className="positon">
-                                    <img src={positonSvg} alt="" />
-                                    <span>{this.state.activeInfo.city}</span>
-                                    <span>{this.state.activeInfo.location}</span>
+                    <Spin delay={500} spinning={this.state.loading} tip="Loading...">
+                        <div className="contain">
+                            <div className="top">
+                                <div className="c-left">
+                                    <h2>{this.state.activeInfo.name}</h2>
+                                    {
+                                        this.state.activeInfo.tags ?
+                                            this.state.activeInfo.tags.map((v, i) => (
+                                                <span key={v} ><img src={tagSvg} alt="" />{v}</span>
+                                            )) : ''
+                                    }
                                 </div>
-                                <div className="start-end-card">
-                                    <h4>{tools.formatDate(this.state.activeInfo.startTime)}</h4>
-                                    <div className="start-end">
-                                        <div className="start">
-                                            <p>{tools.formatTime(this.state.activeInfo.startTime)}</p>
-                                            <p>开始</p>
-                                        </div>
-                                        <div className="mid">
-                                            <p><img src={pointSvg} alt="" /></p>
-                                            <p className="line"></p>
-                                        </div>
-                                        <div className="end">
-                                            <p>{tools.formatTime(this.state.activeInfo.finishTime)}</p>
-                                            <p>结束</p>
+                                <div className="c-right">
+                                    <Icon type="setting" />
+                                    <p>编辑</p>
+                                </div>
+                            </div>
+                            <div className="info">
+                                <div className="info-left">
+                                    <h3>{this.state.activeInfo.status === 1 ? '已预约' : this.state.activeInfo.status === 2 ? '已预约' : this.state.activeInfo.status === 3 ? '已结束' : '无状态'}</h3>
+                                    <div className="positon">
+                                        <img src={positonSvg} alt="" />
+                                        <span>{this.state.activeInfo.city}</span>
+                                        <span>{this.state.activeInfo.location}</span>
+                                    </div>
+                                    <div className="start-end-card">
+                                        <h4>{tools.formatDate(this.state.activeInfo.startTime)}</h4>
+                                        <div className="start-end">
+                                            <div className="start">
+                                                <p>{tools.formatTime(this.state.activeInfo.startTime)}</p>
+                                                <p>开始</p>
+                                            </div>
+                                            <div className="mid">
+                                                <p><img src={pointSvg} alt="" /></p>
+                                                <p className="line"></p>
+                                            </div>
+                                            <div className="end">
+                                                <p>{tools.formatTime(this.state.activeInfo.finishTime)}</p>
+                                                <p>结束</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="info-right">
-                                <img src={logoImg} alt="" />
+                                <div className="info-right">
+                                    <img src={logoImg} alt="" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </Spin>
                 </div>
             </div>
         );
