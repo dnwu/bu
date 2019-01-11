@@ -60,15 +60,32 @@ class api {
      * @param {city_id, name} options 
      */
     addDetail(options) {
-        return axios.post('/admin/location',options)
+        return axios.post('/admin/location', options)
     }
 
     /**
-     * 
+     * 创建活动
      * @param {name, startTime, finishTime, city_id, location_id, tags} options 
      */
     createActive(options) {
         return axios.post('/admin/activity', options)
+    }
+
+    /**
+     * 删除活动
+     * @param {*} id 
+     */
+    deleteActive(id) {
+        return axios.delete('/admin/activity', {
+            data:{ id }
+        })
+    }
+    /**
+     * 编辑活动
+     * @param {name, startTime, finishTime, city_id, location_id, tags} options 
+     */
+    modifyActive(options) {
+        return axios.put('/admin/activity', options)
     }
 }
 

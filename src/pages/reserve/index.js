@@ -37,19 +37,20 @@ class index extends Component {
             status: status
         }
         let { data } = await api.getActiveList(options)
-        console.log(data);
-        let list = JSON.parse(JSON.stringify(this.state.activeList))
-        list.push(...data.data.activities)
-        this.setState({
-            activesInfo: data.data,
-            activeList: list,
-        })
-        // 如果是第一次请求, 然后初始化活动详情
-        if (page === 1) {
-            this.getActiveInfo(data.data.activities[0].id)
+        if (data.code === 0) {
+            let list = JSON.parse(JSON.stringify(this.state.activeList))
+            list.push(...data.data.activities)
             this.setState({
-                selectId: data.data.activities[0].id,
+                activesInfo: data.data,
+                activeList: list,
             })
+            // 如果是第一次请求, 然后初始化活动详情
+            if (page === 1) {
+                this.getActiveInfo(data.data.activities[0].id)
+                this.setState({
+                    selectId: data.data.activities[0].id,
+                })
+            }
         }
     }
     downGetList = async (info) => {
@@ -64,11 +65,14 @@ class index extends Component {
             loading: true
         })
         let { data } = await api.getActiveInfo(id)
-        this.setState({
-            activeInfo: data.data,
-            selectId: id,
-            loading: false
-        })
+        console.log(data);
+        if (data.code === 0) {
+            this.setState({
+                activeInfo: data.data,
+                selectId: id,
+                loading: false
+            })
+        }
     }
     typeChage = (e) => {
         page = 1
@@ -80,12 +84,16 @@ class index extends Component {
             },
             activeList: [],
         }, () => {
-            // console.log(this.state.activeList);
             this.getActiveList(1, e.target.value)
         })
     }
     goto = (path) => {
+        sessionStorage.removeItem('activeInfo')
         this.props.history.push(path)
+    }
+    modifyActive = () => {
+        // 'create-active?id=' + this.state.selectId
+        this.props.history.push({ pathname: "create-active", params: { activeInfo: JSON.parse(JSON.stringify({ ...this.state.activeInfo, activeId: this.state.selectId })) } })
     }
     render() {
         return (
@@ -144,7 +152,7 @@ class index extends Component {
                                     }
                                 </div>
                                 <div className="c-right">
-                                    <Icon type="setting" />
+                                    <Icon onClick={this.modifyActive} type="setting" />
                                     <p>编辑</p>
                                 </div>
                             </div>
