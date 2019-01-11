@@ -123,7 +123,7 @@ class index extends Component {
                         <div className="icon"><Icon type="ellipsis" /></div>
                     </div>
                     <div className="manage">
-                        <img src={manageSvg} alt="" />
+                        <img onClick={this.goto.bind(this, '/manage')} src={manageSvg} alt="" />
                         <p className="ch">人员管理</p>
                         <p className="en">Management</p>
                     </div>
