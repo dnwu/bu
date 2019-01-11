@@ -1,0 +1,33 @@
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-button {
+    background-color: #383A3F;
+}
+
+::-webkit-scrollbar-track {
+    background:#383A3F;
+}
+
+::-webkit-scrollbar-track-piece {
+    // background: url(http://www.lyblog.net/wp/wp-content/themes/mine/img/stripes_tiny_08.png);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #A5A5A5;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-corner {
+    // background: #82AFFF;
+    background: #FFF;
+}
+
+::-webkit-scrollbar-resizer {
+    background: #F2F2F2;
+    display: none;
+}
+
+// 资料地址https://www.lyblog.net/detail/314.html
