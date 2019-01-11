@@ -65,18 +65,18 @@ class index extends Component {
                             <div className="info-card-left">
                                 <div className="name">
                                     <div>
-                                        <p>性别</p>
-                                        <p>男</p>
+                                        <p className="key">性别</p>
+                                        <p className="value">男</p>
                                     </div>
                                     <div>
-                                        <p>年龄</p>
-                                        <p>28</p>
+                                        <p className="key">年龄</p>
+                                        <p className="value">28</p>
                                     </div>
                                 </div>
                                 <div className="phone">
                                     <div>
-                                        <p>手机号</p>
-                                        <p>18676665636</p>
+                                        <p className="key">手机号</p>
+                                        <p className="value">18676665636</p>
                                     </div>
                                 </div>
                             </div>

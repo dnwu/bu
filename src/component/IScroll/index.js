@@ -14,7 +14,7 @@ class index extends Component {
         scrollTop: 0,  // 列表top值
         barTop: 0,    //滚动条top值,
         scrollEnd: null, // 滚动条触碰到底部,
-        change:null,  //获取id,获取详情
+        change: null,  //获取id,获取详情
         // control: true,  // 页面触及底部,控制请求次数,
         selectId: 1, // 选中的cardid
     }
@@ -92,7 +92,7 @@ class index extends Component {
         let barH = barBoxH * listBoxH / scrollBoxH
         if (listBoxH / scrollBoxH > 1) {
             barDOM.style.display = "none"
-        }else {
+        } else {
             barDOM.style.display = ""
         }
         // 设置滚动条的高
@@ -125,7 +125,7 @@ class index extends Component {
         scrollDOM.style.top = this.state.scrollTop + 'px'
 
     }
-    scrollUp =async () => {
+    scrollUp = async () => {
         let scrollBoxDOM = this.refs.scrollBox  //获取滚动内容dom
         let listBoxDOM = this.refs.list  //获取滚动容器dom
         let barDOM = this.refs.bar   //获取滚动条dom
@@ -182,7 +182,7 @@ class index extends Component {
                 </div>
                 <div ref="list" className="list">
                     <div ref="scrollBox" className="scroll-box">
-                        {this.list()}
+                        {this.props.children}
                         {this.state.isHas ?
                             <div className="loading">
                                 正在加载下一页数据...<Icon type="loading"></Icon>

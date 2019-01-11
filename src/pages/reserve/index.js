@@ -95,7 +95,34 @@ class index extends Component {
         // 'create-active?id=' + this.state.selectId
         this.props.history.push({ pathname: "create-active", params: { activeInfo: JSON.parse(JSON.stringify({ ...this.state.activeInfo, activeId: this.state.selectId })) } })
     }
+    select = (id) => {
+        // this.state.change(id)
+        this.setState({
+            selectId: id
+        })
+    }
     render() {
+        const cardList = (
+            this.state.activeList.map((v, i) => {
+                return (
+                    <div onClick={this.select.bind(this, v.id)} className={`card ${this.state.selectId === v.id ? 'active' : ''}`} key={v.id}>
+                        <div className="img"></div>
+                        <div className="info">
+                            <div className="title">
+                                <span>{v.name}</span>
+                                <span>{v.status === 2 ? '正在进行' : ''}</span>
+                            </div>
+                            <div className="t-info">
+                                <img src={positonSvg} alt="" />
+                                <span>{v.city}</span>
+                                <span>{tools.formatDate(v.startTime)}</span>
+                                <span>{v.status === 1 ? '已预约' : v.status === 2 ? '已预约' : v.status === 3 ? '已结束' : '无状态'}</span>
+                            </div>
+                        </div>
+                    </div>
+                )
+            })
+        )
         return (
             <div className="reserve">
                 <Head></Head>
@@ -122,7 +149,7 @@ class index extends Component {
                         <div className="btn"><Button onClick={this.goto.bind(this, '/create-active')}>创建活动</Button></div>
                         <div className="icon"><Icon type="ellipsis" /></div>
                     </div>
-                    <div className="manage">
+                    <div className="manage-box">
                         <img onClick={this.goto.bind(this, '/manage')} src={manageSvg} alt="" />
                         <p className="ch">人员管理</p>
                         <p className="en">Management</p>
@@ -137,7 +164,10 @@ class index extends Component {
                             change={this.getActiveInfo}
                             scrollEnd={this.downGetList}
                             listInfo={this.state.activesInfo}
-                            list={this.state.activeList} />
+                            list={this.state.activeList}
+                        >
+                            {cardList}
+                        </IScroll>
                     </div>
                     <Spin delay={500} spinning={this.state.loading} tip="Loading...">
                         <div className="contain">
