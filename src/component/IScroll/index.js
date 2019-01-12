@@ -8,39 +8,20 @@ let control = true
 let scrollTop = 0
 class index extends Component {
     state = {
-        list: [],
-        listInfo: {},
-        isHas: false, // 判断是否还需要请求数据 , 到底没
         scrollTop: 0,  // 列表top值
         barTop: 0,    //滚动条top值,
         scrollEnd: null, // 滚动条触碰到底部,
-        change: null,  //获取id,获取详情
         // control: true,  // 页面触及底部,控制请求次数,
-        selectId: 1, // 选中的cardid
     }
     componentWillReceiveProps(props) {
-        if (props.listInfo.total === props.list.length) {
-            this.setState({
-                list: props.list,
-                scrollEnd: props.scrollEnd,
-                change: props.change,
-                // control: props.control,
-                isHas: false,
-                selectId: props.selectId
-            })
-        } else {
-            this.setState({
-                list: props.list,
-                scrollEnd: props.scrollEnd,
-                change: props.change,
-                // control: props.control,
-                isHas: true,
-                selectId: props.selectId
-            })
-        }
+        this.setState({
+            scrollEnd: props.scrollEnd,
+            // control: props.control,
+        })
     }
     componentDidMount() {
         // console.log(this.props.list);
+        this.resetDOM()
         window.addEventListener('resize', this.windowResize)
     }
     componentDidUpdate() {
@@ -53,34 +34,7 @@ class index extends Component {
     windowResize = () => {
         this.setBarParams()
     }
-    select = (id) => {
-        this.state.change(id)
-        this.setState({
-            selectId: id
-        })
-    }
-    list = () => {
-        let listDOM = this.state.list.map((v, i) => {
-            return (
-                <div onClick={this.select.bind(this, v.id)} className={`card ${this.state.selectId === v.id ? 'active' : ''}`} key={v.id}>
-                    <div className="img"></div>
-                    <div className="info">
-                        <div className="title">
-                            <span>{v.name}</span>
-                            <span>{v.status === 2 ? '正在进行' : ''}</span>
-                        </div>
-                        <div className="t-info">
-                            <img src={positon} alt="" />
-                            <span>{v.city}</span>
-                            <span>{tools.formatDate(v.startTime)}</span>
-                            <span>{v.status === 1 ? '已预约' : v.status === 2 ? '已预约' : v.status === 3 ? '已结束' : '无状态'}</span>
-                        </div>
-                    </div>
-                </div>
-            )
-        })
-        return listDOM
-    }
+    
     setBarParams = () => {
         let scrollDOM = this.refs.scrollBox
         let scrollBoxH = scrollDOM.offsetHeight  // 获取滚动列表的高度
@@ -133,7 +87,6 @@ class index extends Component {
         // 计算listBoxDOM的高度比scrollBoxDOM的高度高多少, 然后通过对比滚动距离和高度差的比例来计算滚动条需要滚动的距离
         let hdif = scrollBoxDOM.offsetHeight - listBoxDOM.offsetHeight
         if (hdif <= 0 || scrollTop >= hdif) return
-        console.log(hdif);
         if (hdif - scrollTop < 20 && control) {
             control = false
             await this.state.scrollEnd('老大,请求数据')
@@ -183,14 +136,6 @@ class index extends Component {
                 <div ref="list" className="list">
                     <div ref="scrollBox" className="scroll-box">
                         {this.props.children}
-                        {this.state.isHas ?
-                            <div className="loading">
-                                正在加载下一页数据...<Icon type="loading"></Icon>
-                            </div> :
-                            <div className="loading">
-                                已经没有数据了
-                            </div>
-                        }
                     </div>
                 </div>
             </div>

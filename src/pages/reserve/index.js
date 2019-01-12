@@ -23,9 +23,12 @@ class index extends Component {
         },
         activeList: [],
         loading: false,
+        isHas: true
         // control: true
     }
     componentDidMount() {
+        page = 1
+        
         this.getActiveList(1, 1)
     }
     getActiveList = async (page, status) => {
@@ -40,10 +43,19 @@ class index extends Component {
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.activeList))
             list.push(...data.data.activities)
-            this.setState({
-                activesInfo: data.data,
-                activeList: list,
-            })
+            if (list.length === data.data.total) {
+                this.setState({
+                    activesInfo: data.data,
+                    activeList: list,
+                    isHas: false
+                })
+            } else {
+                this.setState({
+                    activesInfo: data.data,
+                    activeList: list,
+                    isHas: true
+                })
+            }
             // 如果是第一次请求, 然后初始化活动详情
             if (page === 1) {
                 this.getActiveInfo(data.data.activities[0].id)
@@ -65,7 +77,6 @@ class index extends Component {
             loading: true
         })
         let { data } = await api.getActiveInfo(id)
-        console.log(data);
         if (data.code === 0) {
             this.setState({
                 activeInfo: data.data,
@@ -96,7 +107,8 @@ class index extends Component {
         this.props.history.push({ pathname: "create-active", params: { activeInfo: JSON.parse(JSON.stringify({ ...this.state.activeInfo, activeId: this.state.selectId })) } })
     }
     select = (id) => {
-        // this.state.change(id)
+        console.log(id);
+        this.getActiveInfo(id)
         this.setState({
             selectId: id
         })
@@ -159,14 +171,17 @@ class index extends Component {
                     <div className="body-main-left">
                         <IScroll
                             ref="IScroll"
-                            // control={this.state.control}
-                            selectId={this.state.selectId}
-                            change={this.getActiveInfo}
                             scrollEnd={this.downGetList}
-                            listInfo={this.state.activesInfo}
-                            list={this.state.activeList}
                         >
                             {cardList}
+                            {this.state.isHas ?
+                                <div className="loading">
+                                    正在加载下一页数据...<Icon type="loading"></Icon>
+                                </div> :
+                                <div className="loading">
+                                    已经没有数据了
+                            </div>
+                            }
                         </IScroll>
                     </div>
                     <Spin delay={500} spinning={this.state.loading} tip="Loading...">
