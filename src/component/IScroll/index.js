@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import './index.scss'
-import { Icon } from 'antd'
-import tools from './../../tools'
-import positon from './../../static/position.svg'
 
 let control = true
 let scrollTop = 0
@@ -11,12 +8,21 @@ class index extends Component {
         scrollTop: 0,  // 列表top值
         barTop: 0,    //滚动条top值,
         scrollEnd: null, // 滚动条触碰到底部,
+        isShowBar: true
         // control: true,  // 页面触及底部,控制请求次数,
     }
     componentWillReceiveProps(props) {
+        let isShowBar
+        if( props.isShowBar === undefined) {
+            isShowBar = true
+        }else if (props.isShowBar) {
+            isShowBar = true
+        } else {
+            isShowBar = false
+        }
         this.setState({
             scrollEnd: props.scrollEnd,
-            // control: props.control,
+            isShowBar: isShowBar
         })
     }
     componentDidMount() {
@@ -34,7 +40,7 @@ class index extends Component {
     windowResize = () => {
         this.setBarParams()
     }
-    
+
     setBarParams = () => {
         let scrollDOM = this.refs.scrollBox
         let scrollBoxH = scrollDOM.offsetHeight  // 获取滚动列表的高度
@@ -128,9 +134,19 @@ class index extends Component {
         }
     }
     render() {
+        let style
+        if (this.state.isShowBar) {
+            style = {
+                display: "inline-block"
+            }
+        } else {
+            style = {
+                display: "none"
+            }
+        }
         return (
             <div onWheel={this.scroll} className="i-scroll">
-                <div ref="barBox" className="sroll-bar">
+                <div style={style} ref="barBox" className="sroll-bar">
                     <div ref="bar" className="bar"></div>
                 </div>
                 <div ref="list" className="list">

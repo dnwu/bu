@@ -77,7 +77,7 @@ class api {
      */
     deleteActive(id) {
         return axios.delete('/admin/activity', {
-            data:{ id }
+            data: { id }
         })
     }
     /**
@@ -86,6 +86,38 @@ class api {
      */
     modifyActive(options) {
         return axios.put('/admin/activity', options)
+    }
+
+    /**
+     * type 0, 1, 2 分别代表全部, 陪访, vip人员
+     * @param {offset,limit,type} options 
+     */
+    getPersonList(options) {
+        return axios.get('/admin/persons', {
+            params: options
+        })
+    }
+
+    getPersonInfo(id) {
+        return axios.get('/admin/person', {
+            params: { id }
+        })
+    }
+
+    /**
+     * 
+     * @param {name,gender,type, title, Age} options 
+     */
+    addPerson(options) {
+        return axios.post('/admin/person', options)
+    }
+
+    /**
+     * 
+     * @param {id ,name,gender,type, title, Age} options 
+     */
+    modifyPerson(options) {
+        return axios.put('/admin/person', options)
     }
 }
 
