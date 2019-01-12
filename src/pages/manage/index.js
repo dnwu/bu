@@ -143,6 +143,13 @@ class index extends Component {
         normPage++
         await this.getNormList(normPage)
     }
+    goto = (path) => {
+        sessionStorage.removeItem('cardInfo')
+        this.props.history.push(path)
+    }
+    modifyPerson = () => {
+        this.props.history.push({ pathname: "add-person", params: { cardInfo: JSON.parse(JSON.stringify(this.state.cardInfo)) } })
+    }
     render() {
         return (
             <div className="manage">
@@ -176,7 +183,7 @@ class index extends Component {
                     </div>
                     <div className="t-right">
                         <div className="point"><img src={point} alt="" /></div>
-                        <div className="btn"><Button>添加人员</Button></div>
+                        <div className="btn"><Button onClick={this.goto.bind(this, '/add-person')}>添加人员</Button></div>
                         <div className="point"><img src={point} alt="" /></div>
                     </div>
                 </div>
@@ -216,7 +223,7 @@ class index extends Component {
                                 <div className="role">{this.state.cardInfo.title}</div>
                             </div>
                             <div className="info-tit-right">
-                                <p><Icon type="setting" /></p>
+                                <p><Icon onClick={this.modifyPerson} type="setting" /></p>
                                 <p>编辑</p>
                             </div>
                         </div>

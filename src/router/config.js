@@ -3,6 +3,7 @@ import Main from '../pages/main';
 import Manage from '../pages/manage';
 import Reserve from '../pages/reserve';
 import CreateActive from '../pages/creatActive'
+import AddPerson from '../pages/addPerson'
 import NotFind from '../pages/404'
 
 
@@ -25,6 +26,10 @@ const routerConfig = [
     }, {
         path: '/reserve',
         component: Reserve,
+        auth: true,
+    }, {
+        path: '/add-person',
+        component: AddPerson,
         auth: true,
     }, {
         path: '/404',
