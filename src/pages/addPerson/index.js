@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './index.scss'
+import api from './../../server'
 import { Input, Select, Button, Upload, Icon, message, Radio, Checkbox, Modal } from 'antd'
 import Head from './../../component/Head'
 import vipImg from './../../static/VIP.png'
@@ -10,7 +11,7 @@ class index extends Component {
     state = {
         imageUrl: '',
         title: "添加人员",
-        gender: 1,
+        gender: "",
         type: 2,
         isSecrecy: false
     }
@@ -22,13 +23,11 @@ class index extends Component {
         }
         cardInfo = cardInfo || JSON.parse(sessionStorage.getItem('cardInfo'))
         // 如果有cardInfo, 就初始化活动信息页
-        console.log(cardInfo);
         if (cardInfo) {
             this.initActiveInfoPage(cardInfo)
         }
     }
     initActiveInfoPage = (cardInfo) => {
-        console.log(cardInfo);
         this.refs.nameDOM.state.value = cardInfo.name
         this.refs.titleDOM.state.value = cardInfo.title
         this.refs.ageDOM.state.value = cardInfo.age
@@ -36,9 +35,10 @@ class index extends Component {
         this.setState({
             gender: cardInfo.gender,
             type: cardInfo.type,
-            isSecrecy: cardInfo.isSecrecy,
+            isSecrecy: cardInfo.isSecrecy === 1 ? false : true,
             isModify: true,
-            personDeleteModalVisible: false
+            personDeleteModalVisible: false,
+            cardInfo,
         })
     }
     getBase64 = (img, callback) => {
@@ -81,7 +81,6 @@ class index extends Component {
         this.setState({ type })
     }
     secrecyChange = (isSecrecy) => {
-        console.log(isSecrecy);
         this.setState({ isSecrecy: isSecrecy.target.checked })
     }
     genderChange = (gender) => {
@@ -92,13 +91,23 @@ class index extends Component {
     addPerson = async () => {
         let name = this.refs.nameDOM.state.value
         let title = this.refs.titleDOM.state.value
-        let age = this.refs.ageDOM.state.value
+        let age = parseInt(this.refs.ageDOM.state.value)
         let telephone = this.refs.phoneDOM.state.value
         let type = this.state.type
-        let isSecrecy = this.state.isSecrecy
+        let isSecrecy = this.state.isSecrecy === false ? 1 : 2
         // name,gender,type, title, Age
-        let options = { name, type, title, Age: age, telephone, isSecrecy, gender: this.state.gender }
-        console.log(options);
+        if (!name || !this.state.gender || !title) {
+            message.warning('姓名,性别, 职位不能为空')
+            return
+        }
+        let options = { name, type, title, age, telephone, isSecrecy, gender: this.state.gender }
+        let { data } = await api.addPerson(options)
+        if (data.code === 0) {
+            message.success("添加成功")
+            this.props.history.push('/manage')
+        }else {
+            message.error(data.message)
+        }
     }
     handleCancel = () => {
         this.setState({
@@ -110,10 +119,35 @@ class index extends Component {
             personDeleteModalVisible: true
         })
     }
-    personModify = () => {
-        console.log('modify');
-     }
-    delete= () => {}
+    personModify = async () => {
+        let cardInfo = this.state.cardInfo
+        let id = cardInfo.id
+        let name = this.refs.nameDOM.state.value
+        let title = this.refs.titleDOM.state.value
+        let age = parseInt(this.refs.ageDOM.state.value)
+        let telephone = this.refs.phoneDOM.state.value
+        let type = this.state.type
+        let isSecrecy = this.state.isSecrecy === false ? 1 : 2
+        let gender = this.state.gender
+        let options = { id, name, gender, type, title, age, telephone, isSecrecy }
+        let { data } = await api.modifyPerson(options)
+        if (data.code === 0) {
+            message.success("人员信息修改成功")
+            this.props.history.push('/manage')
+        } else {
+            message.error(data.message)
+        }
+    }
+    delete = async () => {
+        let id = this.state.cardInfo.id
+        let { data } = await api.deletePerson(id)
+        if (data.code === 0) {
+            message.success("删除成功")
+            this.props.history.push('/manage')
+        } else {
+            message.error(data.message)
+        }
+    }
     render() {
         const imageUrl = this.state.imageUrl;
         const uploadButton = (

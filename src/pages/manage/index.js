@@ -38,7 +38,6 @@ class index extends Component {
             type: 2,
         }
         let { data } = await api.getPersonList(options)
-        console.log(data);
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.vipList))
             list.push(...data.data.persons)
