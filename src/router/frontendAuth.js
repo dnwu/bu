@@ -26,6 +26,7 @@ class frontendAuth extends Component {
                 if (targetRouterConfig) {
                     return <Route path={pathname} component={targetRouterConfig.component} />
                 } else {
+                    console.log(targetRouterConfig);
                     // 如果路由不合法，重定向到 404 页面
                     return <Redirect to='/404' />
                 }

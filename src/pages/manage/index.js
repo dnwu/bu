@@ -69,7 +69,7 @@ class index extends Component {
             type: 1,
         }
         let { data } = await api.getPersonList(options)
-        // console.log(data);
+        console.log(data);
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.normList))
             list.push(...data.data.persons)
@@ -162,7 +162,7 @@ class index extends Component {
                                     vip人员
                                 </div>
                                 <div className="num">
-                                    <span>11</span>
+                                    <span>{this.state.vipTotalInfo.total}</span>
                                     <span><img src={vipImg} alt="" /></span>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@ class index extends Component {
                                     陪访人员
                                 </div>
                                 <div className="num">
-                                    <span>12</span>
+                                    <span>{this.state.normTotalInfo.total}</span>
                                     <span><img src={normImg} alt="" /></span>
                                 </div>
                             </div>
