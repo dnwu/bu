@@ -1,0 +1,273 @@
+$collapse-Width: 400px;
+$left-margin: 100px;
+.search-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    .body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        .top {
+            height: 150px;
+            display: flex;
+            .t-left {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                input {
+                    background-color: rgba(204, 211, 219, .4);
+                    color: #CBD2DA;
+                    border-color: rgba(203, 210, 218, .2);
+                    &::-webkit-input-placeholder {
+                        font-size: 12px;
+                        color: #858585;
+                    }
+                }
+                button {
+                    margin: 0 10px;
+                    background: linear-gradient(to left, #5565FB, #5599FB);
+                    color: #fff;
+                    font-size: 12px;
+                    border-color: #5565FB;
+                }
+                .ant-select {
+                    .ant-select-selection {
+                        background-color: #4D5253;
+                        border-color: #4D5253;
+                        color: #CBD2DA;
+                    }
+                }
+                p {
+                    color: #fff;
+                    font-size: 16px;
+                    position: absolute;
+                    bottom: 0px;
+                    left: $left-margin;
+                }
+            }
+            .t-right {
+                width: $collapse-Width;
+                color: #fff;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                user-select: none;
+                i {
+                    font-size: 40px;
+                    cursor: pointer;
+                    &:active {
+                        color: rgb(175, 179, 184);
+                    }
+                }
+                p {
+                    margin: 0;
+                }
+                .ch {}
+                .en {
+                    color: #48525E;
+                    font-size: 12px;
+                }
+            }
+        }
+        .mid {
+            height: 60px;
+            display: flex;
+            background-color: rgba(126, 126, 126, .4);
+            .m-left {
+                flex: 1;
+                display: flex;
+                margin-left: $left-margin;
+                >div:nth-of-type(1) {
+                    flex: 2;
+                }
+                >div:nth-of-type(2) {
+                    flex: 3;
+                }
+                .box {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-around;
+                    p {
+                        margin: 0;
+                        &:nth-of-type(1) {
+                            font-size: 12px;
+                            color: #797A98;
+                        }
+                        &:nth-of-type(2) {
+                            color: #FFFFFF;
+                        }
+                    }
+                }
+            }
+            .m-right {
+                width: $collapse-Width;
+            }
+        }
+        .bottom {
+            flex: 1;
+            display: flex;
+            .b-left {
+                margin-left: $left-margin;
+                flex: 1;
+                display: flex;
+                >div:nth-of-type(1) {
+                    flex: 2;
+                    .card {
+                        .info {
+                            padding-left: 10px;
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-around;
+                            color: #fff;
+                            font-size: 12px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            .name {
+                                display: flex;
+                                align-items: center;
+                                img {
+                                    width: 27px;
+                                    height: 18px;
+                                    &.norm {
+                                        width: 32px;
+                                        height: 22px;
+                                    }
+                                }
+                            }
+                            .title {
+                                color: #797C95;
+                            }
+                            .mark {
+                                color: #C4C4C4;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                &.none {
+                                    color: #48525E;
+                                }
+                            }
+                        }
+                    }
+                }
+                >div:nth-of-type(2) {
+                    flex: 3;
+                    .card {
+                        .info {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            padding-left: 10px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            .name {
+                                display: flex;
+                                .tit {
+                                    color: #fff;
+                                }
+                                .tags {
+                                    flex: 1;
+                                    display: flex;
+                                    justify-content: flex-end;
+                                    color: #7E7E7E;
+                                    font-size: 12px;
+                                    >div {
+                                        margin-right: 5px;
+                                        display: flex;
+                                        align-items: center;
+                                        img {
+                                            width: 10px;
+                                            height: 16px;
+                                            margin-right: 6px
+                                        }
+                                    }
+                                }
+                            }
+                            .time {
+                                display: flex;
+                                color: #797C95;
+                                font-size: 12px;
+                                align-items: center;
+                                img {
+                                    width: 14px;
+                                    height: 18px;
+                                }
+                                span:nth-of-type(1) {
+                                    margin: 0 4px;
+                                }
+                                span:nth-of-type(1) {}
+                            }
+                            .mark {
+                                display: flex;
+                                font-size: 12px;
+                                flex-shrink: 0;
+                                .mark {
+                                    flex: 1;
+                                    flex-shrink: 0;
+                                    color: #C4C4C4;
+                                    padding-right: 20px;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                    &.none {
+                                        color: #48525E;
+                                    }
+                                }
+                                .status {
+                                    color: #19C1AA;
+                                }
+                                .type {
+                                    color: #C4C4C4;
+                                    margin-left: 12px;
+                                }
+                            }
+                        }
+                    }
+                }
+                .box {
+                    .card {
+                        user-select: none;
+                        cursor: pointer;
+                        display: flex;
+                        padding: 10px;
+                        background-color: rgba(56, 55, 49, .4);
+                        border-radius: 5px;
+                        margin: 10px 30px 10px 0;
+                        border: 1px solid rgba(56, 55, 49, .4);
+                        &:active {
+                            border: 1px solid #00FFDC;
+                            box-shadow: 0 0 4px #00FFDC;
+                        }
+                        img {
+                            width: 66px;
+                            height: 66px;
+                            flex-shrink: 0;
+                        }
+                        .height-text {
+                            color: #19C1AA !important;
+                        }
+                    }
+                    .loading {
+                        text-align: center;
+                        font-size: 12px;
+                        color: rgba(255, 255, 255, .4);
+                        i {
+                            margin-left: 10px;
+                        }
+                    }
+                }
+            }
+            .b-right {
+                width: $collapse-Width;
+            }
+        }
+    }
+}

@@ -5,6 +5,7 @@ import Reserve from '../pages/reserve';
 import CreateActive from '../pages/creatActive'
 import AddPerson from '../pages/addPerson'
 import SearchIndex from './../pages/searchIndex'
+import Search from './../pages/search'
 import NotFind from '../pages/404'
 
 
@@ -35,6 +36,10 @@ const routerConfig = [
     }, {
         path: '/search/index',
         component: SearchIndex,
+        auth: true,
+    }, {
+        path: '/search/page',
+        component: Search,
         auth: true,
     }, {
         path: '/404',

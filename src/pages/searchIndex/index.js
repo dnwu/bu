@@ -7,7 +7,8 @@ import logoIcon from './../../static/logo.png'
 const Option = Select.Option;
 class index extends Component {
     state = {
-        cityList: []
+        cityList: [],
+        city: "",
     }
     componentDidMount() {
         this.getCityList()
@@ -21,7 +22,15 @@ class index extends Component {
             })
         }
     }
-    selectChange = () => { }
+    search = () => {
+        let value = this.refs.input.state.value,
+            city = this.state.city
+
+        this.props.history.push({ pathname: '/search/page', params: {value, city} })
+    }
+    selectChange = (city) => {
+        this.setState({ city })
+    }
     render() {
         return (
             <div className="search-index">
@@ -31,9 +40,9 @@ class index extends Component {
                         <Icon type="ellipsis" /><Icon type="search" /><Icon type="ellipsis" />
                     </div>
                     <div className="input">
-                        <Input style={{ width: 400 }} placeholder="输入要搜索的活动名称、标签或人员姓名"></Input>
-                        <Button>搜索</Button>
-                        <Select defaultValue="" style={{ width: 120 }} onChange={this.selectChange}>
+                        <Input ref="input" style={{ width: 400 }} placeholder="输入要搜索的活动名称、标签或人员姓名"></Input>
+                        <Button onClick={this.search}>搜索</Button>
+                        <Select value={this.state.city} defaultValue="" style={{ width: 120 }} onChange={this.selectChange}>
                             {
                                 this.state.cityList.map((v, i) =>
                                     <Option value={v.id} key={i}>{v.name}</Option>

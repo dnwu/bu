@@ -13,9 +13,9 @@ class index extends Component {
     }
     componentWillReceiveProps(props) {
         let isShowBar
-        if( props.isShowBar === undefined) {
+        if (props.isShowBar === undefined) {
             isShowBar = true
-        }else if (props.isShowBar) {
+        } else if (props.isShowBar) {
             isShowBar = true
         } else {
             isShowBar = false
@@ -95,7 +95,9 @@ class index extends Component {
         if (hdif <= 0 || scrollTop >= hdif) return
         if (hdif - scrollTop < 20 && control) {
             control = false
-            await this.state.scrollEnd('老大,请求数据')
+            if (this.state.scrollEnd) {
+                await this.state.scrollEnd('老大,请求数据')
+            }
             control = true
         }
         // 滚动条和滚动条容易高度差

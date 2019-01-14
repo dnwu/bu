@@ -131,6 +131,24 @@ class api {
             data: { id }
         })
     }
+    /**
+     * 搜索活动
+     * @param {key, city_id, startTIme, endTIme, offset, limit} options 
+     */
+    getActivesBySearch(options) {
+        return axios.get('/admin/search/activities', {
+            params: options
+        })
+    }
+    /**
+     * 搜索人员
+     * @param {key, offset, limit} options 
+     */
+    getPersonsBySearch(options) {
+        return axios.get('/admin/search/persons', {
+            params: options
+        })
+    }
 }
 
 export default new api()
