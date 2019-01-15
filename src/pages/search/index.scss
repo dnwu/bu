@@ -1,5 +1,6 @@
-$collapse-Width: 400px;
+$collapse-Width: 560px;
 $left-margin: 100px;
+$drawer-bg-color: rgba(11, 14, 18, .6);
 .search-page {
     min-height: 100vh;
     display: flex;
@@ -14,9 +15,10 @@ $left-margin: 100px;
             .t-left {
                 flex: 1;
                 display: flex;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
                 position: relative;
+                padding-left: 100px;
                 input {
                     background-color: rgba(204, 211, 219, .4);
                     color: #CBD2DA;
@@ -267,6 +269,20 @@ $left-margin: 100px;
             }
             .b-right {
                 width: $collapse-Width;
+            }
+        }
+    }
+}
+
+.drawer {
+    color: #fff;
+    .ant-drawer-content {
+        background-color: $drawer-bg-color;
+        .ant-drawer-header {
+            border: none;
+            background-color: $drawer-bg-color;
+            .ant-drawer-close{
+                color: #fff;
             }
         }
     }

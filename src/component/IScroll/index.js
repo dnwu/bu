@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
 import './index.scss'
-
-let control = true
 let scrollTop = 0
 class index extends Component {
-    state = {
-        scrollTop: 0,  // 列表top值
-        barTop: 0,    //滚动条top值,
-        scrollEnd: null, // 滚动条触碰到底部,
-        isShowBar: true
-        // control: true,  // 页面触及底部,控制请求次数,
+    constructor(props) {
+        super(props);
+        this.state = {
+            scrollTop: 0,  // 列表top值
+            barTop: 0,    //滚动条top值,
+            scrollEnd: null, // 滚动条触碰到底部,
+            isShowBar: true
+            // control: true,  // 页面触及底部,控制请求次数,
+        }
+        this.control = true
+        this.scrollTop = 0
     }
+    // state = {
+    //     scrollTop: 0,  // 列表top值
+    //     barTop: 0,    //滚动条top值,
+    //     scrollEnd: null, // 滚动条触碰到底部,
+    //     isShowBar: true
+    //     // control: true,  // 页面触及底部,控制请求次数,
+    // }
     componentWillReceiveProps(props) {
         let isShowBar
         if (props.isShowBar === undefined) {
@@ -26,7 +36,6 @@ class index extends Component {
         })
     }
     componentDidMount() {
-        // console.log(this.props.list);
         this.resetDOM()
         window.addEventListener('resize', this.windowResize)
     }
@@ -65,7 +74,7 @@ class index extends Component {
         // // 重置滚动内容的top值
         scrollDOM.style.top = '0px'
         barDOM.style.top = '0px'
-        scrollTop = 0
+        this.scrollTop = 0
     }
     computeDOMValue = () => {
         let scrollDOM = this.refs.scrollBox
@@ -92,25 +101,26 @@ class index extends Component {
         let BarBoxDOM = this.refs.barBox
         // 计算listBoxDOM的高度比scrollBoxDOM的高度高多少, 然后通过对比滚动距离和高度差的比例来计算滚动条需要滚动的距离
         let hdif = scrollBoxDOM.offsetHeight - listBoxDOM.offsetHeight
-        if (hdif <= 0 || scrollTop >= hdif) return
-        if (hdif - scrollTop < 20 && control) {
-            control = false
+        if (hdif <= 0 || this.scrollTop >= hdif) return
+        if (hdif - this.scrollTop < 20 && this.control) {
+            this.control = false
+            // console.log(this.control);
             if (this.state.scrollEnd) {
                 await this.state.scrollEnd('老大,请求数据')
             }
-            control = true
+            this.control = true
         }
         // 滚动条和滚动条容易高度差
         let hBarDif = BarBoxDOM.offsetHeight - barDOM.offsetHeight
-        scrollTop = scrollTop + 20
-        let ratio = scrollTop / hdif
+        this.scrollTop = this.scrollTop + 20
+        let ratio = this.scrollTop / hdif
         let barTop = hBarDif * ratio
-        scrollBoxDOM.style.top = `${-scrollTop}px`
+        scrollBoxDOM.style.top = `${-this.scrollTop}px`
         barDOM.style.top = `${barTop}px`
 
     }
     scrollDown = () => {
-        if (scrollTop <= 0) return
+        if (this.scrollTop <= 0) return
         let scrollBoxDOM = this.refs.scrollBox  //获取滚动内容dom
         let listBoxDOM = this.refs.list  //获取滚动容器dom
         let barDOM = this.refs.bar   //获取滚动条dom
@@ -120,12 +130,12 @@ class index extends Component {
         if (hdif <= 0) return
         // 滚动条和滚动条容易高度差
         let hBarDif = BarBoxDOM.offsetHeight - barDOM.offsetHeight
-        scrollTop = scrollTop - 20
+        this.scrollTop = this.scrollTop - 20
         // console.log(scrollTop);
-        let ratio = scrollTop / hdif
+        let ratio = this.scrollTop / hdif
         let barTop = hBarDif * ratio
 
-        scrollBoxDOM.style.top = `${-scrollTop}px`
+        scrollBoxDOM.style.top = `${-this.scrollTop}px`
         barDOM.style.top = `${barTop}px`
     }
     scroll = (e) => {

@@ -4,14 +4,19 @@ import { Icon } from 'antd'
 import headImg from './../../static/head.png'
 
 class index extends Component {
+    componentDidMount() {
+    }
     back = () => {
         window.history.go(-1)
+    }
+    goto = (path) => {
+        window.location.href = path
     }
     render() {
         return (
             <div className="head">
                 <Icon onClick={this.back} type="arrow-left" />
-                <img src={headImg} alt="" />
+                <img onClick={this.goto.bind(this, '/main')} src={headImg} alt="" />
             </div>
         );
     }

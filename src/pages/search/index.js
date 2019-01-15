@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './index.scss'
 import api from './../../server'
-import { Input, Button, Select, Icon } from 'antd'
-import moment from 'moment';
+import { Input, Button, Select, Icon, Drawer, DatePicker } from 'antd'
 import Head from './../../component/Head'
 import IScroll from './../../component/IScroll'
 import defaultImg from './../../static/default.png'
@@ -12,13 +11,20 @@ import normImg from './../../static/norm.png'
 import tagIcon from './../../static/tag.svg'
 import position from './../../static/positon.svg'
 
+import moment from 'moment';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 const Option = Select.Option
+const { RangePicker } = DatePicker;
 let personPage = 1
 let personPageSize = 10
 let activePage = 1
 let activePageSize = 10
 class index extends Component {
     state = {
+        date: moment().format("YYYY-MM-DD"),
+        drawerVisible: false,
         key: "",
         acitiveTotal: 0,
         activesList: [],
@@ -32,8 +38,8 @@ class index extends Component {
         endTIme: 999999999999
     }
     componentDidMount() {
-        personPage = 0
-        activePage = 0
+        personPage = 1
+        activePage = 1
         this.getCityList()
         this.getActives("", "", 1)
         this.getPersons("", 1)
@@ -84,6 +90,7 @@ class index extends Component {
             limit: personPageSize
         }
         let { data } = await api.getPersonsBySearch(options)
+        console.log(data);
         if (data.code === 0) {
             // console.log('persons', data);
             let list = JSON.parse(JSON.stringify(this.state.personsList))
@@ -106,6 +113,8 @@ class index extends Component {
         }
     }
     search = async () => {
+        personPage = 0
+        activePage = 0
         let key = this.refs.input.state.value,
             city = this.state.city
         this.setState({
@@ -123,19 +132,34 @@ class index extends Component {
         await this.getPersons(key, personPage)
     }
     activeScrollEnd = async () => {
-        console.log(activePage, this.state.activesList.length, this.state.acitiveTotal);
         if (this.state.activesList.length === this.state.acitiveTotal) return
         let key = this.refs.input.state.value,
-            city = this.state.city
+        city = this.state.city
         activePage++
+        // console.log(activePage, this.state.activesList.length, this.state.acitiveTotal);
         await this.getActives(key, city, activePage)
     }
     selectChange = (city) => {
         this.setState({ city })
     }
+    dateChange = (date) => {
+        this.setState({
+            date: moment(date).format("YYYY-MM-DD")
+        })
+    }
     select = (id) => {
         console.log(id);
         // this.setState({ selectId: id })
+    }
+    drawerClose = () => {
+        this.setState({
+            drawerVisible: false
+        })
+    }
+    showDrawer = () => {
+        this.setState({
+            drawerVisible: true
+        })
     }
     filterText = (list) => {
         let keyWord = this.state.key
@@ -166,8 +190,8 @@ class index extends Component {
                         </div>
                         <div className="mark">
                             {v.remarks === "" ?
-                                <div className="mark" dangerouslySetInnerHTML={{ __html: v.remarks }}></div> :
-                                <div className="mark none">暂无备注</div>
+                                <div className="mark none">暂无备注</div> :
+                                <div className="mark" dangerouslySetInnerHTML={{ __html: v.remarks }}></div>
                             }
                             <div className="status">{v.status === 2 ? '正在进行' : ''}</div>
                             <div className="type">{v.status === 3 ? '已完成' : '已预约'}</div>
@@ -187,15 +211,30 @@ class index extends Component {
                         </div>
                         <div className="title">{v.title}</div>
                         {v.remarks === "" ?
-                            <div className="mark" dangerouslySetInnerHTML={{ __html: v.remarks }}></div> :
-                            <div className="mark none">暂无备注</div>
+                            <div className="mark none">暂无备注</div> :
+                            <div className="mark" dangerouslySetInnerHTML={{ __html: v.remarks }}></div>
                         }
                     </div>
                 </div>
             ))
         )
+        const drawer = (
+            <Drawer
+                // title="Basic Drawer"
+                className="drawer"
+                placement="right"
+                width="560"
+                destroyOnClose={true}
+                mask={false}
+                onClose={this.drawerClose}
+                visible={this.state.drawerVisible}
+            >
+                <RangePicker></RangePicker>
+            </Drawer>
+        )
         return (
             <div className="search-page">
+                {drawer}
                 <Head></Head>
                 <div className="body">
                     <div className="top">
@@ -212,7 +251,7 @@ class index extends Component {
                             <p>搜索结果</p>
                         </div>
                         <div className="t-right">
-                            <Icon type="schedule" />
+                            <Icon onClick={this.showDrawer} type="schedule" />
                             <p className="ch">时段查询</p>
                             <p className="en">Query by time</p>
                         </div>
