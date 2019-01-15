@@ -7,7 +7,6 @@ import Head from './../../component/Head'
 import vipImg from './../../static/VIP.png'
 import normImg from './../../static/norm.png'
 import point from './../../static/point.svg'
-import defaultImg from './../../static/init.png'
 import defaultAva from './../../static/default.png'
 
 let vipPage = 1,
@@ -41,7 +40,6 @@ class index extends Component {
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.vipList))
             list.push(...data.data.persons)
-
             if (list.length === data.data.total) {
 
                 this.setState({
@@ -69,7 +67,6 @@ class index extends Component {
             type: 1,
         }
         let { data } = await api.getPersonList(options)
-        console.log(data);
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.normList))
             list.push(...data.data.persons)
@@ -90,6 +87,7 @@ class index extends Component {
     }
     getPersonInfo = async (id) => {
         let { data } = await api.getPersonInfo(id)
+        console.log(data);
         if (data.code === 0) {
             this.setState({
                 cardInfo: data.data,
@@ -108,7 +106,11 @@ class index extends Component {
         let listDOM = this.state.vipList.map((v, i) => {
             return (
                 <div onClick={this.select.bind(this, v.id)} className={`card ${this.state.selectId === v.id ? 'active' : ''}`} key={v.id}>
-                    <img src={defaultAva} alt="" />
+                    {
+                        v.picture ?
+                            <img src={v.picture} alt="" /> :
+                            <img src={defaultAva} alt="" />
+                    }
                     <div>
                         <div className="name">{v.name}</div>
                         <div className="position">{v.title}</div>
@@ -122,7 +124,11 @@ class index extends Component {
         let listDOM = this.state.normList.map((v, i) => {
             return (
                 <div onClick={this.select.bind(this, v.id)} className={`card ${this.state.selectId === v.id ? 'active' : ''}`} key={v.id}>
-                    <img src={defaultAva} alt="" />
+                    {
+                        v.picture ?
+                            <img src={v.picture} alt="" /> :
+                            <img src={defaultAva} alt="" />
+                    }
                     <div>
                         <div className="name">{v.name}</div>
                         <div className="position">{v.title}</div>
@@ -244,9 +250,16 @@ class index extends Component {
                                         <p className="value">{this.state.cardInfo.telephone}</p>
                                     </div>
                                 </div>
+                                <div className="remark">
+                                    {this.state.cardInfo.remarks}
+                                </div>
                             </div>
                             <div className="info-card-right">
-                                <img src={defaultImg} alt="" />
+                                {
+                                    this.state.cardInfo.picture ?
+                                        <img src={this.state.cardInfo.picture} alt="" /> :
+                                        <img src={defaultAva} alt="" />
+                                }
                             </div>
                         </div>
                     </div>

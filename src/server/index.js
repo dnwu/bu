@@ -132,7 +132,7 @@ class api {
      * gender 1,2代表男女
      * isSecrecy 1,2代表 否 ,是
      * type 0, 1, 2 分别代表全部, 陪访, vip人员
-     * @param {name,gender,type, title, Age, telephone, isSecrecy} options 
+     * @param {name,gender,type, title, Age, telephone, isSecrecy,picture,remarks} options 
      */
     addPerson(options) {
         return axios.post('/admin/person', options)
@@ -140,7 +140,7 @@ class api {
 
     /**
      * 
-     * @param {id ,name,gender,type, title, Age, telephone, isSecrecy} options 
+     * @param {id ,name,gender,type, title, Age, telephone, isSecrecy,picture,remarks} options 
      */
     modifyPerson(options) {
         return axios.put('/admin/person', options)

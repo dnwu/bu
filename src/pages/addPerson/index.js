@@ -7,6 +7,7 @@ import vipImg from './../../static/VIP.png'
 import normImg from './../../static/norm.png'
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const { TextArea } = Input;
 class index extends Component {
     state = {
         imageUrl: '',
@@ -26,18 +27,21 @@ class index extends Component {
         if (cardInfo) {
             this.initActiveInfoPage(cardInfo)
         }
+
     }
     initActiveInfoPage = (cardInfo) => {
         this.refs.nameDOM.state.value = cardInfo.name
         this.refs.titleDOM.state.value = cardInfo.title
         this.refs.ageDOM.state.value = cardInfo.age
         this.refs.phoneDOM.state.value = cardInfo.telephone
+        this.refs.textArea.textAreaRef.value = cardInfo.remarks
         this.setState({
             gender: cardInfo.gender,
             type: cardInfo.type,
             isSecrecy: cardInfo.isSecrecy === 1 ? false : true,
             isModify: true,
             personDeleteModalVisible: false,
+            imageUrl: cardInfo.picture,
             cardInfo,
         })
     }
@@ -51,7 +55,7 @@ class index extends Component {
         if (!isJPG) {
             message.error('You can only upload JPG file!');
         }
-        const isLt2M = file.size / 1024 / 1024 < 2;
+        const isLt2M = file.size / 1024 / 1024 < 10;
         if (!isLt2M) {
             message.error('Image must smaller than 2MB!');
         }
@@ -70,15 +74,26 @@ class index extends Component {
         //         loading: false,
         //     }));
         // }
-
         this.getBase64(info.file.originFileObj, imageUrl => this.setState({
             imageUrl,
             loading: false,
+            file: info.file.originFileObj
         }));
     }
-
+    upload = async () => {
+        let file = this.state.file
+        if (file) {
+            let { data } = await api.uploadImg(file)
+            if (data.code === 0) {
+                return data.data.url
+            }
+        } else {
+            return ""
+        }
+    }
     typeChange = (type) => {
-        this.setState({ type })
+        console.log(type);
+        this.setState({ type: type.target.value })
     }
     secrecyChange = (isSecrecy) => {
         this.setState({ isSecrecy: isSecrecy.target.checked })
@@ -89,23 +104,25 @@ class index extends Component {
         })
     }
     addPerson = async () => {
+        let picture = await this.upload()
         let name = this.refs.nameDOM.state.value
         let title = this.refs.titleDOM.state.value
         let age = parseInt(this.refs.ageDOM.state.value)
         let telephone = this.refs.phoneDOM.state.value
         let type = this.state.type
         let isSecrecy = this.state.isSecrecy === false ? 1 : 2
+        let remarks = this.refs.textArea.textAreaRef.value
         // name,gender,type, title, Age
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
             return
         }
-        let options = { name, type, title, age, telephone, isSecrecy, gender: this.state.gender }
+        let options = { name, type, title, age, telephone, isSecrecy, gender: this.state.gender, picture, remarks }
         let { data } = await api.addPerson(options)
         if (data.code === 0) {
             message.success("添加成功")
             this.props.history.push('/manage')
-        }else {
+        } else {
             message.error(data.message)
         }
     }
@@ -120,6 +137,7 @@ class index extends Component {
         })
     }
     personModify = async () => {
+        let picture = await this.upload()
         let cardInfo = this.state.cardInfo
         let id = cardInfo.id
         let name = this.refs.nameDOM.state.value
@@ -129,7 +147,8 @@ class index extends Component {
         let type = this.state.type
         let isSecrecy = this.state.isSecrecy === false ? 1 : 2
         let gender = this.state.gender
-        let options = { id, name, gender, type, title, age, telephone, isSecrecy }
+        let remarks = this.refs.textArea.textAreaRef.value
+        let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks }
         let { data } = await api.modifyPerson(options)
         if (data.code === 0) {
             message.success("人员信息修改成功")
@@ -219,6 +238,12 @@ class index extends Component {
                                 <Input ref="phoneDOM"></Input>
                             </div>
                         </div>
+                        <div className="box">
+                            <div className="key">备注</div>
+                            <div className="value">
+                                <TextArea ref="textArea" autosize={{ minRows: 2, maxRows: 4 }} />
+                            </div>
+                        </div>
                     </div>
                     <div className="select">
                         <div className="upload-ava">
@@ -230,7 +255,7 @@ class index extends Component {
                                 listType="picture-card"
                                 className="avatar-uploader"
                                 showUploadList={false}
-                                action="//jsonplaceholder.typicode.com/posts/"
+                                action=""
                                 beforeUpload={this.beforeUpload}
                                 onChange={this.handleChange}
                             >
