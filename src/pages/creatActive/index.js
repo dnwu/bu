@@ -8,6 +8,7 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 const Option = Select.Option;
+const { TextArea } = Input;
 class index extends Component {
     state = {
         title: "创建活动",
@@ -42,8 +43,10 @@ class index extends Component {
     }
     // 如果是从编辑按钮跳转过来的就调用这个函数 ,初始化页面信息
     initActiveInfoPage = (activeInfo) => {
-        let nameDOM = this.refs.nameDOM
+        let nameDOM = this.refs.nameDOM,
+            textAreaDOM = this.refs.textarea
         nameDOM.state.value = activeInfo.name
+        textAreaDOM.textAreaRef.value = activeInfo.remarks
         this.setState({
             tags: activeInfo.tags,
             date: moment(activeInfo.startTime * 1000).format("YYYY-MM-DD"),
@@ -52,6 +55,7 @@ class index extends Component {
             detailId: activeInfo.location_id,
             cityId: activeInfo.city_id,
             title: "编辑活动",
+            imageUrl: activeInfo.picture,
             activeInfo
         })
 
@@ -96,11 +100,12 @@ class index extends Component {
         if (!isJPG) {
             message.error('You can only upload JPG file!');
         }
-        const isLt2M = file.size / 1024 / 1024 < 2;
+        const isLt2M = file.size / 1024 / 1024 < 10;
         if (!isLt2M) {
             message.error('Image must smaller than 2MB!');
         }
         return isJPG && isLt2M;
+        // return false   // 手动上传
     }
     handleChange = (info) => {
         // if (info.file.status === 'uploading') {
@@ -115,10 +120,11 @@ class index extends Component {
         //         loading: false,
         //     }));
         // }
-
+        // console.log(info);
         this.getBase64(info.file.originFileObj, imageUrl => this.setState({
             imageUrl,
             loading: false,
+            file: info.file.originFileObj
         }));
     }
     sliderChange = (value) => {
@@ -205,15 +211,30 @@ class index extends Component {
             message.warning('地址已存在')
         }
     }
+    upload =async () => {
+        let file = this.state.file
+        if(file) {
+            let {data} = await api.uploadImg(file)
+            if(data.code === 0) {
+                return data.data.url
+            }
+        }else {
+            return ""
+        }
+    }
     createActive = async () => {
+        let url = await this.upload()
         let nameDOM = this.refs.nameDOM
+        let textAreaDOM = this.refs.textarea
         let options = {
             name: nameDOM.state.value,
-            startTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
-            finishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
+            reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
+            reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
+            picture: url,
             city_id: this.state.cityId,
             location_id: this.state.detailId,
-            tags: this.state.tags
+            tags: this.state.tags,
+            remarks: textAreaDOM.textAreaRef.value
         }
         if (!options.name) {
             message.warning('活动名称不能为空')
@@ -244,15 +265,19 @@ class index extends Component {
         }
     }
     modify = async () => {
+        let url = await this.upload()
         let nameDOM = this.refs.nameDOM
+        let textAreaDOM = this.refs.textarea
         let options = {
             id: this.state.activeInfo.activeId,
             name: nameDOM.state.value,
-            startTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
-            finishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
+            reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
+            reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
+            picture: url,
             city_id: this.state.cityId,
             location_id: this.state.detailId,
-            tags: this.state.tags
+            tags: this.state.tags,
+            remarks: textAreaDOM.textAreaRef.value
         }
         if (!options.name) {
             message.warning('活动名称不能为空')
@@ -458,6 +483,14 @@ class index extends Component {
                                 <span className="t">{this.state.endTime}</span>
                             </div>
                         </div>
+                        <div className="box mark">
+                            <div className="key">
+                                备注
+                            </div>
+                            <div className="value">
+                                <TextArea ref="textarea" autosize={{ minRows: 2, maxRows: 4 }}></TextArea>
+                            </div>
+                        </div>
                     </div>
                     <div className="select-box">
                         <div className="date-img-box">
@@ -473,8 +506,8 @@ class index extends Component {
                                         listType="picture-card"
                                         className="avatar-uploader"
                                         showUploadList={false}
-                                        action="//jsonplaceholder.typicode.com/posts/"
-                                        beforeUpload={this.beforeUpload}
+                                        action=""
+                                        // beforeUpload={this.beforeUpload}
                                         onChange={this.handleChange}
                                     >
                                         {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
@@ -493,17 +526,17 @@ class index extends Component {
                             </div>
                             <Slider max={20} tipFormatter={this.tipFormatter} min={8} range step={0.5} defaultValue={[10, 18]} onChange={this.sliderChange} />
                         </div>
+                        <div className="btn">
+                            {
+                                this.state.activeInfo ?
+                                    (<>
+                                        <Button className="delete" onClick={this.showDeleteModal}>删除</Button>
+                                        <Button className="sure" onClick={this.modify}>确认</Button>
+                                    </>) :
+                                    (<Button className="create" onClick={this.createActive}>创建</Button>)
+                            }
+                        </div>
                     </div>
-                </div>
-                <div className="btn">
-                    {
-                        this.state.activeInfo ?
-                            (<>
-                                <Button className="delete" onClick={this.showDeleteModal}>删除</Button>
-                                <Button className="sure" onClick={this.modify}>确认</Button>
-                            </>) :
-                            (<Button className="create" onClick={this.createActive}>创建</Button>)
-                    }
                 </div>
             </div>
         );

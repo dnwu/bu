@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Radio, Button, Icon, Spin } from 'antd'
+import { Radio, Button, Icon, Spin, Modal, message } from 'antd'
 import api from './../../server'
 import tools from './../../tools'
 import './index.scss'
@@ -15,6 +15,8 @@ let page = 1
 let pageSize = 10
 class index extends Component {
     state = {
+        deleteModalVisible: false,
+        selectType: "-1",
         status: "", // status 1,2,3分别代表已预约, 进行中, 已结束 , 空表示全部
         activeInfo: {},
         activesInfo: {
@@ -28,8 +30,8 @@ class index extends Component {
     }
     componentDidMount() {
         page = 1
-        
-        this.getActiveList(1, 1)
+
+        this.getActiveList(1, -1)
     }
     getActiveList = async (page, status) => {
         // status 1,2,3分别代表已预约, 进行中, 已结束 ,空表示全部
@@ -58,10 +60,12 @@ class index extends Component {
             }
             // 如果是第一次请求, 然后初始化活动详情
             if (page === 1) {
-                this.getActiveInfo(data.data.activities[0].id)
-                this.setState({
-                    selectId: data.data.activities[0].id,
-                })
+                if (data.data.activities[0]) {
+                    await this.getActiveInfo(data.data.activities[0].id)
+                    this.setState({
+                        selectId: data.data.activities[0].id,
+                    })
+                }
             }
         }
     }
@@ -77,6 +81,7 @@ class index extends Component {
             loading: true
         })
         let { data } = await api.getActiveInfo(id)
+        console.log(data.data);
         if (data.code === 0) {
             this.setState({
                 activeInfo: data.data,
@@ -94,6 +99,7 @@ class index extends Component {
                 totalThisMonth: 0
             },
             activeList: [],
+            selectType: e.target.value
         }, () => {
             this.getActiveList(1, e.target.value)
         })
@@ -106,8 +112,56 @@ class index extends Component {
         // 'create-active?id=' + this.state.selectId
         this.props.history.push({ pathname: "create-active", params: { activeInfo: JSON.parse(JSON.stringify({ ...this.state.activeInfo, activeId: this.state.selectId })) } })
     }
+    modifyActiveStatus = async () => {
+        let type = this.state.type
+        let id = this.state.activeInfo.id
+        let status = -1
+        if (type === 'start') {
+            status = 2
+        } else if (type === 'end') {
+            status = 3
+        }
+        let options = {
+            id,
+            status,
+        }
+        let { data } = await api.modifyActiveStatus(options)
+        if (data.code === 0) {
+            page = 1
+            this.setState({ loading: true, deleteModalVisible: false })
+            setTimeout(() => {
+                this.setState({
+                    activesInfo: {
+                        total: 0,
+                        totalThisMonth: 0
+                    },
+                    loading: false,
+                    activeList: [],
+
+                }, async () => {
+                    await this.getActiveList(1, this.state.selectType)
+                    await this.getActiveInfo(id)
+                    if (type === 'start') {
+                        message.success("活动开始啦")
+                    } else if (type === 'end') {
+                        message.success("活动结束")
+                    }
+                })
+            }, 2000)
+        }
+    }
+    modifyActiveStatusBtn = (type) => {
+        console.log(type);
+        let modalTit
+        if (type === 'start') {
+            modalTit = "确认要开始活动吗"
+        } else if (type === 'end') {
+            modalTit = "确认要结束活动吗"
+        }
+        this.setState({ deleteModalVisible: true, type, modalTit })
+    }
+    handleCancel = () => { this.setState({ deleteModalVisible: false }) }
     select = (id) => {
-        console.log(id);
         this.getActiveInfo(id)
         this.setState({
             selectId: id
@@ -118,7 +172,7 @@ class index extends Component {
             this.state.activeList.map((v, i) => {
                 return (
                     <div onClick={this.select.bind(this, v.id)} className={`card ${this.state.selectId === v.id ? 'active' : ''}`} key={v.id}>
-                        <div className="img"></div>
+                        <div className="img"><img src={v.Picture} alt="" /></div>
                         <div className="info">
                             <div className="title">
                                 <span>{v.name}</span>
@@ -135,13 +189,33 @@ class index extends Component {
                 )
             })
         )
+        const deleteModal = (
+            <Modal
+                className='delete-model'
+                visible={this.state.deleteModalVisible}
+                footer={false}
+                zIndex={1050}
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+            >
+                <div className="body-icon">
+                    <p className="icon"><Icon type="question-circle" /></p>
+                    <p className="word">{this.state.modalTit}</p>
+                </div>
+                <div className="btn">
+                    <Button onClick={this.handleCancel} className="cancel">取消</Button>
+                    <Button onClick={this.modifyActiveStatus} className="sure">确认</Button>
+                </div>
+            </Modal>
+        )
         return (
             <div className="reserve">
+                {deleteModal}
                 <Head></Head>
                 <div className="top-nav">
                     <div className="nav">
-                        <Radio.Group onChange={this.typeChage} className="nav-btn" defaultValue="" buttonStyle="solid">
-                            <Radio.Button value="">全部</Radio.Button>
+                        <Radio.Group onChange={this.typeChage} className="nav-btn" defaultValue="-1" buttonStyle="solid">
+                            <Radio.Button value="-1">全部</Radio.Button>
                             <Radio.Button value="1">已预约</Radio.Button>
                             <Radio.Button value="3">已结束</Radio.Button>
                         </Radio.Group>
@@ -197,13 +271,35 @@ class index extends Component {
                                     }
                                 </div>
                                 <div className="c-right">
-                                    <Icon onClick={this.modifyActive} type="setting" />
-                                    <p>编辑</p>
+                                    {
+                                        this.state.activeInfo.status === 2 ?
+                                            <div>
+                                                <Icon onClick={this.modifyActiveStatusBtn.bind(this, 'end')} type="issues-close" />
+                                                <p>结束</p>
+                                            </div> :
+                                            this.state.activeInfo.status === 1 ?
+                                                <>
+                                                    <div>
+                                                        <Icon onClick={this.modifyActiveStatusBtn.bind(this, 'start')} type="dashboard" />
+                                                        <p>开始</p>
+                                                    </div>
+
+                                                    <div>
+                                                        <Icon onClick={this.modifyActive} type="setting" />
+                                                        <p>编辑</p>
+                                                    </div>
+                                                </>
+                                                : null
+                                    }
                                 </div>
                             </div>
                             <div className="info">
                                 <div className="info-left">
-                                    <h3>{this.state.activeInfo.status === 1 ? '已预约' : this.state.activeInfo.status === 2 ? '已预约' : this.state.activeInfo.status === 3 ? '已结束' : '无状态'}</h3>
+                                    <div className="h">
+                                        <span>{this.state.activeInfo.status === 3 ? '已结束' : "已预约"}</span>
+                                        <span>{this.state.activeInfo.status === 2 ? '正在进行' : ""}</span>
+                                    </div>
+                                    <div className="remark">{this.state.activeInfo.remarks}</div>
                                     <div className="positon">
                                         <img src={positonSvg} alt="" />
                                         <span>{this.state.activeInfo.city}</span>
@@ -228,7 +324,7 @@ class index extends Component {
                                     </div>
                                 </div>
                                 <div className="info-right">
-                                    <img src={logoImg} alt="" />
+                                    <img className={this.state.activeInfo.picture ? "has" : ""} src={this.state.activeInfo.picture ? this.state.activeInfo.picture : logoImg} alt="" />
                                 </div>
                             </div>
                         </div>

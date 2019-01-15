@@ -64,11 +64,35 @@ class api {
     }
 
     /**
+     * 上传图片
+     */
+    uploadImg(flie) {
+        // FormData 对象
+        var form = new FormData();
+        // 文件对象
+        form.append("file", flie);
+        let config = {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        };
+        return axios.post('/admin/file/image', form, config)
+    }
+
+    /**
      * 创建活动
-     * @param {name, startTime, finishTime, city_id, location_id, tags} options 
+     * @param {name, reserveStartTime, reserveFinishTime, city_id, picture, location_id, tags, remarks} options 
      */
     createActive(options) {
         return axios.post('/admin/activity', options)
+    }
+
+    /**
+     * 修改活动状态
+     * @param {id, status} options 
+     */
+    modifyActiveStatus(options) {
+        return axios.post('/admin/activity/status', options)
     }
 
     /**
