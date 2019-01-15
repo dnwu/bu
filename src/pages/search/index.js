@@ -219,18 +219,9 @@ class index extends Component {
             ))
         )
         const drawer = (
-            <Drawer
-                // title="Basic Drawer"
-                className="drawer"
-                placement="right"
-                width="560"
-                destroyOnClose={true}
-                mask={false}
-                onClose={this.drawerClose}
-                visible={this.state.drawerVisible}
-            >
-                <RangePicker></RangePicker>
-            </Drawer>
+            <div className="drawer">
+                <RangePicker open></RangePicker>
+            </div>
         )
         return (
             <div className="search-page">
