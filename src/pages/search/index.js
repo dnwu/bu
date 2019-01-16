@@ -12,34 +12,38 @@ import tagIcon from './../../static/tag.svg'
 import position from './../../static/positon.svg'
 
 import moment from 'moment';
-import locale from 'antd/lib/date-picker/locale/zh_CN';
+// import locale from 'antd/lib/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 const Option = Select.Option
 const { RangePicker } = DatePicker;
-let personPage = 1
-let personPageSize = 10
-let activePage = 1
-let activePageSize = 10
 class index extends Component {
-    state = {
-        date: moment().format("YYYY-MM-DD"),
-        drawerVisible: false,
-        key: "",
-        acitiveTotal: 0,
-        activesList: [],
-        personTotal: 0,
-        personsList: [],
-        activeIsHas: true,
-        personIsHas: true,
-        cityList: [],
-        city: "",
-        startTIme: 0,
-        endTIme: 999999999999
+    constructor(props) {
+        super(props);
+        this.state = {
+            date: moment().format("YYYY-MM-DD"),
+            drawerVisible: false,
+            key: "",
+            acitiveTotal: 0,
+            activesList: [],
+            personTotal: 0,
+            personsList: [],
+            activeIsHas: true,
+            personIsHas: true,
+            cityList: [],
+            city: "",
+            startTIme: moment().format("X"),
+            endTIme: moment().format("X")
+        }
+        this.personPage = 1
+        this.activePage = 1
+        this.personPageSize = 10
+        this.activePageSize = 10
     }
+
     componentDidMount() {
-        personPage = 1
-        activePage = 1
+        this.personPage = 1
+        this.activePage = 1
         this.getCityList()
         this.getActives("", "", 1)
         this.getPersons("", 1)
@@ -54,29 +58,42 @@ class index extends Component {
         }
     }
     getActives = async (key, city_id, page) => {
-        let options = {
-            key,
-            city_id,
-            startTIme: this.state.startTIme,
-            endTIme: this.state.endTIme,
-            offset: (page - 1) * activePageSize,
-            limit: activePageSize
+        let options
+        if (this.state.drawerVisible) {
+            options = {
+                key,
+                city_id,
+                startTime: this.state.startTIme,
+                endTime: this.state.endTIme,
+                offset: (page - 1) * this.activePageSize,
+                limit: this.activePageSize
+            }
+        } else {
+            options = {
+                key,
+                city_id,
+                startTime: 0,
+                endTime: 999999999999,
+                offset: (page - 1) * this.activePageSize,
+                limit: this.activePageSize
+            }
         }
         let { data } = await api.getActivesBySearch(options)
+        // console.log(data);
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.activesList))
             list.push(...data.data.activities)
             list = this.filterText(list)
-            if (list.length === data.data.activitiesTotal) {
+            if (list.length === data.data.total) {
                 this.setState({
                     activesList: list,
-                    acitiveTotal: data.data.activitiesTotal,
+                    acitiveTotal: data.data.total,
                     activeIsHas: false
                 })
             } else {
                 this.setState({
                     activesList: list,
-                    acitiveTotal: data.data.activitiesTotal,
+                    acitiveTotal: data.data.total,
                     activeIsHas: true
                 })
             }
@@ -86,58 +103,60 @@ class index extends Component {
     getPersons = async (key, page) => {
         let options = {
             key,
-            offset: (page - 1) * personPageSize,
-            limit: personPageSize
+            offset: (page - 1) * this.personPageSize,
+            limit: this.personPageSize
         }
         let { data } = await api.getPersonsBySearch(options)
-        console.log(data);
+        // console.log(data);
         if (data.code === 0) {
             // console.log('persons', data);
             let list = JSON.parse(JSON.stringify(this.state.personsList))
             list.push(...data.data.persons)
             list = this.filterText(list)
             // console.log(list);
-            if (list.length === data.data.personTotal) {
+            if (list.length === data.data.total) {
                 this.setState({
                     personsList: list,
-                    personTotal: data.data.personTotal,
+                    personTotal: data.data.total,
                     personIsHas: false
                 })
             } else {
                 this.setState({
                     personsList: list,
-                    personTotal: data.data.personTotal,
+                    personTotal: data.data.total,
                     personIsHas: true
                 })
             }
         }
     }
     search = async () => {
-        personPage = 0
-        activePage = 0
+        this.personPage = 1
+        this.activePage = 1
         let key = this.refs.input.state.value,
             city = this.state.city
         this.setState({
             key,
-            city_id: city
+            city_id: city,
+            activesList: [],
+            personsList: [],
         }, async () => {
             await this.getActives(key, city, 1)
             await this.getPersons(key, 1)
         })
     }
     personScrollEnd = async () => {
-        if (this.state.personsList.length === this.state.personTotal) return
+        if (!this.state.personIsHas) return
         let key = this.refs.input.state.value
-        personPage++
-        await this.getPersons(key, personPage)
+        this.personPage++
+        await this.getPersons(key, this.personPage)
     }
     activeScrollEnd = async () => {
-        if (this.state.activesList.length === this.state.acitiveTotal) return
+        if (!this.state.activeIsHas) return
         let key = this.refs.input.state.value,
-        city = this.state.city
-        activePage++
-        // console.log(activePage, this.state.activesList.length, this.state.acitiveTotal);
-        await this.getActives(key, city, activePage)
+            city = this.state.city
+        this.activePage++
+        // console.log(this.activePage, this.state.activesList.length, this.state.acitiveTotal);
+        await this.getActives(key, city, this.activePage)
     }
     selectChange = (city) => {
         this.setState({ city })
@@ -170,6 +189,14 @@ class index extends Component {
             v.remarks = v.remarks.replace(re, `<span class="height-text">${keyWord}</span>`)
         })
         return list
+    }
+    rangePickerChange = (date) => {
+        let start = moment(date[0]).format("X")
+        let end = moment(date[1]).format("X")
+        this.setState({
+            startTIme: start,
+            endTIme: end
+        })
     }
     render() {
         const acitveCard = (
@@ -219,9 +246,25 @@ class index extends Component {
             ))
         )
         const drawer = (
-            <div className="drawer">
-                <RangePicker open></RangePicker>
-            </div>
+            this.state.drawerVisible ?
+                <div className="drawer">
+                    <div className="close"><Icon onClick={this.drawerClose} type="close-circle" /></div>
+                    <div className="logo">
+                        <Icon type="schedule" />
+                        <p className="ch">时段查询</p>
+                        <p className="en">Query by time</p>
+                    </div>
+                    <div className="picker">
+                        <RangePicker onChange={this.rangePickerChange} open></RangePicker>
+                    </div>
+                    <div className="info">
+                        <p>筛选日期</p>
+                        <div className="time-box">{moment(this.state.startTIme*1000).format("YYYY-MM-DD")}</div>
+                        <div className="word">至</div>
+                        <div className="time-box">{moment(this.state.endTIme*1000).format("YYYY-MM-DD")}</div>
+                    </div>
+
+                </div> : null
         )
         return (
             <div className="search-page">
@@ -249,10 +292,13 @@ class index extends Component {
                     </div>
                     <div className="mid">
                         <div className="m-left">
-                            <div className="box">
-                                <p>人员</p>
-                                <p>{this.state.personTotal}</p>
-                            </div>
+                            {
+                                this.state.drawerVisible ? null :
+                                    <div className="box">
+                                        <p>人员</p>
+                                        <p>{this.state.personTotal}</p>
+                                    </div>
+                            }
                             <div className="box">
                                 <p>活动</p>
                                 <p>{this.state.acitiveTotal}</p>
@@ -262,25 +308,28 @@ class index extends Component {
                     </div>
                     <div className="bottom">
                         <div className="b-left">
-                            <div className="box">
-                                <IScroll
-                                    scrollEnd={this.personScrollEnd}
-                                    isShowBar={false}>
-                                    {personCard}
-                                    {this.state.personIsHas ?
-                                        <div className="loading">
-                                            正在加载下一页数据...<Icon type="loading"></Icon>
-                                        </div> :
-                                        <div className="loading">
-                                            已经没有数据了
-                                        </div>
-                                    }
-                                </IScroll>
-                            </div>
-                            <div className="box">
+                            {
+                                this.state.drawerVisible ? null :
+                                    <div className="box person-list">
+                                        <IScroll
+                                            scrollEnd={this.personScrollEnd}
+                                            >
+                                            {personCard}
+                                            {this.state.personIsHas ?
+                                                <div className="loading">
+                                                    正在加载下一页数据...<Icon type="loading"></Icon>
+                                                </div> :
+                                                <div className="loading">
+                                                    已经没有数据了
+                                            </div>
+                                            }
+                                        </IScroll>
+                                    </div>
+                            }
+                            <div className={this.state.drawerVisible ? "box padding active-list" : "box active-list"}>
                                 <IScroll
                                     scrollEnd={this.activeScrollEnd}
-                                    isShowBar={false}>
+                                    >
                                     {acitveCard}
                                     {this.state.activeIsHas ?
                                         <div className="loading">

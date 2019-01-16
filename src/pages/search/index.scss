@@ -1,4 +1,4 @@
-$collapse-Width: 560px;
+$collapse-Width: 700px;
 $left-margin: 100px;
 $drawer-bg-color: rgba(11, 14, 18, .6);
 .search-page {
@@ -119,7 +119,7 @@ $drawer-bg-color: rgba(11, 14, 18, .6);
                 margin-left: $left-margin;
                 flex: 1;
                 display: flex;
-                >div:nth-of-type(1) {
+                .person-list {
                     flex: 2;
                     .card {
                         .info {
@@ -160,7 +160,7 @@ $drawer-bg-color: rgba(11, 14, 18, .6);
                         }
                     }
                 }
-                >div:nth-of-type(2) {
+                .active-list {
                     flex: 3;
                     .card {
                         .info {
@@ -236,6 +236,9 @@ $drawer-bg-color: rgba(11, 14, 18, .6);
                         }
                     }
                 }
+                .padding {
+                    padding: 0 200px 0 0;
+                }
                 .box {
                     .card {
                         user-select: none;
@@ -277,12 +280,116 @@ $drawer-bg-color: rgba(11, 14, 18, .6);
 }
 
 .drawer {
-    color: #fff;
-    background-color: #fff;
+    // color: #fff;
+    background-color: #02060C;
     position: absolute;
     width: $collapse-Width;
     right: 0;
     top: 0;
     bottom: 0;
     z-index: 999;
+    .close {
+        height: 50px;
+        color: #fff;
+        text-align: right;
+        i {
+            font-size: 20px;
+            line-height: 50px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+    }
+    .logo {
+        height: 200px;
+        width: $collapse-Width;
+        color: #fff;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        i {
+            font-size: 40px;
+            cursor: pointer;
+            &:active {
+                color: rgb(175, 179, 184);
+            }
+        }
+        p {
+            margin: 0;
+        }
+        .ch {}
+        .en {
+            color: #48525E;
+            font-size: 12px;
+        }
+    }
+    .picker {
+        height: 270px;
+    }
+    .ant-calendar-picker {
+        visibility: hidden;
+    }
+    .info {
+        padding: 42px 0 0 82px;
+        p {
+            color: #7E8791
+        }
+        .time-box {
+            color: #CBD2DA;
+            width: 210px;
+            height: 30px;
+            background-color: rgba(72, 72, 72, .4);
+            text-align: center;
+            line-height: 30px;
+        }
+        .word {
+            color: #7E8791;
+            margin: 4px 0;
+        }
+    }
+}
+
+.ant-calendar-picker-container {
+    .ant-calendar {
+        margin-left: 82px;
+        background-color: #414549;
+        color: #4C7CFF;
+        border: none;
+        .ant-calendar-input-wrap {
+            display: none;
+        }
+        .ant-calendar-header {
+            a {
+                color: #fff;
+            }
+        }
+        .ant-calendar-body {
+            .ant-calendar-cell {
+                .ant-calendar-date {
+                    color: #fff;
+                }
+            }
+            .ant-calendar-in-range-cell {
+                // background-color: red;
+                .ant-calendar-date {
+                    color: #fff;
+                }
+                &::before {
+                    background-color: #6C727C;
+                }
+            }
+            .ant-calendar-selected-day .ant-calendar-date {
+                background: linear-gradient(to left, #5565FB, #5599FB);
+            }
+            .ant-calendar-last-month-cell,
+            .ant-calendar-last-day-of-month,
+            .ant-calendar-next-month-btn-day {
+                .ant-calendar-date {
+                    color: #313437;
+                }
+            }
+        }
+    }
 }
