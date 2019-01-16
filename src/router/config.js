@@ -6,6 +6,8 @@ import CreateActive from '../pages/creatActive'
 import AddPerson from '../pages/addPerson'
 import SearchIndex from './../pages/searchIndex'
 import Search from './../pages/search'
+import PersonInfo from './../pages/personInfo'
+import ActiveInfo from './../pages/activeInfo'
 import NotFind from '../pages/404'
 
 
@@ -40,6 +42,14 @@ const routerConfig = [
     }, {
         path: '/search/page',
         component: Search,
+        auth: true,
+    }, {
+        path: '/search/person-info',
+        component: PersonInfo,
+        auth: true,
+    }, {
+        path: '/search/active-info',
+        component: ActiveInfo,
         auth: true,
     }, {
         path: '/404',

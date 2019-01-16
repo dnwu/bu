@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './index.scss'
 import api from './../../server'
-import { Input, Button, Select, Icon, Drawer, DatePicker } from 'antd'
+import { Input, Button, Select, Icon, DatePicker } from 'antd'
 import Head from './../../component/Head'
 import IScroll from './../../component/IScroll'
 import defaultImg from './../../static/default.png'
@@ -166,9 +166,12 @@ class index extends Component {
             date: moment(date).format("YYYY-MM-DD")
         })
     }
-    select = (id) => {
+    selectPerson = (id) => {
         console.log(id);
-        // this.setState({ selectId: id })
+        this.props.history.push('/search/person-info')
+    }
+    selectActive = (id) => {
+        console.log(id);
     }
     drawerClose = () => {
         this.setState({
@@ -201,7 +204,7 @@ class index extends Component {
     render() {
         const acitveCard = (
             this.state.activesList.map((v, i) => (
-                <div onClick={this.select.bind(this, v.id)} className="card" key={i}>
+                <div onClick={this.selectActive.bind(this, v.id)} className="card" key={i}>
                     <img src={defaultActiveImg} alt="" />
                     <div className="info">
                         <div className="name">
@@ -229,7 +232,7 @@ class index extends Component {
         )
         const personCard = (
             this.state.personsList.map((v, i) => (
-                <div onClick={this.select.bind(this, v.id)} className="card" key={i}>
+                <div onClick={this.selectPerson.bind(this, v.id)} className="card" key={i}>
                     <img src={defaultImg} alt="" />
                     <div className="info">
                         <div className="name">
@@ -259,9 +262,9 @@ class index extends Component {
                     </div>
                     <div className="info">
                         <p>筛选日期</p>
-                        <div className="time-box">{moment(this.state.startTIme*1000).format("YYYY-MM-DD")}</div>
+                        <div className="time-box">{moment(this.state.startTIme * 1000).format("YYYY-MM-DD")}</div>
                         <div className="word">至</div>
-                        <div className="time-box">{moment(this.state.endTIme*1000).format("YYYY-MM-DD")}</div>
+                        <div className="time-box">{moment(this.state.endTIme * 1000).format("YYYY-MM-DD")}</div>
                     </div>
 
                 </div> : null
@@ -308,28 +311,25 @@ class index extends Component {
                     </div>
                     <div className="bottom">
                         <div className="b-left">
-                            {
-                                this.state.drawerVisible ? null :
-                                    <div className="box person-list">
-                                        <IScroll
-                                            scrollEnd={this.personScrollEnd}
-                                            >
-                                            {personCard}
-                                            {this.state.personIsHas ?
-                                                <div className="loading">
-                                                    正在加载下一页数据...<Icon type="loading"></Icon>
-                                                </div> :
-                                                <div className="loading">
-                                                    已经没有数据了
+                            <div style={this.state.drawerVisible ? { display: "none" } : null} className="box person-list">
+                                <IScroll
+                                    scrollEnd={this.personScrollEnd}
+                                >
+                                    {personCard}
+                                    {this.state.personIsHas ?
+                                        <div className="loading">
+                                            正在加载下一页数据...<Icon type="loading"></Icon>
+                                        </div> :
+                                        <div className="loading">
+                                            已经没有数据了
                                             </div>
-                                            }
-                                        </IScroll>
-                                    </div>
-                            }
+                                    }
+                                </IScroll>
+                            </div>
                             <div className={this.state.drawerVisible ? "box padding active-list" : "box active-list"}>
                                 <IScroll
                                     scrollEnd={this.activeScrollEnd}
-                                    >
+                                >
                                     {acitveCard}
                                     {this.state.activeIsHas ?
                                         <div className="loading">
