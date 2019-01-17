@@ -1,3 +1,42 @@
 .v-bar {
-    
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .v-val-box {
+        flex: 1;
+        display: flex;
+        justify-content: space-around;
+        .box {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            width: 40px;
+            height: 100%;
+            .progress {
+                height: 20%;
+                width: 24px;
+                background: linear-gradient(#5565FB, #5599FB);
+                border-radius: 4px;
+            }
+            span {
+                color: #fff;
+                font-size: 12px;
+
+            }
+        }
+    }
+    .v-key-box {
+        height: 20px;
+        color: #626F86;
+        display: flex;
+        justify-content: space-around;
+        margin-top: 4px;
+        >div {
+            width: 40px;
+            font-size: 12px;
+            text-align: center;
+        }
+    }
 }

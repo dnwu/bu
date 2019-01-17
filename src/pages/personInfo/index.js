@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Icon } from "antd"
 import './index.scss'
 import Head from './../../component/Head'
+import VBar from './../../component/VBar'
 import VipImg from './../../static/VIP.png'
 import tagImg from './../../static/tag.svg'
 import defaultImg from './../../static/default.png'
@@ -67,7 +68,9 @@ class index extends Component {
                         <div className="left">
                             <div className="title">活动频次<img src={pointImg} alt="" /></div>
                             <div className="statistics-box">
-
+                                <VBar
+                                    xAxis={['10.10', '10.10', '上周', '本周']}
+                                    yAxis={[4, 34, 44, 66]}></VBar>
                             </div>
                         </div>
                         <div className="right">

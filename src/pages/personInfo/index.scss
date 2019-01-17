@@ -64,7 +64,8 @@ $padding-lr: 100px;
                 }
             }
         }
-        .info-card,.statistics-card {
+        .info-card,
+        .statistics-card {
             margin: 10px $padding-lr;
             min-height: 230px;
             background-color: rgba(32, 32, 32, .5);
@@ -89,10 +90,10 @@ $padding-lr: 100px;
                         }
                     }
                 }
-                .mark{
+                .mark {
                     color: #A9ADC1;
                     min-height: 100px;
-                    display:table;
+                    display: table;
                     margin-right: 30px;
                     span {
                         display: table-cell;
@@ -125,7 +126,7 @@ $padding-lr: 100px;
                 flex: 1;
                 display: flex;
                 flex-direction: column;
-                .title{
+                .title {
                     margin: 10px 0 0 30px;
                     color: #626F86;
                     img {
