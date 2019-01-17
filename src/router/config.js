@@ -8,6 +8,7 @@ import SearchIndex from './../pages/searchIndex'
 import Search from './../pages/search'
 import PersonInfo from './../pages/personInfo'
 import ActiveInfo from './../pages/activeInfo'
+import Statistics from './../pages/statistics'
 import NotFind from '../pages/404'
 
 
@@ -50,6 +51,10 @@ const routerConfig = [
     }, {
         path: '/search/active-info',
         component: ActiveInfo,
+        auth: true,
+    }, {
+        path: '/statistics',
+        component: Statistics,
         auth: true,
     }, {
         path: '/404',
