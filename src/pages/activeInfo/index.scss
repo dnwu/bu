@@ -131,16 +131,14 @@ $padding-lr: 100px;
                     background-color: rgba(32, 32, 32, .5);
                     display: flex;
                     padding: 20px;
-
                     .time-card-left,
                     .time-card-right {
                         flex: 1;
                         text-align: center;
-                        
                         .reserve-time {
                             color: #7B7F8F;
                         }
-                        .real{
+                        .real {
                             color: #C9CFE5;
                         }
                     }
@@ -151,7 +149,7 @@ $padding-lr: 100px;
                             height: 20px;
                             width: 100px;
                         }
-                        .line{
+                        .line {
                             border-top: 1px solid #19C1AA;
                             margin-top: 20px;
                         }
@@ -176,6 +174,88 @@ $padding-lr: 100px;
         }
         .statistics-card {
             display: flex;
+            >div {
+                flex: 1;
+                padding: 20px;
+                .title {
+                    color: #626F86;
+                    img {
+                        width: 40px;
+                        margin-left: 10px;
+                    }
+                }
+            }
+            .left {
+                display: flex;
+                flex-direction: column;
+                .box {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-end;
+                    .box-desc {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                        margin-bottom: 10px;
+                        .box-desc-left {
+                            .key {
+                                color: #626F86;
+                                font-size: 12px;
+                            }
+                            .val {
+                                color: #AFBDD1;
+                            }
+                        }
+                        .box-desc-right {
+                            color: #626F86;
+                        }
+                    }
+                }
+            }
+            .mid {
+                min-width: 442px;
+                display: flex;
+                flex-direction: column;
+                .box {
+                    flex: 1;
+                    display: flex;
+                    align-items: flex-end;
+                    .box-item {
+                        margin: 0 10px;
+                        .type {
+                            text-align: center;
+                            color: #797A98;
+                        }
+                    }
+                }
+            }
+            .right {
+                display: flex;
+                flex-direction: column;
+                .box {
+                    flex: 1;
+                    display: flex;
+                    .progress {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                    }
+                    .num {
+                        width: 90px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                        .key {
+                            font-size: 50px;
+                            color: #AFBDD1;
+                        }
+                        .val {
+                            color: #626F86;
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -142,6 +142,8 @@ class index extends Component {
         }, async () => {
             await this.getActives(key, city, 1)
             await this.getPersons(key, 1)
+            this.refs.personScroll.resetDOM()
+            this.refs.activeScroll.resetDOM()
         })
     }
     personScrollEnd = async () => {
@@ -172,6 +174,7 @@ class index extends Component {
     }
     selectActive = (id) => {
         console.log(id);
+        this.props.history.push('/search/active-info')
     }
     drawerClose = () => {
         this.setState({
@@ -307,13 +310,14 @@ class index extends Component {
                                 <p>{this.state.acitiveTotal}</p>
                             </div>
                         </div>
-                        <div className="m-right"></div>
+                        <div style={this.state.drawerVisible ? null : { display: "none" }} className="m-right"></div>
                     </div>
                     <div className="bottom">
                         <div className="b-left">
                             <div style={this.state.drawerVisible ? { display: "none" } : null} className="box person-list">
                                 <IScroll
                                     scrollEnd={this.personScrollEnd}
+                                    ref="personScroll"
                                 >
                                     {personCard}
                                     {this.state.personIsHas ?
@@ -329,6 +333,7 @@ class index extends Component {
                             <div className={this.state.drawerVisible ? "box padding active-list" : "box active-list"}>
                                 <IScroll
                                     scrollEnd={this.activeScrollEnd}
+                                    ref="activeScroll"
                                 >
                                     {acitveCard}
                                     {this.state.activeIsHas ?
@@ -342,7 +347,7 @@ class index extends Component {
                                 </IScroll>
                             </div>
                         </div>
-                        <div className="b-right"></div>
+                        <div style={this.state.drawerVisible ? null : { display: "none" }} className="b-right"></div>
                     </div>
 
                 </div>
