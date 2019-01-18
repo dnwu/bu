@@ -58,12 +58,12 @@ class index extends Component {
                 type: 'line',
                 smooth: true,
                 areaStyle: {
-                    color: "#975FE4",
+                    color: "rgba(151, 95, 228,.8)",
                     shadowBlur: 2,
                     opacity: 0.4
                 },
                 lineStyle: {
-                    color: "#975FE4"
+                    color: "rgba(151, 95, 228,.4)"
                 }
             }]
         };
