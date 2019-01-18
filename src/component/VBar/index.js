@@ -9,15 +9,16 @@ class index extends Component {
         }
     }
     componentDidMount() {
-        let max = Math.max(...this.props.yAxis)
-        let newYAxis = this.props.yAxis.map((v, i) => {
+        let yAxis = this.props.yAxis || []
+        let max = Math.max(...yAxis)
+        let newYAxis = yAxis.map((v, i) => {
             return {
                 value: v,
                 percent: (v / max * 100).toFixed(2) + "%"
             }
         })
         this.setState({
-            xAxis: this.props.xAxis,
+            xAxis: this.props.xAxis || [],
             yAxis: newYAxis,
         })
     }
@@ -27,7 +28,7 @@ class index extends Component {
                 <div className="v-val-box">
                     {
                         this.state.yAxis.map((v, i) =>
-                            <div key={i} className="box">
+                            <div key={i} className="v-bar-val-box">
                                 <span>{v.value}</span>
                                 <div style={{ height: v.percent }} className="progress"></div>
                             </div>

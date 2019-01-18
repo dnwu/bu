@@ -11,16 +11,17 @@ class index extends Component {
         }
     }
     componentDidMount() {
-        let max = Math.max(...this.props.yAxis)
-        let newYAxis = this.props.yAxis.map(v => {
+        let yAxis = this.props.yAxis || []
+        let max = Math.max(...yAxis)
+        let newYAxis = yAxis.map(v => {
             return {
                 value: v,
                 percent: (v / max * 100).toFixed(2) + "%"
             }
         })
-        console.log(newYAxis);
+        // console.log(newYAxis);
         this.setState({
-            xAxis: this.props.xAxis,
+            xAxis: this.props.xAxis || [],
             yAxis: newYAxis
         })
     }
