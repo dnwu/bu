@@ -323,6 +323,17 @@ class index extends Component {
             message.success('活动编辑成功')
         }
     }
+    deleteCity = async (e, id) => {
+        console.log(e, id);
+        e.stopPropagation();
+
+    }
+    deleteDetail = async (id, e) => {
+
+    }
+    selectCity = () => {
+        console.log('dafadsfad');
+    }
     addTagCancel = () => {
         this.setState({
             addTagModalVisible: false,
@@ -531,9 +542,9 @@ class index extends Component {
                             <IScroll>
                                 {
                                     this.state.cityList.map((v, i) =>
-                                        <div key={v.id} className="item"><span>{v.name}</span><span className="icon"><Icon type="close" /></span></div>
-                                    )
-                                }
+                                        <div onClick={this.selectCity} key={v.id} className="item"><span>{v.name}</span><span onClick={(e) => {this.deleteCity(e, v.id)}} className="icon"><Icon type="close" /></span></div>
+                            )
+                        }
                             </IScroll>
                         </div>
                     </div>
@@ -547,7 +558,7 @@ class index extends Component {
                             <IScroll>
                                 {
                                     this.state.detailList.map((v, i) =>
-                                        <div key={v.id} className="item"><span>{v.name}</span><span className="icon"><Icon type="close" /></span></div>
+                                        <div key={v.id} className="item"><span>{v.name}</span><span onClick={this.deleteDetail} className="icon"><Icon type="close" /></span></div>
                                     )
                                 }
                             </IScroll>
