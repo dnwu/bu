@@ -16,7 +16,7 @@
         position: relative;
         overflow: hidden;
         .bar {
-            height: 100px;
+            // height: 100px;
             width: 4px;
             background-color: #A5A5A5; // margin-left: 16px;
             border-radius: 2px;
@@ -27,7 +27,7 @@
             visibility: hidden;
         }
     }
-    .list {
+    .component-list {
         flex: 1;
         display: flex;
         flex-direction: column;

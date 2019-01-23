@@ -160,7 +160,7 @@ class index extends Component {
                 <div style={style} ref="barBox" className="sroll-bar">
                     <div ref="bar" className="bar"></div>
                 </div>
-                <div ref="list" className="list">
+                <div ref="list" className="component-list">
                     <div ref="scrollBox" className="scroll-box">
                         {this.props.children}
                     </div>

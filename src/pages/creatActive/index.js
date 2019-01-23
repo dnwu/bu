@@ -3,6 +3,7 @@ import './index.scss'
 import { DatePicker, Input, Icon, Select, Upload, Button, Slider, message, Modal } from 'antd'
 import api from './../../server'
 import Head from './../../component/Head'
+import IScroll from './../../component/IScroll'
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -14,8 +15,11 @@ class index extends Component {
         title: "创建活动",
         loading: false,
         date: moment().format("YYYY-MM-DD"),
+        transDate: moment().format("YYYY-MM-DD"),
         startTime: "10:00",
         endTime: "18:00",
+        transStartTime: "",
+        transEndTIme: "",
         tags: [],
         tagsLimit: 3,
         cityList: [],
@@ -25,7 +29,11 @@ class index extends Component {
         addTagModalVisible: false,
         addCityModalVisible: false,
         addDtetailModalVisible: false,
-        deleteModalVisible: false
+        deleteModalVisible: false,
+        dateModalVisible: false,
+        timeModalVisible: false,
+        positionModalVisible: false,
+        clientType: ["政府", "金融机构", "物业", "投资人", "国企", "地产", "学校", "协会"],
     };
     componentDidMount() {
         let activeInfo = this.props.location.params && this.props.location.params.activeInfo
@@ -138,14 +146,27 @@ class index extends Component {
         let start = float1 === 0.5 ? `${int1}:30` : `${int1}:00`
         let end = float2 === 0.5 ? `${int2}:30` : `${int2}:00`
         this.setState({
-            startTime: start,
-            endTime: end
+            transStartTime: start,
+            transEndTIme: end
         })
 
     }
+    selectTime = () => {
+        this.setState({
+            startTime: this.state.transStartTime,
+            endTime: this.state.transEndTIme,
+            timeModalVisible: false
+        })
+    }
     dateChange = (date) => {
         this.setState({
-            date: moment(date).format("YYYY-MM-DD")
+            transDate: moment(date).format("YYYY-MM-DD")
+        })
+    }
+    selectDate = () => {
+        this.setState({
+            date: this.state.transDate,
+            dateModalVisible: false
         })
     }
     showTagModal = () => {
@@ -172,6 +193,15 @@ class index extends Component {
         this.setState({
             deleteModalVisible: true
         })
+    }
+    showSelectDateModel = () => {
+        this.setState({ dateModalVisible: true })
+    }
+    showSelectTimeModal = () => {
+        this.setState({ timeModalVisible: true })
+    }
+    showPositionModal = () => {
+        this.setState({ positionModalVisible: true })
     }
     addTagOk = () => {
         let { tags } = this.state
@@ -211,14 +241,14 @@ class index extends Component {
             message.warning('地址已存在')
         }
     }
-    upload =async () => {
+    upload = async () => {
         let file = this.state.file
-        if(file) {
-            let {data} = await api.uploadImg(file)
-            if(data.code === 0) {
+        if (file) {
+            let { data } = await api.uploadImg(file)
+            if (data.code === 0) {
                 return data.data.url
             }
-        }else {
+        } else {
             return ""
         }
     }
@@ -298,7 +328,10 @@ class index extends Component {
             addTagModalVisible: false,
             addCityModalVisible: false,
             addDtetailModalVisible: false,
-            deleteModalVisible: false
+            deleteModalVisible: false,
+            dateModalVisible: false,
+            timeModalVisible: false,
+            positionModalVisible: false
         });
     }
     tipFormatter = (v) => {
@@ -306,6 +339,20 @@ class index extends Component {
         int = int < 10 ? `0${int}` : int
         let float = v % 1
         return float === 0.5 ? `${int}:30` : `${int}:00`
+    }
+    triggerClientTypeFocus = () => {
+        this.refs.clientTypeDOM.focus()
+    }
+    clientTypeBlur = () => {
+        setTimeout(() => {
+            this.refs.clientTypeListDOM.style.display = "none"
+        }, 300)
+    }
+    clientTypeFocus = () => {
+        this.refs.clientTypeListDOM.style.display = "inline-block"
+    }
+    selectClientType = (item) => {
+        this.refs.clientTypeDOM.input.value = item
     }
     render() {
         const imageUrl = this.state.imageUrl;
@@ -396,7 +443,6 @@ class index extends Component {
                 footer={false}
                 zIndex={1050}
                 onOk={this.handleOk}
-                onCancel={this.handleCancel}
             >
                 <div className="body-icon">
                     <p className="icon"><Icon type="question-circle" /></p>
@@ -408,12 +454,121 @@ class index extends Component {
                 </div>
             </Modal>
         )
+        const DateModal = (
+            <Modal
+                className='date-modal'
+                visible={this.state.dateModalVisible}
+                footer={false}
+                zIndex={1050}
+                onOk={this.handleOk}
+                destroyOnClose={true}
+            >
+                <div className="date-modal-body">
+                    <p>活动日期选择</p>
+                    <DatePicker value={moment(this.state.transDate)} open locale={locale} onChange={this.dateChange} />
+                </div>
+                <div className="btn">
+                    <Button onClick={this.addTagCancel} className="cancel">取消</Button>
+                    <Button onClick={this.selectDate} className="sure">确认</Button>
+                </div>
+            </Modal>
+        )
+        const timeModal = (
+            <Modal
+                className='time-modal'
+                visible={this.state.timeModalVisible}
+                footer={false}
+                width={1000}
+                zIndex={1050}
+                onOk={this.handleOk}
+                destroyOnClose={true}
+            >
+                <div className="date-modal-body">
+                    <p>活动时段选择</p>
+                    <div className="slider">
+                        <div className="calibration">
+                            {calibrationNum.map((v, i) => (
+                                <div key={i}>
+                                    <div className="num">{v === "-1" ? "" : v}</div>
+                                    <div className={v === "-1" ? "s" : "l"}></div>
+                                </div>
+                            ))}
+                        </div>
+                        <Slider
+                            max={20}
+                            tipFormatter={this.tipFormatter}
+                            min={8}
+                            range
+                            step={0.5}
+                            defaultValue={[10, 18]}
+                            onChange={this.sliderChange} />
+                    </div>
+                </div>
+                <div className="btn">
+                    <Button onClick={this.addTagCancel} className="cancel">取消</Button>
+                    <Button onClick={this.selectTime} className="sure">确认</Button>
+                </div>
+            </Modal>
+        )
+        const positionModal = (
+            <Modal
+                className='position-modal'
+                visible={this.state.positionModalVisible}
+                footer={false}
+                width={1000}
+                zIndex={1050}
+                onOk={this.handleOk}
+                destroyOnClose={true}
+            >
+                <div className="position-modal-body">
+                    <div className="city">
+                        <p>城市</p>
+                        <div className="add-box">
+                            <Input></Input>
+                            <Button>添加</Button>
+                        </div>
+                        <div className="list">
+                            <IScroll>
+                                {
+                                    this.state.cityList.map((v, i) =>
+                                        <div key={v.id} className="item"><span>{v.name}</span><span className="icon"><Icon type="close" /></span></div>
+                                    )
+                                }
+                            </IScroll>
+                        </div>
+                    </div>
+                    <div className="detail">
+                        <p>地址</p>
+                        <div className="add-box">
+                            <Input></Input>
+                            <Button>添加</Button>
+                        </div>
+                        <div className="list">
+                            <IScroll>
+                                {
+                                    this.state.detailList.map((v, i) =>
+                                        <div key={v.id} className="item"><span>{v.name}</span><span className="icon"><Icon type="close" /></span></div>
+                                    )
+                                }
+                            </IScroll>
+                        </div>
+                    </div>
+                </div>
+                <div className="btn">
+                    <Button onClick={this.addTagCancel} className="cancel">取消</Button>
+                    <Button onClick={this.selectTime} className="sure">确认</Button>
+                </div>
+            </Modal>
+        )
         return (
             <div className="create-active">
                 {addTagModal}
                 {addCityModal}
                 {addDetailModal}
                 {deleteModal}
+                {DateModal}
+                {timeModal}
+                {positionModal}
                 <Head></Head>
                 <div className="create-body">
                     <div className="info-box">
@@ -433,7 +588,7 @@ class index extends Component {
                                 <span onClick={this.showTagModal} className="addBtn"><Icon type="plus" /></span>
                             </div>
                         </div>
-                        <div className="box city">
+                        {/* <div className="box city">
                             <div className="key">活动城市<span>*必填</span></div>
                             <div className="value">
                                 <Select
@@ -482,6 +637,42 @@ class index extends Component {
                                 <span className="line">-</span>
                                 <span className="t">{this.state.endTime}</span>
                             </div>
+                        </div> */}
+                        <div className="box reserve-people">
+                            <div className="key">预约人员<span>*必填</span></div>
+                            <div className="value">
+                                <Input ref="peopleDOM"></Input>
+                            </div>
+                        </div>
+                        <div className="box reserve-department">
+                            <div className="key">预约部门<span>*必填</span></div>
+                            <div className="value">
+                                <Input ref="departmentDOM"></Input>
+                            </div>
+                        </div>
+                        <div className="box client-name">
+                            <div className="key">客户名称<span>*必填</span></div>
+                            <div className="value">
+                                <Input ref="clientNameDOM"></Input>
+                            </div>
+                        </div>
+                        <div className="box client-type">
+                            <div className="key">客户类型<span>*必填</span></div>
+                            <div className="value">
+                                <Input
+                                    onBlur={this.clientTypeBlur}
+                                    onFocus={this.clientTypeFocus}
+                                    ref="clientTypeDOM"
+                                    suffix={<Icon onClick={this.triggerClientTypeFocus} className="client-type-icon" type="down" />}
+                                ></Input>
+                                <ul ref="clientTypeListDOM">
+                                    {
+                                        this.state.clientType.map((v, i) =>
+                                            <li onClick={this.selectClientType.bind(this, v)} key={i}>{v}</li>
+                                        )
+                                    }
+                                </ul>
+                            </div>
                         </div>
                         <div className="box mark">
                             <div className="key">
@@ -492,41 +683,51 @@ class index extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="select-box">
-                        <div className="date-img-box">
-                            <div className="date">
-                                <p>活动日期选择</p>
-                                <DatePicker value={moment(this.state.date)} open locale={locale} onChange={this.dateChange} />
-                            </div>
-                            <div className="img">
-                                <p>活动照片</p>
-                                <div className="clearfix">
-                                    <Upload
-                                        name="avatar"
-                                        listType="picture-card"
-                                        className="avatar-uploader"
-                                        showUploadList={false}
-                                        action=""
-                                        // beforeUpload={this.beforeUpload}
-                                        onChange={this.handleChange}
-                                    >
-                                        {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
-                                    </Upload>
-                                </div>
+                    <div className="info-box item2">
+                        <div className="box positon">
+                            <div className="key">活动详址<span>*必填</span></div>
+                            <div className="value">未选择</div>
+                            <div className="select-btn">
+                                <Button onClick={this.showPositionModal}>选择地址</Button>
                             </div>
                         </div>
-                        <div className="slider">
-                            <div className="calibration">
-                                {calibrationNum.map((v, i) => (
-                                    <div key={i}>
-                                        <div className="num">{v === "-1" ? "" : v}</div>
-                                        <div className={v === "-1" ? "s" : "l"}></div>
-                                    </div>
-                                ))}
+                        <div className="box date">
+                            <div className="key">活动日期<span>*必填</span></div>
+                            <div className="value">{this.state.date ? this.state.date : "未选择"}</div>
+                            <div className="select-btn">
+                                <Button onClick={this.showSelectDateModel}>选择日期</Button>
                             </div>
-                            <Slider max={20} tipFormatter={this.tipFormatter} min={8} range step={0.5} defaultValue={[10, 18]} onChange={this.sliderChange} />
                         </div>
-                        <div className="btn">
+                        <div className="box time">
+                            <div className="key">活动时段<span>*必填</span></div>
+                            <div className="value">
+                                <div className="start">{this.state.startTime ? this.state.startTime : "未选择"}</div>
+                                <div className="line">-</div>
+                                <div className="end">{this.state.endTime ? this.state.endTime : "未选择"}</div>
+                            </div>
+                            <div className="select-btn">
+                                <Button onClick={this.showSelectTimeModal}>选择时段</Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="info-box item3">
+                        <div className="box img">
+                            <div className="key">活动照片</div>
+                            <div className="value">
+                                <Upload
+                                    name="avatar"
+                                    listType="picture-card"
+                                    className="avatar-uploader"
+                                    showUploadList={false}
+                                    action=""
+                                    // beforeUpload={this.beforeUpload}
+                                    onChange={this.handleChange}
+                                >
+                                    {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
+                                </Upload>
+                            </div>
+                        </div>
+                        <div className="box btn">
                             {
                                 this.state.activeInfo ?
                                     (<>
