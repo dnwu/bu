@@ -93,7 +93,7 @@ class api {
 
     /**
      * 创建活动
-     * @param {name, reserveStartTime, reserveFinishTime, city_id, picture, location_id, tags, remarks} options 
+     * @param {name, reserveStartTime, reserveFinishTime, city_id, picture, location_id, tags, remarks,user,userDepartment,personClass,personName} options 
      */
     createActive(options) {
         return axios.post('/admin/activity', options)

@@ -31,8 +31,6 @@ class index extends Component {
         transSelectDetailName: "",
         detailList: [],
         addTagModalVisible: false,
-        addCityModalVisible: false,
-        addDtetailModalVisible: false,
         deleteModalVisible: false,
         dateModalVisible: false,
         timeModalVisible: false,
@@ -145,8 +143,8 @@ class index extends Component {
     }
     selectTime = () => {
         this.setState({
-            startTime: this.state.transStartTime,
-            endTime: this.state.transEndTIme,
+            startTime: this.state.transStartTime || "10:00",
+            endTime: this.state.transEndTIme || "18:00",
             timeModalVisible: false
         })
     }
@@ -169,17 +167,6 @@ class index extends Component {
         this.setState({
             addTagModalVisible: true,
         });
-    }
-    showCityModal = () => {
-        this.setState({
-            addCityModalVisible: true
-        })
-    }
-    showDetailModal = () => {
-        console.log('daf');
-        this.setState({
-            addDtetailModalVisible: true
-        })
     }
     showDeleteModal = () => {
         this.setState({
@@ -213,9 +200,6 @@ class index extends Component {
         if (data.code === 0) {
             message.success('城市添加成功')
             this.getCityList()
-            this.setState({
-                addCityModalVisible: false
-            })
         } else if (data.code === 20002) {
             message.warning('城市已存在')
         }
@@ -225,58 +209,78 @@ class index extends Component {
             city_id: this.state.selectCityId,
             name: this.refs.addDetailInput.state.value
         }
-        console.log(options);
         let { data } = await api.addDetail(options)
         if (data.code === 0) {
             message.success('添加成功')
-            this.setState({
-                addDtetailModalVisible: false
-            })
             await this.getDetailList(this.state.selectCityId)
         } else if (data.code === 20002) {
             message.warning('地址已存在')
         }
     }
     upload = async () => {
-        let file = this.state.file
-        if (file) {
-            let { data } = await api.uploadImg(file)
-            if (data.code === 0) {
-                return data.data.url
+        return new Promise(async (resolve, reject) => {
+            let file = this.state.file
+            if (file) {
+                let { data } = await api.uploadImg(file)
+                console.log('data',data);
+                if (data.code === 0) {
+                    // return data.data.url
+                    resolve(data.data.fileName)
+                }
+            } else {
+                resolve("")
             }
-        } else {
-            return ""
-        }
+        })
     }
     createActive = async () => {
-        let url = await this.upload()
+        let fileName = await this.upload()
         let nameDOM = this.refs.nameDOM
         let textAreaDOM = this.refs.textarea
+        let peopleDOM = this.refs.peopleDOM
+        let departmentDOM = this.refs.departmentDOM
+        let clientNameDOM = this.refs.clientNameDOM
+        let clientTypeDOM = this.refs.clientTypeDOM
         let options = {
-            name: nameDOM.state.value,
+            name: nameDOM.input.value,
             reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
             reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
-            picture: url,
             city_id: this.state.selectCityId,
             location_id: this.state.selectDetailId,
+            picture: fileName,
+            remarks: textAreaDOM.textAreaRef.value,
             tags: this.state.tags,
-            remarks: textAreaDOM.textAreaRef.value
+            user: peopleDOM.input.value,
+            userDepartment: departmentDOM.input.value,
+            personClass: clientNameDOM.input.value,
+            personName: clientTypeDOM.input.value
         }
         if (!options.name) {
             message.warning('活动名称不能为空')
             return
         }
-        if (!options.location_id) {
-            message.warning('活动详址不能为空')
+        if (options.tags.length === 0) {
+            message.warning('活动标签不能为空')
+            return
+        }
+        if (!options.city_id) {
+            message.warning('请选择活动地址')
+            return
+        }
+        if (!this.state.date) {
+            message.warning('请选择活动日期')
+            return
+        }
+        if (!this.state.startTime) {
+            message.warning('请选择活动时段')
             return
         }
         let { data } = await api.createActive(options)
         if (data.code === 0) {
             message.success('活动创建成功')
-            nameDOM.state.value = ""
-            this.setState({
-                tags: []
-            })
+            // nameDOM.state.value = ""
+            // this.setState({
+            //     tags: []
+            // })
         }
     }
     delete = async () => {
@@ -321,8 +325,8 @@ class index extends Component {
     }
     deleteCity = async (e, id) => {
         e.stopPropagation();
-        let {data} =await api.deleteCity(id)
-        if(data.code === 0) {
+        let { data } = await api.deleteCity(id)
+        if (data.code === 0) {
             message.success("删除成功")
             this.getCityList()
         }
@@ -330,8 +334,8 @@ class index extends Component {
     }
     deleteDetail = async (e, id) => {
         e.stopPropagation();
-        let {data} =await api.deleteDetail(id)
-        if(data.code === 0) {
+        let { data } = await api.deleteDetail(id)
+        if (data.code === 0) {
             message.success("删除成功")
             this.getDetailList(this.state.selectCityId)
         }
@@ -364,8 +368,6 @@ class index extends Component {
     addTagCancel = () => {
         this.setState({
             addTagModalVisible: false,
-            addCityModalVisible: false,
-            addDtetailModalVisible: false,
             deleteModalVisible: false,
             dateModalVisible: false,
             timeModalVisible: false,
@@ -560,7 +562,7 @@ class index extends Component {
                             </div>
                         </div>
                         <div className="box tags">
-                            <div className="key">活动标签</div>
+                            <div className="key">活动标签<span>*必填</span></div>
                             <div className="value">
                                 {this.state.tags.map((v, i) => (
                                     <span key={i} className="tag">{v}</span>
@@ -569,25 +571,25 @@ class index extends Component {
                             </div>
                         </div>
                         <div className="box reserve-people">
-                            <div className="key">预约人员<span>*必填</span></div>
+                            <div className="key">预约人员</div>
                             <div className="value">
                                 <Input ref="peopleDOM"></Input>
                             </div>
                         </div>
                         <div className="box reserve-department">
-                            <div className="key">预约部门<span>*必填</span></div>
+                            <div className="key">预约部门</div>
                             <div className="value">
                                 <Input ref="departmentDOM"></Input>
                             </div>
                         </div>
                         <div className="box client-name">
-                            <div className="key">客户名称<span>*必填</span></div>
+                            <div className="key">客户名称</div>
                             <div className="value">
                                 <Input ref="clientNameDOM"></Input>
                             </div>
                         </div>
                         <div className="box client-type">
-                            <div className="key">客户类型<span>*必填</span></div>
+                            <div className="key">客户类型</div>
                             <div className="value">
                                 <Input
                                     onBlur={this.clientTypeBlur}
