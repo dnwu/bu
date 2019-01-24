@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './index.scss'
 import api from './../../server'
 import { Input, Select, Button, Upload, Icon, message, Radio, Checkbox, Modal } from 'antd'
+import IScroll from './../../component/IScroll'
 import Head from './../../component/Head'
 import vipImg from './../../static/VIP.png'
 import normImg from './../../static/norm.png'
@@ -17,7 +18,10 @@ class index extends Component {
         gender: "",
         type: 2,
         isSecrecy: false,
-        addTagModalVisible: false
+        coverType: 1,
+        addTagModalVisible: false,
+        coverCheckModalVisible: false,
+        personDeleteModalVisible: false,
     }
     componentDidMount() {
         let cardInfo = this.props.location.params && this.props.location.params.cardInfo
@@ -43,7 +47,6 @@ class index extends Component {
             type: cardInfo.type,
             isSecrecy: cardInfo.isSecrecy === 1 ? false : true,
             isModify: true,
-            personDeleteModalVisible: false,
             tags: cardInfo.tags,
             imageUrl: cardInfo.picture,
             cardInfo,
@@ -66,18 +69,6 @@ class index extends Component {
         return isJPG && isLt2M;
     }
     handleChange = (info) => {
-        // if (info.file.status === 'uploading') {
-        //     this.setState({ loading: true });
-        //     return;
-        // }
-
-        // if (info.file.status === 'done') {
-        //     // Get this url from response in real world.
-        //     this.getBase64(info.file.originFileObj, imageUrl => this.setState({
-        //         imageUrl,
-        //         loading: false,
-        //     }));
-        // }
         this.getBase64(info.file.originFileObj, imageUrl => this.setState({
             imageUrl,
             loading: false,
@@ -88,7 +79,7 @@ class index extends Component {
         let file = this.state.file
         if (file) {
             let { data } = await api.uploadImg(file)
-            
+
             if (data.code === 0) {
                 return data.data.url
             }
@@ -97,7 +88,6 @@ class index extends Component {
         }
     }
     typeChange = (type) => {
-        console.log(type);
         this.setState({ type: type.target.value })
     }
     secrecyChange = (isSecrecy) => {
@@ -110,13 +100,13 @@ class index extends Component {
     }
     addPerson = async () => {
         let picture = await this.upload()
-        console.log(picture);
         let name = this.refs.nameDOM.state.value
         let title = this.refs.titleDOM.state.value
         let age = parseInt(this.refs.ageDOM.state.value)
         let telephone = this.refs.phoneDOM.state.value
         let type = this.state.type
         let isSecrecy = this.state.isSecrecy === false ? 1 : 2
+        let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
         let tags = this.state.tags
         // name,gender,type, title, Age
@@ -124,11 +114,15 @@ class index extends Component {
             message.warning('姓名,性别, 职位不能为空')
             return
         }
-        let options = { name, type, title, age, telephone, isSecrecy, gender: this.state.gender, picture, remarks, tags }
+        let options = { name, type, title, age, telephone, isSecrecy, gender, picture, remarks, tags }
         let { data } = await api.addPerson(options)
         if (data.code === 0) {
             message.success("添加成功")
             this.props.history.push('/manage')
+        } else if (data.code === 20106) {
+            this.setState({
+                coverCheckModalVisible: true
+            })
         } else {
             message.error(data.message)
         }
@@ -185,6 +179,10 @@ class index extends Component {
         if (data.code === 0) {
             message.success("人员信息修改成功")
             this.props.history.push('/manage')
+        } else if (data.code === 20106) {
+            this.setState({
+                coverCheckModalVisible: true
+            })
         } else {
             message.error(data.message)
         }
@@ -198,6 +196,16 @@ class index extends Component {
         } else {
             message.error(data.message)
         }
+    }
+    handleCancel = () => {
+        this.setState({
+            coverCheckModalVisible: false
+        })
+    }
+    coverTypeChange = (e) => {
+        this.setState({
+            coverType: e.target.value,
+        });
     }
     render() {
         const imageUrl = this.state.imageUrl;
@@ -243,10 +251,48 @@ class index extends Component {
                 </div>
             </Modal>
         )
+        const coverCheckModal = (
+            <Modal
+                className="coverCheckModal"
+                width={600}
+                title=""
+                zIndex={999999}
+                footer={null}
+                onCancel={this.handleCancel}
+                visible={this.state.coverCheckModalVisible}
+            >
+                <div className="left">
+                    <div className="title">
+                        <span>覆盖已有人员</span>
+                        <span>检测到库中有相似人脸</span>
+                    </div>
+                    <div className="list">
+                        <IScroll>
+                            
+                        </IScroll>
+                    </div>
+                    <div className="btn">
+                        <Button>新建人员</Button>
+                    </div>
+                </div>
+                <div className="right">
+                    <div className="select">
+                        <RadioGroup onChange={this.coverTypeChange} value={this.state.coverType}>
+                            <Radio value={1}>只覆盖人员照片</Radio>
+                            <Radio value={2}>照片与人员信息同时覆盖</Radio>
+                        </RadioGroup>
+                    </div>
+                    <div className="btn">
+                        <Button>覆盖已有人员</Button>
+                    </div>
+                </div>
+            </Modal>
+        )
         return (
             <div className="add-person">
                 {deleteModal}
                 {addTagModal}
+                {coverCheckModal}
                 <Head></Head>
                 <div className="add-person-body">
                     <div className="left">
