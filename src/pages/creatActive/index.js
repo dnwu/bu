@@ -14,17 +14,21 @@ class index extends Component {
     state = {
         title: "创建活动",
         loading: false,
-        date: moment().format("YYYY-MM-DD"),
+        date: "",
         transDate: moment().format("YYYY-MM-DD"),
-        startTime: "10:00",
-        endTime: "18:00",
+        startTime: "",
+        endTime: "",
         transStartTime: "",
         transEndTIme: "",
         tags: [],
         tagsLimit: 3,
         cityList: [],
-        cityId: "",
-        detailId: "",
+        selectCityId: "",
+        selectCityName: "",
+        transSelectCityName: "",
+        selectDetailId: "",
+        selectDetailName: "",
+        transSelectDetailName: "",
         detailList: [],
         addTagModalVisible: false,
         addCityModalVisible: false,
@@ -60,31 +64,19 @@ class index extends Component {
             date: moment(activeInfo.startTime * 1000).format("YYYY-MM-DD"),
             startTime: moment(activeInfo.startTime * 1000).format("HH:mm"),
             endTime: moment(activeInfo.finishTime * 1000).format("HH:mm"),
-            detailId: activeInfo.location_id,
-            cityId: activeInfo.city_id,
+            selectDetailId: activeInfo.location_id,
+            selectCityId: activeInfo.city_id,
             title: "编辑活动",
             imageUrl: activeInfo.picture,
             activeInfo
         })
 
     }
-    cityChange = (id) => {
-        // console.log(this.refs.addDetailSelect);
-        this.setState({ cityId: id })
-        this.getDetailList(id)
-    }
-    detailChange = (id) => {
-        this.setState({ detailId: id })
-    }
     getCityList = async () => {
         let { data: cityList } = await api.getCityList()
         if (cityList.code === 0) {
-            let firstId = cityList.data.cities[0].id
-
-            await this.getDetailList(firstId)
             this.setState({
                 cityList: cityList.data.cities,
-                cityId: firstId
             })
         }
     }
@@ -201,7 +193,11 @@ class index extends Component {
         this.setState({ timeModalVisible: true })
     }
     showPositionModal = () => {
-        this.setState({ positionModalVisible: true })
+        this.setState({
+            positionModalVisible: true,
+            transSelectCityName: "",
+            transSelectDetailName: ""
+        })
     }
     addTagOk = () => {
         let { tags } = this.state
@@ -226,7 +222,7 @@ class index extends Component {
     }
     addDetailOk = async () => {
         let options = {
-            city_id: this.state.cityId,
+            city_id: this.state.selectCityId,
             name: this.refs.addDetailInput.state.value
         }
         console.log(options);
@@ -236,7 +232,7 @@ class index extends Component {
             this.setState({
                 addDtetailModalVisible: false
             })
-            await this.getDetailList(this.state.cityId)
+            await this.getDetailList(this.state.selectCityId)
         } else if (data.code === 20002) {
             message.warning('地址已存在')
         }
@@ -261,8 +257,8 @@ class index extends Component {
             reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
             reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
             picture: url,
-            city_id: this.state.cityId,
-            location_id: this.state.detailId,
+            city_id: this.state.selectCityId,
+            location_id: this.state.selectDetailId,
             tags: this.state.tags,
             remarks: textAreaDOM.textAreaRef.value
         }
@@ -304,8 +300,8 @@ class index extends Component {
             reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
             reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
             picture: url,
-            city_id: this.state.cityId,
-            location_id: this.state.detailId,
+            city_id: this.state.selectCityId,
+            location_id: this.state.selectDetailId,
             tags: this.state.tags,
             remarks: textAreaDOM.textAreaRef.value
         }
@@ -324,15 +320,46 @@ class index extends Component {
         }
     }
     deleteCity = async (e, id) => {
-        console.log(e, id);
         e.stopPropagation();
+        let {data} =await api.deleteCity(id)
+        if(data.code === 0) {
+            message.success("删除成功")
+            this.getCityList()
+        }
 
     }
-    deleteDetail = async (id, e) => {
-
+    deleteDetail = async (e, id) => {
+        e.stopPropagation();
+        let {data} =await api.deleteDetail(id)
+        if(data.code === 0) {
+            message.success("删除成功")
+            this.getDetailList(this.state.selectCityId)
+        }
     }
-    selectCity = () => {
-        console.log('dafadsfad');
+    selectCity = (id, name) => {
+        this.state.transSelectDetailName = ""
+        this.getDetailList(id)
+        this.setState({
+            selectCityId: id,
+            transSelectCityName: name
+        })
+    }
+    selectDetail = (id, name) => {
+        this.setState({
+            selectDetailId: id,
+            transSelectDetailName: name
+        })
+    }
+    selectPosition = () => {
+        if (!this.state.transSelectCityName || !this.state.transSelectDetailName) {
+            message.warning('请选择城市和详细地址')
+            return
+        }
+        this.setState({
+            selectCityName: this.state.transSelectCityName,
+            selectDetailName: this.state.transSelectDetailName,
+            positionModalVisible: false
+        })
     }
     addTagCancel = () => {
         this.setState({
@@ -388,62 +415,6 @@ class index extends Component {
                 <div className="btn">
                     <Button onClick={this.addTagCancel} className="cancel">取消</Button>
                     <Button onClick={this.addTagOk} className="add">确定</Button>
-                </div>
-            </Modal>
-        )
-        const addCityModal = (
-            <Modal
-                className="addCityModal"
-                zIndex={999999}
-                footer={null}
-                closable={false}
-                visible={this.state.addCityModalVisible}
-            >
-                <div>
-                    <Input ref="addCityInput" placeholder="请输入城市名"></Input>
-                </div>
-                <div className="city-body">
-                    {this.state.cityList.map((v, i) => (
-                        <div className="city" key={i}>{v.name}</div>
-                    ))}
-                </div>
-                <div className="btn">
-                    <Button onClick={this.addTagCancel} className="cancel">取消</Button>
-                    <Button onClick={this.addCityOk} className="add">确定</Button>
-                </div>
-            </Modal>
-        )
-        const addDetailModal = (
-            <Modal
-                className="addDetailModal"
-                zIndex={1050}
-                footer={null}
-                closable={false}
-                visible={this.state.addDtetailModalVisible}
-            >
-                <div>
-                    <Select
-                        showSearch
-                        style={{ width: "100%" }}
-                        placeholder="活动城市"
-                        optionFilterProp="children"
-                        onChange={this.cityChange}
-                        value={this.state.cityId}
-                    >
-                        {this.state.cityList.map((v, i) => (
-                            <Option key={i} value={v.id}>{v.name}</Option>
-                        ))}
-                    </Select>
-                    <Input ref="addDetailInput" placeholder="请输入详细地址"></Input>
-                </div>
-                <div className="city-body">
-                    {this.state.detailList.map((v, i) => (
-                        <div className="city" key={i}>{v.name}</div>
-                    ))}
-                </div>
-                <div className="btn">
-                    <Button onClick={this.addTagCancel} className="cancel">取消</Button>
-                    <Button onClick={this.addDetailOk} className="add">确定</Button>
                 </div>
             </Modal>
         )
@@ -535,30 +506,30 @@ class index extends Component {
                     <div className="city">
                         <p>城市</p>
                         <div className="add-box">
-                            <Input></Input>
-                            <Button>添加</Button>
+                            <Input ref="addCityInput"></Input>
+                            <Button onClick={this.addCityOk}>添加</Button>
                         </div>
                         <div className="list">
                             <IScroll>
                                 {
                                     this.state.cityList.map((v, i) =>
-                                        <div onClick={this.selectCity} key={v.id} className="item"><span>{v.name}</span><span onClick={(e) => {this.deleteCity(e, v.id)}} className="icon"><Icon type="close" /></span></div>
-                            )
-                        }
+                                        <div onClick={this.selectCity.bind(this, v.id, v.name)} key={v.id} className={this.state.selectCityId === v.id ? "active item" : "item"}><span>{v.name}</span><span onClick={(e) => { this.deleteCity(e, v.id) }} className="icon"><Icon type="close" /></span></div>
+                                    )
+                                }
                             </IScroll>
                         </div>
                     </div>
                     <div className="detail">
                         <p>地址</p>
                         <div className="add-box">
-                            <Input></Input>
-                            <Button>添加</Button>
+                            <Input ref="addDetailInput"></Input>
+                            <Button onClick={this.addDetailOk}>添加</Button>
                         </div>
                         <div className="list">
                             <IScroll>
                                 {
                                     this.state.detailList.map((v, i) =>
-                                        <div key={v.id} className="item"><span>{v.name}</span><span onClick={this.deleteDetail} className="icon"><Icon type="close" /></span></div>
+                                        <div onClick={this.selectDetail.bind(this, v.id, v.name)} key={v.id} className={this.state.selectDetailId === v.id ? "active item" : "item"}><span>{v.name}</span><span onClick={(e) => { this.deleteDetail(e, v.id) }} className="icon"><Icon type="close" /></span></div>
                                     )
                                 }
                             </IScroll>
@@ -567,15 +538,13 @@ class index extends Component {
                 </div>
                 <div className="btn">
                     <Button onClick={this.addTagCancel} className="cancel">取消</Button>
-                    <Button onClick={this.selectTime} className="sure">确认</Button>
+                    <Button onClick={this.selectPosition} className="sure">确认</Button>
                 </div>
             </Modal>
         )
         return (
             <div className="create-active">
                 {addTagModal}
-                {addCityModal}
-                {addDetailModal}
                 {deleteModal}
                 {DateModal}
                 {timeModal}
@@ -599,56 +568,6 @@ class index extends Component {
                                 <span onClick={this.showTagModal} className="addBtn"><Icon type="plus" /></span>
                             </div>
                         </div>
-                        {/* <div className="box city">
-                            <div className="key">活动城市<span>*必填</span></div>
-                            <div className="value">
-                                <Select
-                                    showSearch
-                                    style={{ width: "100%" }}
-                                    placeholder="活动城市"
-                                    optionFilterProp="children"
-                                    onChange={this.cityChange}
-                                    value={this.state.cityId}
-                                >
-                                    {this.state.cityList.map((v, i) => (
-                                        <Option key={i} value={v.id}>{v.name}</Option>
-                                    ))}
-                                </Select>
-                                <span onClick={this.showCityModal} className="addBtn"><Icon type="plus" /></span>
-                            </div>
-                        </div>
-                        <div className="box detail">
-                            <div className="key">活动详址<span>*必填</span></div>
-                            <div className="value">
-                                <Select
-                                    showSearch
-                                    style={{ width: "100%" }}
-                                    placeholder="活动详址"
-                                    optionFilterProp="children"
-                                    onChange={this.detailChange}
-                                    value={this.state.detailId}
-                                >
-                                    {this.state.detailList.map((v, i) => (
-                                        <Option key={i} value={v.id}>{v.name}</Option>
-                                    ))}
-                                </Select>
-                                <span onClick={this.showDetailModal} className="addBtn"><Icon type="plus" /></span>
-                            </div>
-                        </div>
-                        <div className="box date">
-                            <div className="key">活动日期<span>*必填</span></div>
-                            <div className="value">
-                                {this.state.date}
-                            </div>
-                        </div>
-                        <div className="box time">
-                            <div className="key">活动时段<span>*必填</span></div>
-                            <div className="value">
-                                <span className="t">{this.state.startTime}</span>
-                                <span className="line">-</span>
-                                <span className="t">{this.state.endTime}</span>
-                            </div>
-                        </div> */}
                         <div className="box reserve-people">
                             <div className="key">预约人员<span>*必填</span></div>
                             <div className="value">
@@ -697,7 +616,7 @@ class index extends Component {
                     <div className="info-box item2">
                         <div className="box positon">
                             <div className="key">活动详址<span>*必填</span></div>
-                            <div className="value">未选择</div>
+                            <div className="value">{this.state.selectCityName ? this.state.selectCityName + " " + this.state.selectDetailName : "未选择"}</div>
                             <div className="select-btn">
                                 <Button onClick={this.showPositionModal}>选择地址</Button>
                             </div>

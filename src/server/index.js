@@ -54,6 +54,12 @@ class api {
     addCity(name) {
         return axios.post('/admin/city', { name })
     }
+    // 删除城市
+    deleteCity(id) {
+        return axios.delete("/admin/city", {
+            data: {id}
+        })
+    }
 
     /**
      * 添加详细地址
@@ -61,6 +67,12 @@ class api {
      */
     addDetail(options) {
         return axios.post('/admin/location', options)
+    }
+    // 删除详细地址
+    deleteDetail(id) {
+        return axios.delete("/admin/location", {
+            data: {id}
+        })
     }
 
     /**
