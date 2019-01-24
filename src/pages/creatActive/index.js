@@ -54,18 +54,29 @@ class index extends Component {
     // 如果是从编辑按钮跳转过来的就调用这个函数 ,初始化页面信息
     initActiveInfoPage = (activeInfo) => {
         let nameDOM = this.refs.nameDOM,
-            textAreaDOM = this.refs.textarea
+            textAreaDOM = this.refs.textarea,
+            peopleDOM = this.refs.peopleDOM,
+            departmentDOM = this.refs.departmentDOM,
+            clientNameDOM = this.refs.clientNameDOM,
+            clientTypeDOM = this.refs.clientTypeDOM
         nameDOM.state.value = activeInfo.name
+        peopleDOM.state.value = activeInfo.user
+        departmentDOM.state.value = activeInfo.userDepartment
+        clientNameDOM.state.value = activeInfo.personName
+        clientTypeDOM.state.value = activeInfo.personClass
         textAreaDOM.textAreaRef.value = activeInfo.remarks
         this.setState({
             tags: activeInfo.tags,
-            date: moment(activeInfo.startTime * 1000).format("YYYY-MM-DD"),
+            date: moment(activeInfo.reserveStartTime * 1000).format("YYYY-MM-DD"),
+            transDate: moment(activeInfo.reserveStartTime * 1000).format("YYYY-MM-DD"),
             startTime: moment(activeInfo.startTime * 1000).format("HH:mm"),
             endTime: moment(activeInfo.finishTime * 1000).format("HH:mm"),
             selectDetailId: activeInfo.location_id,
             selectCityId: activeInfo.city_id,
             title: "编辑活动",
             imageUrl: activeInfo.picture,
+            selectCityName: activeInfo.city,
+            selectDetailName: activeInfo.location,
             activeInfo
         })
 
@@ -222,7 +233,7 @@ class index extends Component {
             let file = this.state.file
             if (file) {
                 let { data } = await api.uploadImg(file)
-                console.log('data',data);
+                console.log('data', data);
                 if (data.code === 0) {
                     // return data.data.url
                     resolve(data.data.fileName)
@@ -240,6 +251,7 @@ class index extends Component {
         let departmentDOM = this.refs.departmentDOM
         let clientNameDOM = this.refs.clientNameDOM
         let clientTypeDOM = this.refs.clientTypeDOM
+
         let options = {
             name: nameDOM.input.value,
             reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
@@ -251,8 +263,8 @@ class index extends Component {
             tags: this.state.tags,
             user: peopleDOM.input.value,
             userDepartment: departmentDOM.input.value,
-            personClass: clientNameDOM.input.value,
-            personName: clientTypeDOM.input.value
+            personClass: clientTypeDOM.input.value,
+            personName: clientNameDOM.input.value
         }
         if (!options.name) {
             message.warning('活动名称不能为空')
@@ -281,6 +293,8 @@ class index extends Component {
             // this.setState({
             //     tags: []
             // })
+        } else {
+            message.warning(data.message)
         }
     }
     delete = async () => {
@@ -295,32 +309,54 @@ class index extends Component {
         }
     }
     modify = async () => {
-        let url = await this.upload()
+        let fileName = await this.upload()
         let nameDOM = this.refs.nameDOM
         let textAreaDOM = this.refs.textarea
+        let peopleDOM = this.refs.peopleDOM
+        let departmentDOM = this.refs.departmentDOM
+        let clientNameDOM = this.refs.clientNameDOM
+        let clientTypeDOM = this.refs.clientTypeDOM
         let options = {
             id: this.state.activeInfo.activeId,
-            name: nameDOM.state.value,
+            name: nameDOM.input.value,
             reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
             reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
-            picture: url,
             city_id: this.state.selectCityId,
             location_id: this.state.selectDetailId,
+            picture: fileName,
+            remarks: textAreaDOM.textAreaRef.value,
             tags: this.state.tags,
-            remarks: textAreaDOM.textAreaRef.value
+            user: peopleDOM.input.value,
+            userDepartment: departmentDOM.input.value,
+            personClass: clientTypeDOM.input.value,
+            personName: clientNameDOM.input.value
         }
         if (!options.name) {
             message.warning('活动名称不能为空')
             return
         }
-        if (!options.location_id) {
-            message.warning('活动详址不能为空')
+        if (options.tags.length === 0) {
+            message.warning('活动标签不能为空')
             return
         }
-        console.log(options);
+        if (!options.city_id) {
+            message.warning('请选择活动地址')
+            return
+        }
+        if (!this.state.date) {
+            message.warning('请选择活动日期')
+            return
+        }
+        if (!this.state.startTime) {
+            message.warning('请选择活动时段')
+            return
+        }
         let { data } = await api.modifyActive(options)
         if (data.code === 0) {
             message.success('活动编辑成功')
+            this.props.history.push("/reserve")
+        } else {
+            message.warning(data.message)
         }
     }
     deleteCity = async (e, id) => {
@@ -392,7 +428,7 @@ class index extends Component {
         this.refs.clientTypeListDOM.style.display = "inline-block"
     }
     selectClientType = (item) => {
-        this.refs.clientTypeDOM.input.value = item
+        this.refs.clientTypeDOM.state.value = item
     }
     render() {
         const imageUrl = this.state.imageUrl;
