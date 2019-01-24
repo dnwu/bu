@@ -255,11 +255,11 @@ class index extends Component {
                                 <div className="box">
                                     <div>
                                         <p className="key">年龄</p>
-                                        <p className="value">{this.state.cardInfo.age}</p>
+                                        <p className="value">{this.state.cardInfo.age ? this.state.cardInfo.age : "无"}</p>
                                     </div>
                                     <div>
                                         <p className="key">手机号</p>
-                                        <p className="value">{this.state.cardInfo.telephone}</p>
+                                        <p className="value">{this.state.cardInfo.telephone ? this.state.cardInfo.telephone : "无"}</p>
                                     </div>
                                 </div>
                                 <div className="remark">

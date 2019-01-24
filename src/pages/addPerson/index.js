@@ -44,6 +44,7 @@ class index extends Component {
             isSecrecy: cardInfo.isSecrecy === 1 ? false : true,
             isModify: true,
             personDeleteModalVisible: false,
+            tags: cardInfo.tags,
             imageUrl: cardInfo.picture,
             cardInfo,
         })
