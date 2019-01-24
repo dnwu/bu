@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Radio, Button, Icon, Spin, Modal, message } from 'antd'
 import api from './../../server'
+import moment from "moment"
 import tools from './../../tools'
 import './index.scss'
 import Head from './../../component/Head'
@@ -168,6 +169,7 @@ class index extends Component {
         })
     }
     render() {
+        // let activeInfo = this.state.activeInfo
         const cardList = (
             this.state.activeList.map((v, i) => {
                 return (
@@ -263,12 +265,14 @@ class index extends Component {
                             <div className="top">
                                 <div className="c-left">
                                     <h2>{this.state.activeInfo.name}</h2>
-                                    {
-                                        this.state.activeInfo.tags ?
-                                            this.state.activeInfo.tags.map((v, i) => (
-                                                <span key={v} ><img src={tagSvg} alt="" />{v}</span>
-                                            )) : ''
-                                    }
+                                    <div>
+                                        {
+                                            this.state.activeInfo.tags ?
+                                                this.state.activeInfo.tags.map((v, i) => (
+                                                    <span key={v} ><img src={tagSvg} alt="" />{v}</span>
+                                                )) : ''
+                                        }
+                                    </div>
                                 </div>
                                 <div className="c-right">
                                     {
@@ -298,15 +302,35 @@ class index extends Component {
                                     <div className="h">
                                         <span>{this.state.activeInfo.status === 3 ? '已结束' : "已预约"}</span>
                                         <span>{this.state.activeInfo.status === 2 ? '正在进行' : ""}</span>
+                                        <span>{moment(this.state.activeInfo.startTime*1000).format("YYYY-MM-DD")}</span>
                                     </div>
-                                    <div className="remark">{this.state.activeInfo.remarks}</div>
                                     <div className="positon">
                                         <img src={positonSvg} alt="" />
                                         <span>{this.state.activeInfo.city}</span>
                                         <span>{this.state.activeInfo.location}</span>
                                     </div>
+                                    <div className="reserve-info">
+                                        <div className="box">
+                                            <div className="key">预约人员</div>
+                                            <div className="value">{this.state.activeInfo.user?this.state.activeInfo.user:"无"}</div>
+                                        </div>
+                                        <div className="box">
+                                            <div className="key">预约部门</div>
+                                            <div className="value">{this.state.activeInfo.userDepartment?this.state.activeInfo.userDepartment:"无"}</div>
+                                        </div>
+                                    </div>
+                                    <div className="reserve-info">
+                                        <div className="box">
+                                            <div className="key">客户名称</div>
+                                            <div className="value">{this.state.activeInfo.personName?this.state.activeInfo.personName:"无"}</div>
+                                        </div>
+                                        <div className="box">
+                                            <div className="key">预约部门</div>
+                                            <div className="value">{this.state.activeInfo.personClass?this.state.activeInfo.personClass:"无"}</div>
+                                        </div>
+                                    </div>
+                                    <div className="remark">{this.state.activeInfo.remarks}</div>
                                     <div className="start-end-card">
-                                        <h4>{tools.formatDate(this.state.activeInfo.startTime)}</h4>
                                         <div className="start-end">
                                             <div className="start">
                                                 <p>{tools.formatTime(this.state.activeInfo.startTime)}</p>

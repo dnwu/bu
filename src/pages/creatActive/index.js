@@ -429,6 +429,7 @@ class index extends Component {
     }
     selectClientType = (item) => {
         this.refs.clientTypeDOM.state.value = item
+        this.refs.clientTypeDOM.input.value = item
     }
     render() {
         const imageUrl = this.state.imageUrl;
