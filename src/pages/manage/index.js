@@ -8,6 +8,7 @@ import vipImg from './../../static/VIP.png'
 import normImg from './../../static/norm.png'
 import point from './../../static/point.svg'
 import defaultAva from './../../static/default.png'
+import tagSvg from './../../static/tag.svg'
 
 let vipPage = 1,
     normPage = 1,
@@ -225,7 +226,14 @@ class index extends Component {
                         <div className="info-top">
                             <div className="info-tit-left">
                                 <p>{this.state.cardInfo.name}<img src={this.state.cardInfo.type === 2 ? vipImg : normImg} alt="" /></p>
-                                <div className="role">{this.state.cardInfo.title}</div>
+                                <div>
+                                    {
+                                        this.state.cardInfo.tags ?
+                                            this.state.cardInfo.tags.map((v, i) => (
+                                                <span key={v} ><img src={tagSvg} alt="" />{v}</span>
+                                            )) : ''
+                                    }
+                                </div>
                             </div>
                             <div className="info-tit-right">
                                 <p><Icon onClick={this.modifyPerson} type="setting" /></p>
@@ -234,24 +242,29 @@ class index extends Component {
                         </div>
                         <div className="info-card">
                             <div className="info-card-left">
-                                <div className="name">
+                                <div className="box name">
                                     <div>
                                         <p className="key">性别</p>
                                         <p className="value">{this.state.cardInfo.gender === 1 ? '男' : '女'}</p>
                                     </div>
                                     <div>
+                                        <p className="key">职位/称谓</p>
+                                        <p className="value">{this.state.cardInfo.title}</p>
+                                    </div>
+                                </div>
+                                <div className="box">
+                                    <div>
                                         <p className="key">年龄</p>
                                         <p className="value">{this.state.cardInfo.age}</p>
                                     </div>
-                                </div>
-                                <div className="phone">
                                     <div>
                                         <p className="key">手机号</p>
                                         <p className="value">{this.state.cardInfo.telephone}</p>
                                     </div>
                                 </div>
                                 <div className="remark">
-                                    {this.state.cardInfo.remarks}
+                                    <p className="key">备注</p>
+                                    {this.state.cardInfo.remarks ? this.state.cardInfo.remarks : "无"}
                                 </div>
                             </div>
                             <div className="info-card-right">

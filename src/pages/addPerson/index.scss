@@ -70,9 +70,40 @@ $bg-color:rgba(203, 210, 218, 0.23);
                         background-color: $bg-color;
                         border-color: $bg-color;
                         color: #CBD2DA;
-                        &:focus{
+                        &:focus {
                             border-color: rgba(25, 193, 170, 1);
-                            box-shadow:0 0 5px rgba(25, 193, 170, 1);
+                            box-shadow: 0 0 5px rgba(25, 193, 170, 1);
+                        }
+                    }
+                }
+            }
+            .tags {
+                .value {
+                    display: flex;
+                    span {
+                        margin-right: 10px;
+                    }
+                    .tag {
+                        border-radius: 2px;
+                        padding: 0 10px;
+                        height: 30px;
+                        line-height: 30px;
+                        text-align: center;
+                        color: rgba(203, 210, 218, 1);
+                        background-color: rgba(203, 210, 218, 0.23);
+                        flex-shrink: 1;
+                    }
+                    .addBtn {
+                        border-radius: 2px;
+                        padding: 0 10px;
+                        height: 30px;
+                        line-height: 30px;
+                        text-align: center;
+                        color: rgba(203, 210, 218, 1);
+                        background-color: #3D3E3F;
+                        cursor: pointer;
+                        &:active {
+                            background-color: rgb(77, 78, 78);
                         }
                     }
                 }
@@ -191,6 +222,7 @@ $bg-color:rgba(203, 210, 218, 0.23);
         }
     }
 }
+
 .person-delete-model {
     .ant-modal-content {
         background: rgba(0, 0, 0, 0);

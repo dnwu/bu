@@ -10,11 +10,14 @@ const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 class index extends Component {
     state = {
+        tags: [],
+        tagsLimit: 3,
         imageUrl: '',
         title: "添加人员",
         gender: "",
         type: 2,
-        isSecrecy: false
+        isSecrecy: false,
+        addTagModalVisible: false
     }
     componentDidMount() {
         let cardInfo = this.props.location.params && this.props.location.params.cardInfo
@@ -84,6 +87,7 @@ class index extends Component {
         let file = this.state.file
         if (file) {
             let { data } = await api.uploadImg(file)
+            
             if (data.code === 0) {
                 return data.data.url
             }
@@ -105,6 +109,7 @@ class index extends Component {
     }
     addPerson = async () => {
         let picture = await this.upload()
+        console.log(picture);
         let name = this.refs.nameDOM.state.value
         let title = this.refs.titleDOM.state.value
         let age = parseInt(this.refs.ageDOM.state.value)
@@ -112,12 +117,13 @@ class index extends Component {
         let type = this.state.type
         let isSecrecy = this.state.isSecrecy === false ? 1 : 2
         let remarks = this.refs.textArea.textAreaRef.value
+        let tags = this.state.tags
         // name,gender,type, title, Age
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
             return
         }
-        let options = { name, type, title, age, telephone, isSecrecy, gender: this.state.gender, picture, remarks }
+        let options = { name, type, title, age, telephone, isSecrecy, gender: this.state.gender, picture, remarks, tags }
         let { data } = await api.addPerson(options)
         if (data.code === 0) {
             message.success("添加成功")
@@ -136,6 +142,26 @@ class index extends Component {
             personDeleteModalVisible: true
         })
     }
+    showTagModal = () => {
+        if (this.state.tags.length >= this.state.tagsLimit) {
+            message.warning(`最多创建${this.state.tagsLimit}个标签`);
+            return
+        }
+        this.setState({
+            addTagModalVisible: true,
+        });
+    }
+    addTagOk = () => {
+        let { tags } = this.state
+        tags.push(this.refs.addTagInput.state.value)
+        this.refs.addTagInput.state.value = ""
+        this.setState({ tags, addTagModalVisible: false })
+    }
+    addTagCancel = () => {
+        this.setState({
+            addTagModalVisible: false
+        })
+    }
     personModify = async () => {
         let picture = await this.upload()
         let cardInfo = this.state.cardInfo
@@ -148,7 +174,12 @@ class index extends Component {
         let isSecrecy = this.state.isSecrecy === false ? 1 : 2
         let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
-        let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks }
+        let tags = this.state.tags
+        if (!name || !this.state.gender || !title) {
+            message.warning('姓名,性别, 职位不能为空')
+            return
+        }
+        let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks, tags }
         let { data } = await api.modifyPerson(options)
         if (data.code === 0) {
             message.success("人员信息修改成功")
@@ -194,9 +225,27 @@ class index extends Component {
                 </div>
             </Modal>
         )
+        const addTagModal = (
+            <Modal
+                className="addTagModal"
+                zIndex={999999}
+                footer={null}
+                closable={false}
+                visible={this.state.addTagModalVisible}
+            >
+                <div>
+                    <Input ref="addTagInput" placeholder="请输入标签名"></Input>
+                </div>
+                <div className="btn">
+                    <Button onClick={this.addTagCancel} className="cancel">取消</Button>
+                    <Button onClick={this.addTagOk} className="add">确定</Button>
+                </div>
+            </Modal>
+        )
         return (
             <div className="add-person">
                 {deleteModal}
+                {addTagModal}
                 <Head></Head>
                 <div className="add-person-body">
                     <div className="left">
@@ -205,6 +254,21 @@ class index extends Component {
                             <div className="key">姓名<span>*必填</span></div>
                             <div className="value">
                                 <Input ref="nameDOM"></Input>
+                            </div>
+                        </div>
+                        <div className="box tags">
+                            <div className="key">活动标签</div>
+                            <div className="value">
+                                {this.state.tags.map((v, i) => (
+                                    <span key={i} className="tag">{v}</span>
+                                ))}
+                                <span onClick={this.showTagModal} className="addBtn"><Icon type="plus" /></span>
+                            </div>
+                        </div>
+                        <div className="box">
+                            <div className="key">职位/称谓<span>*必填</span></div>
+                            <div className="value">
+                                <Input ref="titleDOM"></Input>
                             </div>
                         </div>
                         <div className="box">
@@ -220,12 +284,7 @@ class index extends Component {
                                 </Select>
                             </div>
                         </div>
-                        <div className="box">
-                            <div className="key">职位/称谓<span>*必填</span></div>
-                            <div className="value">
-                                <Input ref="titleDOM"></Input>
-                            </div>
-                        </div>
+
                         <div className="box">
                             <div className="key">年龄</div>
                             <div className="value">

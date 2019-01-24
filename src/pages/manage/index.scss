@@ -150,6 +150,22 @@
                         color: #797C95;
                         font-size: 12px;
                     }
+                    >div {
+                        height: 22px;
+                        span {
+                            font-size: 12px;
+                            color: #C9CFE5;
+                            vertical-align: middle;
+                            img {
+                                width: 8px;
+                                height: 12px;
+                                margin-right: 4px;
+                            }
+                            &:nth-of-type(2) {
+                                margin: 0 10px;
+                            }
+                        }
+                    }
                 }
                 .info-tit-right {
                     width: 40px;
@@ -172,27 +188,32 @@
                 margin-top: 20px;
                 .info-card-left {
                     flex: 1;
-                    .name,
-                    .phone {
+                    .box {
                         display: flex;
+                        margin-bottom: 10px;
+                        >div:nth-of-type(2) {
+                            margin-left: 30px;
+                        }
                         p {
                             margin: 0;
                         }
                         .key {
+                            font-size: 12px;
                             color: #797C95;
+                            margin-bottom: 4px;
                         }
-                    }
-                    .name {
-                        display: flex;
-                        margin-bottom: 20px;
-                        >div {
-                            margin-right: 20px;
+                        .value{
+                            color: #A9ADC1;
                         }
                     }
                     .remark {
                         margin-top: 10px;
                         font-size: 14px;
                         color: #C4C4C4;
+                        .key {
+                            font-size: 12px;
+                            color: #797C95;
+                        }
                     }
                 }
                 .info-card-right {
