@@ -42,11 +42,18 @@ class index extends Component {
     }
 
     componentDidMount() {
+        // 初始化搜索框value
+        let trans = this.props.location.params || {value:"",city:""}
+        this.refs.input.state.value = trans.value
+        this.state.city = trans.city 
+
+        // 初始化page
         this.personPage = 1
         this.activePage = 1
         this.getCityList()
-        this.getActives("", "", 1)
-        this.getPersons("", 1)
+        // this.getActives("", "", 1)
+        // this.getPersons("", 1)
+        this.search()
     }
     getCityList = async () => {
         let { data } = await api.getCityList()
@@ -79,7 +86,7 @@ class index extends Component {
             }
         }
         let { data } = await api.getActivesBySearch(options)
-        // console.log(data);
+        console.log(data.data.activities);
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.activesList))
             list.push(...data.data.activities)
@@ -193,6 +200,9 @@ class index extends Component {
         list.forEach((v, i) => {
             v.name = v.name.replace(re, `<span class="height-text">${keyWord}</span>`)
             v.remarks = v.remarks.replace(re, `<span class="height-text">${keyWord}</span>`)
+            v.tags = v.tags.map(item => {
+                return item.replace(re, `<span class="height-text">${keyWord}</span>`)
+            })
         })
         return list
     }
@@ -214,7 +224,7 @@ class index extends Component {
                             <div className="tit" dangerouslySetInnerHTML={{ __html: v.name }}></div>
                             <div className="tags">
                                 {
-                                    v.tags.map((ele, index) => <div key={index}><img src={tagIcon} alt="" /><span>{ele}</span></div>)
+                                    v.tags.map((ele, index) => <div key={index}><img src={tagIcon} alt="" /><span dangerouslySetInnerHTML={{__html: ele}}></span></div>)
                                 }
                             </div>
                         </div>
