@@ -6,6 +6,7 @@ import IScroll from './../../component/IScroll'
 import Head from './../../component/Head'
 import vipImg from './../../static/VIP.png'
 import normImg from './../../static/norm.png'
+import defaultAva from './../../static/default.png'
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
@@ -22,6 +23,8 @@ class index extends Component {
         addTagModalVisible: false,
         coverCheckModalVisible: false,
         personDeleteModalVisible: false,
+        similarList: [],
+        selectSimilarId: "",
     }
     componentDidMount() {
         let cardInfo = this.props.location.params && this.props.location.params.cardInfo
@@ -79,9 +82,8 @@ class index extends Component {
         let file = this.state.file
         if (file) {
             let { data } = await api.uploadImg(file)
-
             if (data.code === 0) {
-                return data.data.url
+                return data.data.fileName
             }
         } else {
             return ""
@@ -100,6 +102,10 @@ class index extends Component {
     }
     addPerson = async () => {
         let picture = await this.upload()
+        if (!picture) {
+            message.warning("请选择头像")
+            return
+        }
         let name = this.refs.nameDOM.state.value
         let title = this.refs.titleDOM.state.value
         let age = parseInt(this.refs.ageDOM.state.value)
@@ -109,19 +115,23 @@ class index extends Component {
         let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
         let tags = this.state.tags
+        let force = 0
         // name,gender,type, title, Age
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
             return
         }
-        let options = { name, type, title, age, telephone, isSecrecy, gender, picture, remarks, tags }
+        let options = { name, type, title, age, telephone, isSecrecy, gender, picture, remarks, tags, force }
         let { data } = await api.addPerson(options)
         if (data.code === 0) {
             message.success("添加成功")
             this.props.history.push('/manage')
         } else if (data.code === 20106) {
+            let similarList = data.data.similar
             this.setState({
-                coverCheckModalVisible: true
+                selectSimilarId: "",
+                coverCheckModalVisible: true,
+                similarList
             })
         } else {
             message.error(data.message)
@@ -158,9 +168,15 @@ class index extends Component {
         })
     }
     personModify = async () => {
-        let picture = await this.upload()
         let cardInfo = this.state.cardInfo
         let id = cardInfo.id
+        let picture = await this.upload()
+        if (!picture && cardInfo.picture) {
+            picture = cardInfo.picture.match(/images\/(\S*)/)[1]
+        } else if (!picture) {
+            message.warning("请选择头像")
+            return
+        }
         let name = this.refs.nameDOM.state.value
         let title = this.refs.titleDOM.state.value
         let age = parseInt(this.refs.ageDOM.state.value)
@@ -170,22 +186,149 @@ class index extends Component {
         let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
         let tags = this.state.tags
+        let force = 0
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
             return
         }
-        let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks, tags }
+        let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks, tags, force }
         let { data } = await api.modifyPerson(options)
         if (data.code === 0) {
             message.success("人员信息修改成功")
             this.props.history.push('/manage')
         } else if (data.code === 20106) {
+            let similarList = data.data.similar
             this.setState({
-                coverCheckModalVisible: true
+                selectSimilarId: "",
+                coverCheckModalVisible: true,
+                similarList
             })
         } else {
             message.error(data.message)
         }
+    }
+    forciblyCreatePerson = async () => {
+        let cardInfo = this.state.cardInfo
+        let picture = await this.upload()
+        if (!picture && cardInfo.picture) {
+            picture = cardInfo.picture.match(/images\/(\S*)/)[1]
+        } else if (!picture) {
+            message.warning("请选择头像")
+            return
+        }
+        let name = this.refs.nameDOM.state.value
+        let title = this.refs.titleDOM.state.value
+        let age = parseInt(this.refs.ageDOM.state.value)
+        let telephone = this.refs.phoneDOM.state.value
+        let type = this.state.type
+        let isSecrecy = this.state.isSecrecy === false ? 1 : 2
+        let gender = this.state.gender
+        let remarks = this.refs.textArea.textAreaRef.value
+        let tags = this.state.tags
+        let force = 1
+        // name,gender,type, title, Age
+        if (!name || !this.state.gender || !title) {
+            message.warning('姓名,性别, 职位不能为空')
+            return
+        }
+        let options = { name, type, title, age, telephone, isSecrecy, gender, picture, remarks, tags, force }
+        let { data } = await api.addPerson(options)
+        if (data.code === 0) {
+            message.success("添加成功")
+            this.props.history.push('/manage')
+        } else if (data.code === 20106) {
+            let similarList = data.data.similar
+            this.setState({
+                selectSimilarId: "",
+                coverCheckModalVisible: true,
+                similarList
+            })
+        } else {
+            message.error(data.message)
+        }
+    }
+    coverPerson = () => {
+        if (this.state.coverType === 1) {
+            this.coverPersonOnlyAva()
+        } else if (this.state.coverType === 2) {
+            this.coverPersonAllInfo()
+        }
+    }
+    coverPersonOnlyAva = async () => {
+        let cardInfo = this.state.cardInfo
+        let id = this.state.selectSimilarId
+        if (!id) {
+            message.warning("请选择您想覆盖的人员")
+            return
+        }
+        let info = await this.getPersonInfo(id)
+
+        let picture = await this.upload()
+        if (!picture && cardInfo.picture) {
+            picture = cardInfo.picture.match(/images\/(\S*)/)[1]
+        } else if (!picture) {
+            message.warning("请选择头像")
+            return
+        }
+        let { name, gender, type, title, age, telephone, isSecrecy, remarks, tags } = info
+        let force = 1
+        let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks, tags, force }
+        let { data } = await api.modifyPerson(options)
+        if (data.code === 0) {
+            message.success("人员信息覆盖成功")
+            this.props.history.push('/manage')
+        } else {
+            message.error(data.message)
+        }
+    }
+    coverPersonAllInfo = async () => {
+        let id = this.state.selectSimilarId
+        if (!id) {
+            message.warning("请选择您想覆盖的人员")
+            return
+        }
+        let cardInfo = this.state.cardInfo
+        let picture = await this.upload()
+        if (!picture && cardInfo.picture) {
+            picture = cardInfo.picture.match(/images\/(\S*)/)[1]
+        } else if (!picture) {
+            message.warning("请选择头像")
+            return
+        }
+        let name = this.refs.nameDOM.state.value
+        let title = this.refs.titleDOM.state.value
+        let age = parseInt(this.refs.ageDOM.state.value)
+        let telephone = this.refs.phoneDOM.state.value
+        let type = this.state.type
+        let isSecrecy = this.state.isSecrecy === false ? 1 : 2
+        let gender = this.state.gender
+        let remarks = this.refs.textArea.textAreaRef.value
+        let tags = this.state.tags
+        let force = 1
+        if (!name || !this.state.gender || !title) {
+            message.warning('姓名,性别, 职位不能为空')
+            return
+        }
+        let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks, tags, force }
+        let { data } = await api.modifyPerson(options)
+        if (data.code === 0) {
+            message.success("人员信息全部覆盖成功")
+            this.props.history.push('/manage')
+        } else if (data.code === 20106) {
+            let similarList = data.data.similar
+            this.setState({
+                selectSimilarId: "",
+                coverCheckModalVisible: true,
+                similarList
+            })
+        } else {
+            message.error(data.message)
+        }
+    }
+    getPersonInfo = async (id) => {
+        let { data } = await api.getPersonInfo(id)
+        return data.data
+
     }
     delete = async () => {
         let id = this.state.cardInfo.id
@@ -206,6 +349,10 @@ class index extends Component {
         this.setState({
             coverType: e.target.value,
         });
+    }
+    selectSimilarItem = (id) => {
+        console.log(id);
+        this.setState({ selectSimilarId: id })
     }
     render() {
         const imageUrl = this.state.imageUrl;
@@ -267,12 +414,24 @@ class index extends Component {
                         <span>检测到库中有相似人脸</span>
                     </div>
                     <div className="list">
-                        <IScroll>
-                            
+                        <IScroll isShowBar={false}>
+                            {
+                                this.state.similarList.map((v, i) =>
+                                    <div onClick={this.selectSimilarItem.bind(this, v.id)} key={i} className={this.state.selectSimilarId === v.id ? "card active" : "card"}>
+                                        <div className="img">
+                                            <img src={v.picture ? v.picture : defaultAva} alt="" />
+                                        </div>
+                                        <div className="info">
+                                            <div className="name">{v.name}</div>
+                                            <div className="title">{v.title}</div>
+                                        </div>
+                                    </div>
+                                )
+                            }
                         </IScroll>
                     </div>
                     <div className="btn">
-                        <Button>新建人员</Button>
+                        <Button onClick={this.forciblyCreatePerson}>新建人员</Button>
                     </div>
                 </div>
                 <div className="right">
@@ -283,7 +442,7 @@ class index extends Component {
                         </RadioGroup>
                     </div>
                     <div className="btn">
-                        <Button>覆盖已有人员</Button>
+                        <Button onClick={this.coverPerson}>覆盖已有人员</Button>
                     </div>
                 </div>
             </Modal>

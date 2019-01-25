@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './index.scss'
-import { DatePicker, Input, Icon, Select, Upload, Button, Slider, message, Modal } from 'antd'
+import { DatePicker, Input, Icon, Upload, Button, Slider, message, Modal } from 'antd'
 import api from './../../server'
 import Head from './../../component/Head'
 import IScroll from './../../component/IScroll'
@@ -8,7 +8,6 @@ import locale from 'antd/lib/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
-const Option = Select.Option;
 const { TextArea } = Input;
 class index extends Component {
     state = {
@@ -377,9 +376,10 @@ class index extends Component {
         }
     }
     selectCity = (id, name) => {
-        this.state.transSelectDetailName = ""
+        // this.state.transSelectDetailName = ""
         this.getDetailList(id)
         this.setState({
+            transSelectDetailName: "",
             selectCityId: id,
             transSelectCityName: name
         })

@@ -21,21 +21,13 @@ class index extends Component {
     //     // control: true,  // 页面触及底部,控制请求次数,
     // }
     componentWillReceiveProps(props) {
-        let isShowBar
-        if (props.isShowBar === undefined) {
-            isShowBar = true
-        } else if (props.isShowBar) {
-            isShowBar = true
-        } else {
-            isShowBar = false
-        }
         this.setState({
-            scrollEnd: props.scrollEnd,
-            isShowBar: isShowBar
+            scrollEnd: props.scrollEnd
         })
     }
     componentDidMount() {
         this.resetDOM()
+        this.isShowBarControl()
         window.addEventListener('resize', this.windowResize)
     }
     componentDidUpdate() {
@@ -48,7 +40,19 @@ class index extends Component {
     windowResize = () => {
         this.setBarParams()
     }
-
+    isShowBarControl = () => {
+        let isShowBar
+        if (this.props.isShowBar === undefined) {
+            isShowBar = true
+        } else if (this.props.isShowBar) {
+            isShowBar = true
+        } else {
+            isShowBar = false
+        }
+        this.setState({
+            isShowBar: isShowBar
+        })
+    }
     setBarParams = () => {
         let scrollDOM = this.refs.scrollBox
         let scrollBoxH = scrollDOM.offsetHeight  // 获取滚动列表的高度

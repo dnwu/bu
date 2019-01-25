@@ -295,6 +295,7 @@ $bg-color:rgba(203, 210, 218, 0.23);
         display: flex;
         >div {
             flex: 1;
+            padding: 0 10px;
         }
         .left {
             display: flex;
@@ -303,6 +304,7 @@ $bg-color:rgba(203, 210, 218, 0.23);
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
+                margin-bottom: 10px;
                 span:nth-of-type(1) {
                     color: #7E8791;
                 }
@@ -313,9 +315,53 @@ $bg-color:rgba(203, 210, 218, 0.23);
             }
             .list {
                 height: 300px;
+                background-color: #393C43;
+                padding: 0 10px;
+                border-radius: 5px;
+                .card{
+                    display: flex;
+                    background-color: #2B2C31;
+                    border: 1px solid #2B2C31;
+                    box-sizing: border-box;
+                    border-radius: 5px;
+                    padding: 10px;
+                    margin: 10px 0;
+                    cursor: pointer;
+                    .img {
+                        display: flex;
+                        align-items: center;
+                        img {
+                            width: 50px;
+                            height: 50px;
+                        }
+                    }
+                    .info {
+                        font-size: 12px;
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: flex-end;
+                        .name {
+                            color: #FEFFFE;
+                            margin-bottom: 10px;
+                        }
+                        .title {
+                            color: #9B9B9B;
+                        }
+                    }
+                    &:active{
+                        border-color: #19C1AA;
+                    }
+                    &.active {
+                        border-color: #19C1AA;
+                        box-shadow: 0 0 5px #19C1AA;
+                    }
+                }
             }
             .btn {
                 button {
+                    font-size: 12px;
                     background: linear-gradient(to left,#F1630E,#FFCC00);
                     border-color: #FFCC00;
                 }
@@ -359,6 +405,7 @@ $bg-color:rgba(203, 210, 218, 0.23);
             }
             .btn {
                 button {
+                    font-size: 12px;
                     background: linear-gradient(to left,#4E8EAA,#3A86BB);
                     border-color: #3A86BB;
                 }
