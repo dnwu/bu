@@ -137,11 +137,6 @@ class index extends Component {
             message.error(data.message)
         }
     }
-    handleCancel = () => {
-        this.setState({
-            personDeleteModalVisible: false
-        })
-    }
     showDeleteModal = () => {
         this.setState({
             personDeleteModalVisible: true
@@ -342,7 +337,8 @@ class index extends Component {
     }
     handleCancel = () => {
         this.setState({
-            coverCheckModalVisible: false
+            coverCheckModalVisible: false,
+            personDeleteModalVisible: false
         })
     }
     coverTypeChange = (e) => {
