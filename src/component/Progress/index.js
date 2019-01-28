@@ -10,7 +10,7 @@ class index extends Component {
             lineColor: "#D1C3E9",
             circleBgColor: "#19C1AA",
             rad: Math.PI * 2 / 100,
-            percent: 0
+            percent: null
         }
     }
     componentWillReceiveProps(props) {
