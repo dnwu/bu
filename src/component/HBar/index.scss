@@ -3,6 +3,11 @@
     display: flex;
     .key-box {
         >div {
+            cursor: pointer;
+            max-width: 66px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
             margin: 10px 0;
             height: 21px;
             color: #626F86;

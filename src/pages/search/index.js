@@ -45,7 +45,9 @@ class index extends Component {
         // 初始化搜索框value
         let trans = this.props.location.params || {value:"",city:""}
         this.refs.input.state.value = trans.value
-        this.state.city = trans.city 
+        this.setState({
+            city: trans.city
+        })
 
         // 初始化page
         this.personPage = 1

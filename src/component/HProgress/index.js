@@ -8,6 +8,18 @@ class index extends Component {
             bgColor: "#567FA7"
         }
     }
+    componentWillReceiveProps(props) {
+        if (props.bgColor) {
+            this.setState({
+                percent: props.percent,
+                bgColor: props.bgColor
+            })
+        } else {
+            this.setState({
+                percent: props.percent,
+            })
+        }
+    }
     componentDidMount() {
         if (this.props.bgColor) {
             this.setState({

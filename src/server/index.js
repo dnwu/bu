@@ -144,7 +144,7 @@ class api {
      * gender 1,2代表男女
      * isSecrecy 1,2代表 否 ,是
      * type 0, 1, 2 分别代表全部, 陪访, vip人员
-     * force 强制添加人员 0 否 1 是
+     * force 强制添加人员 1 否 2 是
      * @param {name,gender,type, title, Age, telephone, isSecrecy,picture,remarks,tags,,tags,force} options 
      */
     addPerson(options) {
@@ -184,6 +184,52 @@ class api {
     getPersonsBySearch(options) {
         return axios.get('/admin/search/persons', {
             params: options
+        })
+    }
+
+
+
+
+    // 活动频次统计
+    getActivityRate() {
+        return axios.get('/admin/statistics/activity/count')
+    }
+    
+    /**
+     * 每周活动频次统计  活动频次统计
+     * @param {offset, limit} options 
+     */
+    getActivityRateByWeek(offset, limit) {
+        return axios.get('/admin/statistics/activity/weekly/count', {
+            params: {offset, limit}
+        })
+    }
+    // 活动地点历史统计
+    getActivityByCity() {
+        return axios.get("/admin/statistics/city/count")
+    }
+    // 访客属性统计
+    getPeopleAttribute() {
+        return axios.get('/admin/statistics/person/attr/count')
+    }
+    
+    /**
+     * // 系统访问总人数
+     * @param {offset, limit} options 
+     */
+    getStatisticsByPeopleNum(offset, limit) {
+        return axios.get("/admin/statistics/person/count", {
+            params: {offset, limit}
+        })
+    }
+    
+    /**
+     *  人员到访列表
+     * @param {offset, limit} options 
+     */
+    getStatisticsBypeopleList(offset, limit) {
+        return axios.get("/admin/statistics/person/ranking/count", {
+            params: {offset, limit}
         })
     }
 }

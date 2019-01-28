@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Tooltip} from "antd"
 import './index.scss'
 
 class index extends Component {
@@ -9,6 +10,22 @@ class index extends Component {
             xAxis: [],
             yAxis: []
         }
+    }
+    componentWillReceiveProps(props) {
+        console.log(props);
+        let yAxis = props.yAxis || []
+        let max = Math.max(...yAxis)
+        let newYAxis = yAxis.map(v => {
+            return {
+                value: v,
+                percent: (v / max * 100).toFixed(2) + "%"
+            }
+        })
+        // console.log(newYAxis);
+        this.setState({
+            xAxis: props.xAxis || [],
+            yAxis: newYAxis
+        })
     }
     componentDidMount() {
         let yAxis = this.props.yAxis || []
@@ -34,7 +51,9 @@ class index extends Component {
                 <div style={style} className="key-box">
                     {
                         this.state.xAxis.map((v, i) =>
-                            <div key={i}>{v}</div>
+                            <Tooltip title={v}>
+                                <div key={i}>{v}</div>
+                            </Tooltip>
                         )
                     }
                 </div>
@@ -42,7 +61,7 @@ class index extends Component {
                     {
                         this.state.yAxis.map((v, i) =>
                             <div key={i}>
-                                <div style={{width: v.percent}} className="bar"></div>
+                                <div style={{ width: v.percent }} className="bar"></div>
                                 <span>{v.value}</span>
                             </div>
                         )

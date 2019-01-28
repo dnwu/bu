@@ -41,9 +41,10 @@
         }
         .b-top {
             flex: 1;
-            min-height: 200px;
+            height: 220px;
             display: flex;
             .b-t-left {
+                height: 100%;
                 flex: 1;
                 .item {
                     flex: 1;
@@ -53,6 +54,7 @@
                 }
             }
             .b-t-right {
+                height: 100%;
                 width: 400px;
                 .item {
                     flex: 1;
@@ -226,7 +228,7 @@
                     }
                 }
                 .b-b-r-bottom {
-                    flex: 1;
+                    // flex: 1;
                     .item {
                         padding-left: 20px;
                         .layout {

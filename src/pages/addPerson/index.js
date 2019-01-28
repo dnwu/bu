@@ -115,7 +115,7 @@ class index extends Component {
         let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
         let tags = this.state.tags
-        let force = 0
+        let force = 1
         // name,gender,type, title, Age
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
@@ -181,7 +181,7 @@ class index extends Component {
         let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
         let tags = this.state.tags
-        let force = 0
+        let force = 1
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
             return
@@ -220,7 +220,7 @@ class index extends Component {
         let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
         let tags = this.state.tags
-        let force = 1
+        let force = 2
         // name,gender,type, title, Age
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
@@ -266,7 +266,7 @@ class index extends Component {
             return
         }
         let { name, gender, type, title, age, telephone, isSecrecy, remarks, tags } = info
-        let force = 1
+        let force = 2
         let options = { id, name, gender, type, title, age, telephone, isSecrecy, picture, remarks, tags, force }
         let { data } = await api.modifyPerson(options)
         if (data.code === 0) {
@@ -299,7 +299,7 @@ class index extends Component {
         let gender = this.state.gender
         let remarks = this.refs.textArea.textAreaRef.value
         let tags = this.state.tags
-        let force = 1
+        let force = 2
         if (!name || !this.state.gender || !title) {
             message.warning('姓名,性别, 职位不能为空')
             return
@@ -347,7 +347,6 @@ class index extends Component {
         });
     }
     selectSimilarItem = (id) => {
-        console.log(id);
         this.setState({ selectSimilarId: id })
     }
     render() {

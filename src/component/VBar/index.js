@@ -8,6 +8,20 @@ class index extends Component {
             yAxis: []
         }
     }
+    componentWillReceiveProps(props) {
+        let yAxis = props.yAxis || []
+        let max = Math.max(...yAxis)
+        let newYAxis = yAxis.map((v, i) => {
+            return {
+                value: v,
+                percent: (v / max * 100).toFixed(2) + "%"
+            }
+        })
+        this.setState({
+            xAxis: props.xAxis,
+            yAxis: newYAxis
+        })
+    }
     componentDidMount() {
         let yAxis = this.props.yAxis || []
         let max = Math.max(...yAxis)

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import axios from 'axios'
+import api from './../../server'
 import Head from './../../component/Head'
 import HBar from './../../component/HBar'
 import Progress from './../../component/Progress'
@@ -16,20 +18,134 @@ import 'echarts/lib/component/title'
 class index extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            activityRate: {},
+            activityRateByWeek: { x: [], y: [] },
+            activityByCity: [],
+            peopleAttribute: {
+                gender: { man: { val: 0, percent: 0 }, woman: { val: 0, percent: 0 } },
+                age: { young: 0, middle: 0, elderly: 0 }
+            },
+            statisticsByPeopleNum: null,
+            statisticsBypeopleList: { xAxis: [], yAxis: [] },
+        }
     }
     componentDidMount() {
         this.drawLine()
+        this.getAllData()
+    }
+    getAllData = () => {
+
+        axios.all([
+            api.getActivityRate(), // 活动频次统计
+            api.getActivityRateByWeek(0, 10), // 活动频次统计
+            api.getActivityByCity(),    // 活动地点历史统计
+            api.getPeopleAttribute(),    // 访客属性统计
+            api.getStatisticsByPeopleNum(0, 7),  // 系统访问总人数
+            api.getStatisticsBypeopleList(0, 10)  // 人员到访列表
+        ])
+            .then(axios.spread((
+                activityRate,
+                activityRateByWeek,
+                activityByCity,
+                peopleAttribute,
+                statisticsByPeopleNum,
+                statisticsBypeopleList,
+            ) => {
+                this.setState({
+                    activityRate: activityRate.data.data,
+                    activityRateByWeek: this.formatActivityRateByWeek(activityRateByWeek.data.data.weeklyCount),
+                    activityByCity: this.formatActivityByCity(activityByCity.data.data.citiesCount),
+                    peopleAttribute: this.formatPeopleAttribute(peopleAttribute.data.data),
+                    statisticsByPeopleNum: statisticsByPeopleNum.data.data.dailyCount,
+                    statisticsBypeopleList:this.formatStatisticsBypeopleList(statisticsBypeopleList.data.data.Ranking),
+                }, () => {
+                    this.fromatStatisticsByPeopleNum(this.state.statisticsByPeopleNum)
+                    // console.log('state', this.state.statisticsBypeopleList);
+                })
+            }))
+    }
+    formatActivityRateByWeek = (data) => {
+        let x = Object.keys(data)
+        let y = Object.values(data)
+        x.forEach((v, i) => {
+            x[i] = v.slice(-5)
+        })
+        return { x, y }
+    }
+    formatActivityByCity = (data) => {
+        let arr = []
+        Object.keys(data).forEach((v, i) => {
+            arr.push({
+                city: v,
+                value: data[v]
+            })
+        })
+        return arr
+    }
+    formatPeopleAttribute = (data) => {
+        let totalAge = this.add(data.age)
+        let totalGender = this.add(data.gender)
+        let Obj = {
+            gender: {
+                man: {
+                    val: data.gender[0],
+                    percent: Math.round(data.gender[0] / totalGender * 10000) / 100.00
+                },
+                woman: {
+                    val: data.gender[1],
+                    percent: Math.round(data.gender[1] / totalGender * 10000) / 100.00
+                }
+            },
+            age: {
+                young: Math.round(data.age[0] / totalAge * 10000) / 100.00,
+                middle: Math.round(data.age[1] / totalAge * 10000) / 100.00,
+                elderly: Math.round(data.age[2] / totalAge * 10000) / 100.00
+            }
+        }
+        return Obj
+    }
+    fromatStatisticsByPeopleNum = (data) => {
+        let xAxis = Object.keys(data)
+        let yAxis = Object.values(data)
+        this.state.myChart.setOption({
+            xAxis: {
+                data: xAxis
+            },
+            series: [{
+                data: yAxis
+            }]
+        })
+    }
+    formatStatisticsBypeopleList = (data) => {
+        let xAxis = []
+        let yAxis = []
+        data.forEach(v => {
+            xAxis.push(v.name)
+            yAxis.push(v.visitCount)
+        })
+        return { xAxis, yAxis }
+    }
+    // 数组求和
+    add = (arr) => {
+        let num = 0
+        arr.forEach(v => {
+            num += v
+        })
+        return num
     }
     drawLine = () => {
         let lineBoxDOM = this.refs.lineBox
         let myChart = echarts.init(lineBoxDOM)
+        this.setState({
+            myChart
+        })
         let option = {
             grid: {
                 show: false,
-                left: 20,
+                left: 40,
                 top: 0,
-                right: 20,
+                right: 40,
                 bottom: 20
             },
             tooltip: {
@@ -68,8 +184,14 @@ class index extends Component {
             }]
         };
         myChart.setOption(option)
+
     }
     render() {
+        let activityRate = this.state.activityRate
+        let activityRateByWeek = this.state.activityRateByWeek
+        let activityByCity = this.state.activityByCity
+        let peopleAttribute = this.state.peopleAttribute
+        let statisticsBypeopleList = this.state.statisticsBypeopleList
         return (
             <div className="statistics">
                 <Head></Head>
@@ -95,7 +217,7 @@ class index extends Component {
                                     </div>
                                     <div className="num">
                                         <div className="key">活动总数</div>
-                                        <div className="val">66</div>
+                                        <div className="val">{activityRate.total}</div>
                                     </div>
                                     <div className="point">
                                         <img src={pointImg} alt="" />
@@ -104,15 +226,15 @@ class index extends Component {
                                 <div className="num">
                                     <div>
                                         <div className="key">已预约</div>
-                                        <div className="value">66</div>
+                                        <div className="value">{activityRate.reserved}</div>
                                     </div>
                                     <div>
                                         <div className="key">已完成</div>
-                                        <div className="value">66</div>
+                                        <div className="value">{activityRate.finished}</div>
                                     </div>
                                     <div>
                                         <div className="key">本月活动</div>
-                                        <div className="value">66</div>
+                                        <div className="value">{activityRate.thisMonth}</div>
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +255,7 @@ class index extends Component {
                                     <div>访问次数</div>
                                 </div>
                                 <div className="item-body">
-                                    <HBar xAxis={["王麻子", "小顺子", "二愣子", "名字比较长"]} yAxis={[20, 10, 5, 3]}></HBar>
+                                    <HBar xAxis={statisticsBypeopleList.xAxis} yAxis={statisticsBypeopleList.yAxis}></HBar>
                                 </div>
                             </div>
                         </div>
@@ -151,28 +273,28 @@ class index extends Component {
                                         <div className="box-desc">
                                             <div className="box-desc-left">
                                                 <div className="key">男性</div>
-                                                <div className="val">666</div>
+                                                <div className="val">{peopleAttribute.gender.man.val}</div>
                                             </div>
                                             <div className="box-desc-right">
-                                                66%
+                                                {peopleAttribute.gender.man.percent}%
                                             </div>
                                         </div>
                                         <div className="box-progress">
-                                            <HProgress percent="66"></HProgress>
+                                            <HProgress percent={peopleAttribute.gender.man.percent}></HProgress>
                                         </div>
                                     </div>
                                     <div className="woman sex-box">
                                         <div className="box-desc">
                                             <div className="box-desc-left">
                                                 <div className="key">女性</div>
-                                                <div className="val">666</div>
+                                                <div className="val">{peopleAttribute.gender.woman.val}</div>
                                             </div>
                                             <div className="box-desc-right">
-                                                34%
-                                    </div>
+                                                {peopleAttribute.gender.woman.percent}%
+                                            </div>
                                         </div>
                                         <div className="box-progress">
-                                            <HProgress percent="34" bgColor="#8A56A7"></HProgress>
+                                            <HProgress percent={peopleAttribute.gender.woman.percent} bgColor="#8A56A7"></HProgress>
                                         </div>
                                     </div>
                                 </div>
@@ -183,21 +305,21 @@ class index extends Component {
                                     <div className="item-bottom-box">
                                         <div className="box-item">
                                             <div className="progress">
-                                                <Progress percent="55"></Progress>
+                                                <Progress percent={peopleAttribute.age.young}></Progress>
                                             </div>
                                             <div className="type">青年</div>
                                         </div>
                                         <div className="box-item">
                                             <div className="progress">
-                                                <Progress percent="33"></Progress>
+                                                <Progress percent={peopleAttribute.age.middle}></Progress>
                                             </div>
-                                            <div className="type">青年</div>
+                                            <div className="type">中年</div>
                                         </div>
                                         <div className="box-item">
                                             <div className="progress">
-                                                <Progress percent="12"></Progress>
+                                                <Progress percent={peopleAttribute.age.elderly}></Progress>
                                             </div>
-                                            <div className="type">青年</div>
+                                            <div className="type">老年</div>
                                         </div>
                                     </div>
                                 </div>
@@ -214,7 +336,7 @@ class index extends Component {
                                         <span>活动次数</span><img src={pointImg} alt="" />
                                     </div>
                                     <div className="v-bar">
-                                        <VBar yAxis={[12, 23, 34, 45]} xAxis={["10.10", "10.10", "10.10", "10.10"]}></VBar>
+                                        <VBar yAxis={activityRateByWeek.y} xAxis={activityRateByWeek.x}></VBar>
                                     </div>
                                 </div>
                             </div>
@@ -233,38 +355,16 @@ class index extends Component {
                                         <div className="done-times">已完成活动</div>
                                     </div>
                                     <div className="table">
-                                        <div className="line layout">
-                                            <div className="position">北京</div>
-                                            <div className="times">8</div>
-                                            <div className="all-num">66</div>
-                                            <div className="norm-num">88</div>
-                                            <div className="vip-num">66</div>
-                                            <div className="done-times">55</div>
-                                        </div>
-                                        <div className="line layout">
-                                            <div className="position">北京</div>
-                                            <div className="times">8</div>
-                                            <div className="all-num">66</div>
-                                            <div className="norm-num">88</div>
-                                            <div className="vip-num">66</div>
-                                            <div className="done-times">55</div>
-                                        </div>
-                                        <div className="line layout">
-                                            <div className="position">北京</div>
-                                            <div className="times">8</div>
-                                            <div className="all-num">66</div>
-                                            <div className="norm-num">88</div>
-                                            <div className="vip-num">66</div>
-                                            <div className="done-times">55</div>
-                                        </div>
-                                        <div className="line layout">
-                                            <div className="position">北京</div>
-                                            <div className="times">8</div>
-                                            <div className="all-num">66</div>
-                                            <div className="norm-num">88</div>
-                                            <div className="vip-num">66</div>
-                                            <div className="done-times">55</div>
-                                        </div>
+                                        {
+                                            activityByCity.map((v, i) => (
+                                                <div key={i} className="line layout">
+                                                    <div className="position">{v.city}</div>
+                                                    {v.value.map((val, index) =>
+                                                        <div key={index}>{val}</div>
+                                                    )}
+                                                </div>
+                                            ))
+                                        }
                                     </div>
                                 </div>
                             </div>

@@ -13,6 +13,22 @@ class index extends Component {
             percent: 0
         }
     }
+    componentWillReceiveProps(props) {
+        let circleBgColor;
+        if (props.percent < 20) {
+            circleBgColor = "#9BE8DD"
+        } else if (props.percent < 50) {
+            circleBgColor = "#67BFB3"
+        } else {
+            circleBgColor = "#19C1AA"
+        }
+        this.setState({
+            circleBgColor,
+            percent: props.percent ? props.percent : 0
+        }, () => {
+            this.toCanvas()
+        })
+    }
     componentDidMount() {
         var myCanvas = this.refs.container
         let width = myCanvas.offsetWidth
@@ -32,7 +48,7 @@ class index extends Component {
             percent: this.props.percent ? this.props.percent : 0,
         }, () => {
 
-            this.toCanvas()
+            // this.toCanvas()
         })
     }
     toCanvas = () => {
