@@ -162,7 +162,7 @@ class index extends Component {
                 type: 'category',
                 boundaryGap: false,
                 // show: false,
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                data: []
             },
             yAxis: {
                 show: false,
@@ -170,7 +170,7 @@ class index extends Component {
                 boundaryGap: false,
             },
             series: [{
-                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                data: [],
                 type: 'line',
                 smooth: true,
                 areaStyle: {

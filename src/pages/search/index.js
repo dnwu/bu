@@ -43,7 +43,7 @@ class index extends Component {
 
     componentDidMount() {
         // 初始化搜索框value
-        let trans = this.props.location.params || {value:"",city:""}
+        let trans = this.props.location.params || { value: "", city: "" }
         this.refs.input.state.value = trans.value
         this.setState({
             city: trans.city
@@ -88,7 +88,7 @@ class index extends Component {
             }
         }
         let { data } = await api.getActivesBySearch(options)
-        console.log(data.data.activities);
+        // console.log(data.data.activities);
         if (data.code === 0) {
             let list = JSON.parse(JSON.stringify(this.state.activesList))
             list.push(...data.data.activities)
@@ -118,7 +118,7 @@ class index extends Component {
         let { data } = await api.getPersonsBySearch(options)
         // console.log(data);
         if (data.code === 0) {
-            // console.log('persons', data);
+            console.log('persons', data.data.persons);
             let list = JSON.parse(JSON.stringify(this.state.personsList))
             list.push(...data.data.persons)
             list = this.filterText(list)
@@ -201,7 +201,7 @@ class index extends Component {
         var re = new RegExp(keyWord, "g")
         list.forEach((v, i) => {
             v.name = v.name.replace(re, `<span class="height-text">${keyWord}</span>`)
-            v.remarks = v.remarks.replace(re, `<span class="height-text">${keyWord}</span>`)
+            v.remarks = v.remarks ? v.remarks.replace(re, `<span class="height-text">${keyWord}</span>`) : ""
             v.tags = v.tags.map(item => {
                 return item.replace(re, `<span class="height-text">${keyWord}</span>`)
             })
@@ -220,13 +220,13 @@ class index extends Component {
         const acitveCard = (
             this.state.activesList.map((v, i) => (
                 <div onClick={this.selectActive.bind(this, v.id)} className="card" key={i}>
-                    <img src={defaultActiveImg} alt="" />
+                    <img src={v.picture ? v.picture : defaultActiveImg} alt="" />
                     <div className="info">
                         <div className="name">
                             <div className="tit" dangerouslySetInnerHTML={{ __html: v.name }}></div>
                             <div className="tags">
                                 {
-                                    v.tags.map((ele, index) => <div key={index}><img src={tagIcon} alt="" /><span dangerouslySetInnerHTML={{__html: ele}}></span></div>)
+                                    v.tags.map((ele, index) => <div key={index}><img src={tagIcon} alt="" /><span dangerouslySetInnerHTML={{ __html: ele }}></span></div>)
                                 }
                             </div>
                         </div>
@@ -248,17 +248,25 @@ class index extends Component {
         const personCard = (
             this.state.personsList.map((v, i) => (
                 <div onClick={this.selectPerson.bind(this, v.id)} className="card" key={i}>
-                    <img src={defaultImg} alt="" />
+                    <img src={v.picture ? v.picture : defaultImg} alt="" />
                     <div className="info">
                         <div className="name">
-                            <span dangerouslySetInnerHTML={{ __html: v.name }}></span>
-                            <img src={v.type === 2 ? vipImg : normImg} className={v.type === 2 ? "vip" : "norm"} alt="" />
+                            <div className="tit">
+                                <span dangerouslySetInnerHTML={{ __html: v.name }}></span>
+                                <img src={v.type === 2 ? vipImg : normImg} className={v.type === 2 ? "vip" : "norm"} alt="" />
+                            </div>
+                            <div className="tags">
+                                {
+                                    v.tags.map((ele, index) => <div key={index}><img src={tagIcon} alt="" /><span dangerouslySetInnerHTML={{ __html: ele }}></span></div>)
+                                }
+                            </div>
+
                         </div>
                         <div className="title">{v.title}</div>
-                        {v.remarks === "" ?
+                        {/* {v.remarks === "" ?
                             <div className="mark none">暂无备注</div> :
                             <div className="mark" dangerouslySetInnerHTML={{ __html: v.remarks }}></div>
-                        }
+                        } */}
                     </div>
                 </div>
             ))
