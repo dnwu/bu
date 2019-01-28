@@ -12,7 +12,6 @@ class index extends Component {
         }
     }
     componentWillReceiveProps(props) {
-        console.log(props);
         let yAxis = props.yAxis || []
         let max = Math.max(...yAxis)
         let newYAxis = yAxis.map(v => {
@@ -21,7 +20,6 @@ class index extends Component {
                 percent: (v / max * 100).toFixed(2) + "%"
             }
         })
-        // console.log(newYAxis);
         this.setState({
             xAxis: props.xAxis || [],
             yAxis: newYAxis
@@ -36,7 +34,6 @@ class index extends Component {
                 percent: (v / max * 100).toFixed(2) + "%"
             }
         })
-        // console.log(newYAxis);
         this.setState({
             xAxis: this.props.xAxis || [],
             yAxis: newYAxis
@@ -51,8 +48,8 @@ class index extends Component {
                 <div style={style} className="key-box">
                     {
                         this.state.xAxis.map((v, i) =>
-                            <Tooltip title={v}>
-                                <div key={i}>{v}</div>
+                            <Tooltip key={i} title={v}>
+                                <div>{v}</div>
                             </Tooltip>
                         )
                     }

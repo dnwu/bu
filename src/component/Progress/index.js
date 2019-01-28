@@ -33,19 +33,11 @@ class index extends Component {
         var myCanvas = this.refs.container
         let width = myCanvas.offsetWidth
         let height = myCanvas.offsetHeight
-        let circleBgColor;
-        if (this.props.percent < 20) {
-            circleBgColor = "#9BE8DD"
-        } else if (this.props.percent < 50) {
-            circleBgColor = "#67BFB3"
-        } else {
-            circleBgColor = "#19C1AA"
-        }
         this.setState({
             width,
             height,
-            circleBgColor,
-            percent: this.props.percent ? this.props.percent : 0,
+            // circleBgColor,
+            // percent: this.props.percent ? this.props.percent : 0,
         }, () => {
 
             // this.toCanvas()
@@ -54,7 +46,7 @@ class index extends Component {
     toCanvas = () => {
         var myCanvas = this.refs.canvas
         var ctx = myCanvas.getContext("2d");
-
+        ctx.clearRect(0, 0, myCanvas.offsetWidth, myCanvas.offsetHeight);
         let center_x = myCanvas.offsetWidth / 2
         let center_y = myCanvas.offsetHeight / 2
         this.backgroundCircle(ctx, center_x, center_y)
