@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import api from './../../server'
+import moment from 'moment'
 import { Icon, message } from "antd"
 import './index.scss'
 import Head from './../../component/Head'
@@ -63,23 +64,27 @@ class index extends Component {
     formatStatisticsData(data) {
         let xAxis = Object.keys(data.monthlyCount)
         let yAxis = Object.values(data.monthlyCount)
-        xAxis.forEach((v,i)=> {
+        xAxis.forEach((v, i) => {
             xAxis[i] = v.slice(-5)
         })
+        let imgs = [0, 0, 0]
+        imgs.unshift(...data.imgs)
+        imgs.splice(3)
         let obj = {
             activityTotal: data.activityTotal,
             times: {
                 xAxis,
                 yAxis
             },
-            imgs: data.imgs
+            imgs
         }
+        console.log('obj', obj);
         this.setState({
             statistics: obj
         })
     }
     render() {
-        let {personInfo, statistics} = this.state
+        let { personInfo, statistics } = this.state
         return (
             <div className="person-info">
                 <Head></Head>
@@ -145,26 +150,31 @@ class index extends Component {
                         <div className="right">
                             <div className="title">最近匹配<img src={pointImg} alt="" /></div>
                             <div className="statistics-box">
-                                <div className="img-box">
-                                    <div className="img">
-                                        <img src={defaultImg} alt="" />
-                                    </div>
-                                    <p>2010-10-10</p>
-                                </div>
-                                <div className="img-box">
-                                    <div className="img">
-                                        <img src={defaultImg} alt="" />
-                                    </div>
-                                    <p>2010-10-10</p>
-                                </div>
-                                <div className="img-box">
-                                    <div className="img">
-                                        <div className="none" >
-                                            <img src={logoImg} alt="" />
-                                        </div>
-                                    </div>
-                                    <p>2010-10-10</p>
-                                </div>
+                                {
+                                    statistics.imgs.map((v, i) => {
+                                        if (v === 0) {
+                                            return (
+                                                <div key={i} className="img-box">
+                                                    <div className="img">
+                                                        <div className="none" >
+                                                            <img src={logoImg} alt="" />
+                                                        </div>
+                                                    </div>
+                                                    <p>暂无</p>
+                                                </div>
+                                            )
+                                        } else {
+                                            return (
+                                                <div key={i} className="img-box">
+                                                    <div className="img">
+                                                        <img src={"data:image/png;base64," + v.img} alt="" />
+                                                    </div>
+                                                    <p>{moment(v.ts * 1000).format("YYYY-MM-DD")}</p>
+                                                </div>
+                                            )
+                                        }
+                                    })
+                                }
                             </div>
                         </div>
                     </div>
