@@ -12,6 +12,9 @@ import logoImg from './../../static/logo.png'
 import position from './../../static/positon.svg'
 import point from "./../../static/point.svg"
 class index extends Component {
+    componentDidMount() {
+        console.log(this.props);
+    }
     render() {
         return (
             <div className="active-info">

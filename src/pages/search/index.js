@@ -178,12 +178,18 @@ class index extends Component {
         })
     }
     selectPerson = (id) => {
-        console.log(id);
-        this.props.history.push('/search/person-info')
+        sessionStorage.setItem("personId", id)
+        this.props.history.push({
+            pathname: '/search/person-info',
+            params: { id }
+        })
     }
     selectActive = (id) => {
-        console.log(id);
-        this.props.history.push('/search/active-info')
+        sessionStorage.setItem("activeId", id)
+        this.props.history.push({
+            pathname: '/search/active-info',
+            params: { id }
+        })
     }
     drawerClose = () => {
         this.setState({

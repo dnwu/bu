@@ -57,7 +57,7 @@ class api {
     // 删除城市
     deleteCity(id) {
         return axios.delete("/admin/city", {
-            data: {id}
+            data: { id }
         })
     }
 
@@ -71,7 +71,7 @@ class api {
     // 删除详细地址
     deleteDetail(id) {
         return axios.delete("/admin/location", {
-            data: {id}
+            data: { id }
         })
     }
 
@@ -188,20 +188,65 @@ class api {
     }
 
 
+    /**
+     * // 获取搜索人员信息中统计信息
+     *  id(number): 人员id
+     *  offset(number): 偏移量
+     *  limit(number): 数量
+     *  imgOffset(number): 抓拍小图偏移量
+     *  imgLimit(number): 抓拍小图数量
+     * 
+     * @param {id, offset, limit, imgOffset, imgLimit} options 
+     */
+    getpersonStatisticsInfo(options) {
+        return axios.get('/admin/statistics/person', {
+            params: options
+        })
+    }
+    /**
+     * 获取人员参加的活动列表
+     * @param {offset, limit, id} options 
+     */
+    getPersonActiveList(options) {
+        return axios.get('/admin/person/activities', {
+            params: options
+        })
+    }
+
+    /**
+     * 获取搜索活动信息中统计信息
+     * @param {id} options 
+     */
+    getActiveStatisticsInfo(options) {
+        return axios.get('/admin/statistics/activity', {
+            params: options
+        })
+    }
+
+    /**
+     * 获取参加某活动的各类人员列表
+     * type(number): 人员类别 人员属性 -1 未知 1 内部陪访人员 2 VIP
+     * @param {offset, limit, type, id} options 
+     */
+    getActivePersonList(options) {
+        return axios.get('/admin/activity/persons', {
+            params: options
+        })
+    }
 
 
     // 活动频次统计
     getActivityRate() {
         return axios.get('/admin/statistics/activity/count')
     }
-    
+
     /**
      * 每周活动频次统计  活动频次统计
      * @param {offset, limit} options 
      */
     getActivityRateByWeek(offset, limit) {
         return axios.get('/admin/statistics/activity/weekly/count', {
-            params: {offset, limit}
+            params: { offset, limit }
         })
     }
     // 活动地点历史统计
@@ -212,24 +257,24 @@ class api {
     getPeopleAttribute() {
         return axios.get('/admin/statistics/person/attr/count')
     }
-    
+
     /**
      * // 系统访问总人数
      * @param {offset, limit} options 
      */
     getStatisticsByPeopleNum(offset, limit) {
         return axios.get("/admin/statistics/person/count", {
-            params: {offset, limit}
+            params: { offset, limit }
         })
     }
-    
+
     /**
      *  人员到访列表
      * @param {offset, limit} options 
      */
     getStatisticsBypeopleList(offset, limit) {
         return axios.get("/admin/statistics/person/ranking/count", {
-            params: {offset, limit}
+            params: { offset, limit }
         })
     }
 }

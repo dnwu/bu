@@ -1,27 +1,98 @@
 import React, { Component } from 'react'
-import { Icon } from "antd"
+import api from './../../server'
+import { Icon, message } from "antd"
 import './index.scss'
 import Head from './../../component/Head'
 import VBar from './../../component/VBar'
 import VipImg from './../../static/VIP.png'
+import normImg from './../../static/norm.png'
 import tagImg from './../../static/tag.svg'
 import defaultImg from './../../static/default.png'
 import pointImg from './../../static/point.svg'
 import logoImg from './../../static/logo.png'
 
 class index extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            personInfo: {},
+            statistics: {
+                activityTotal: 0,
+                times: {
+                    xAxis: [],
+                    yAxis: []
+                },
+                imgs: []
+            }
+        }
+    }
+    componentDidMount() {
+        let id = this.props.location.params && this.props.location.params.id
+        if (!id) {
+            id = sessionStorage.getItem("personId")
+        }
+        this.getPersonInfo(id)
+        this.getpersonStatisticsInfo(id)
+    }
+    getPersonInfo = async (id) => {
+        let { data } = await api.getPersonInfo(id)
+        if (data.code === 0) {
+            this.setState({
+                personInfo: data.data
+            })
+        } else {
+            message.warning(data.message)
+        }
+    }
+    getpersonStatisticsInfo = async (id) => {
+        let options = {
+            id,
+            offset: 0,
+            limit: 10,
+            imgOffset: 0,
+            imgLimit: 3
+        }
+        let { data } = await api.getpersonStatisticsInfo(options)
+        console.log(data.data);
+        if (data.code === 0) {
+            this.formatStatisticsData(data.data)
+        } else {
+            message.warning(data.message)
+        }
+    }
+    formatStatisticsData(data) {
+        let xAxis = Object.keys(data.monthlyCount)
+        let yAxis = Object.values(data.monthlyCount)
+        xAxis.forEach((v,i)=> {
+            xAxis[i] = v.slice(-5)
+        })
+        let obj = {
+            activityTotal: data.activityTotal,
+            times: {
+                xAxis,
+                yAxis
+            },
+            imgs: data.imgs
+        }
+        this.setState({
+            statistics: obj
+        })
+    }
     render() {
+        let {personInfo, statistics} = this.state
         return (
             <div className="person-info">
                 <Head></Head>
                 <div className="body">
                     <div className="tit">
                         <div className="left">
-                            <h3>王麻子<img src={VipImg} alt="" /></h3>
+                            <h3>{personInfo.name}<img className={personInfo.type === 2 ? "" : 'norm'} src={personInfo.type === 2 ? VipImg : normImg} alt="" /></h3>
                             <div>
-                                <span><img src={tagImg} alt="" />标签1</span>
-                                <span><img src={tagImg} alt="" />标签2</span>
-                                <span><img src={tagImg} alt="" />标签3</span>
+                                {
+                                    personInfo.tags && personInfo.tags.map((v, i) =>
+                                        <span key={i}><img src={tagImg} alt="" />{v}</span>
+                                    )
+                                }
                             </div>
                         </div>
                         <div className="right">
@@ -35,33 +106,31 @@ class index extends Component {
                             <div className="info">
                                 <div className="box">
                                     <div className="key">性别</div>
-                                    <div className="val">男</div>
+                                    <div className="val">{personInfo.gender === 1 ? "男" : "女"}</div>
                                 </div>
                                 <div className="box">
                                     <div className="key">职位/称谓</div>
-                                    <div className="val">光大产品总监</div>
+                                    <div className="val">{personInfo.title}</div>
                                 </div>
                                 <div className="box">
                                     <div className="key">年龄</div>
-                                    <div className="val">16</div>
+                                    <div className="val">{personInfo.age}</div>
                                 </div>
                                 <div className="box">
                                     <div className="key">手机号</div>
-                                    <div className="val">169243265567</div>
+                                    <div className="val">{personInfo.telephone ? personInfo.telephone : "无"}</div>
                                 </div>
                             </div>
                             <div className="mark">
-                                <span>一个重要的领导，在某某活动、某某活动对特斯联进行了考察。一个重要的领导，
-    在某某活动、某某活动对特斯联进行了考察。一个重要的领导，在某某活动、某某活动对特斯联进行了考察。一个重要的领导，
-    在某某活动、某某活动对特斯联进行了考察。</span>
+                                <span>{personInfo.remarks ? personInfo.remarks : "无"}</span>
                             </div>
                             <div className="num">
-                                <div className="num">12</div>
+                                <div className="num">{statistics.activityTotal}</div>
                                 <div className="desc">出席活动次数</div>
                             </div>
                         </div>
                         <div className="right-img">
-                            <img src={defaultImg} alt="" />
+                            <img src={personInfo.picture ? personInfo.picture : defaultImg} alt="" />
                         </div>
                     </div>
                     <div className="statistics-card">
@@ -69,8 +138,8 @@ class index extends Component {
                             <div className="title">活动频次<img src={pointImg} alt="" /></div>
                             <div className="statistics-box">
                                 <VBar
-                                    xAxis={['10.10', '10.10', '上周', '本周']}
-                                    yAxis={[4, 34, 44, 66]}></VBar>
+                                    xAxis={statistics.times.xAxis}
+                                    yAxis={statistics.times.yAxis}></VBar>
                             </div>
                         </div>
                         <div className="right">
