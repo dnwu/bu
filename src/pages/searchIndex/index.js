@@ -4,6 +4,8 @@ import { Icon, Input, Button, Select } from 'antd'
 import api from './../../server'
 import Head from './../../component/Head'
 import logoIcon from './../../static/logo.png'
+import peopleImg from './../../static/manage.svg'
+import activeImg from './../../static/actives.svg'
 const Option = Select.Option;
 class index extends Component {
     state = {
@@ -26,16 +28,31 @@ class index extends Component {
         let value = this.refs.input.state.value,
             city = this.state.city
 
-        this.props.history.push({ pathname: '/search/page', params: {value, city} })
+        this.props.history.push({ pathname: '/search/page', params: { value, city } })
     }
     selectChange = (city) => {
         this.setState({ city })
+    }
+    goto = (path) => {
+        this.props.history.push(path)
     }
     render() {
         return (
             <div className="search-index">
                 <Head></Head>
                 <div className="body">
+                    <div className="nav-box">
+                        <div className="box">
+                            <img onClick={this.goto.bind(this, "/search/all-people")} src={peopleImg} alt="" />
+                            <div className="ch">所有人员</div>
+                            <div className="en">All people</div>
+                        </div>
+                        <div className="box">
+                            <img onClick={this.goto.bind(this, "/search/all-active")} src={activeImg} alt="" />
+                            <div className="ch">所有活动</div>
+                            <div className="en">All Activitise</div>
+                        </div>
+                    </div>
                     <div className="search-icon">
                         <Icon type="ellipsis" /><Icon type="search" /><Icon type="ellipsis" />
                     </div>

@@ -5,6 +5,8 @@ import Reserve from '../pages/reserve';
 import CreateActive from '../pages/creatActive'
 import AddPerson from '../pages/addPerson'
 import SearchIndex from './../pages/searchIndex'
+import AllPeople from './../pages/allpeople'
+import AllActive from './../pages/allActive'
 import Search from './../pages/search'
 import PersonInfo from './../pages/personInfo'
 import PersonActiveList from './../pages/personActiveList'
@@ -41,6 +43,14 @@ const routerConfig = [
     }, {
         path: '/search/index',
         component: SearchIndex,
+        auth: true,
+    }, {
+        path: '/search/all-people',
+        component: AllPeople,
+        auth: true,
+    }, {
+        path: '/search/all-active',
+        component: AllActive,
         auth: true,
     }, {
         path: '/search/page',
