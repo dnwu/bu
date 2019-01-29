@@ -38,6 +38,7 @@ class index extends Component {
     getPersonInfo = async (id) => {
         let { data } = await api.getPersonInfo(id)
         if (data.code === 0) {
+            sessionStorage.setItem("personInfo", JSON.stringify(data.data))
             this.setState({
                 personInfo: data.data
             })

@@ -1,4 +1,161 @@
-.person-active-list{
+.person-active-list {
     min-height: 100vh;
-    background: url('./../../static/bg2.jpg')
+    background: url('./../../static//bg3.png');
+    display: flex;
+    flex-direction: column;
+    .body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        .body-head {
+            height: 140px;
+            background-color: rgba(0, 0, 0, .5);
+            display: flex;
+            color: #fff;
+            padding: 0 70px;
+            >div {
+                flex: 1;
+            }
+            .left {
+                text-align: left;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                .tit {
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+                .num {
+                    .title {
+                        font-size: 12px;
+                        color: #797A98;
+                    }
+                    .num {
+                        font-size: 18px;
+                    }
+                }
+            }
+            .right {
+                text-align: right;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                .name {
+                    margin-bottom: 5px;
+                    img {
+                        width: 30px;
+                        border: 1px dotted #e0e0e0;
+                        margin-right: 10px;
+                        &.norm {
+                            border: none;
+                            width: 36px;
+                        }
+                    }
+                }
+                .tags {
+                    height: 30px;
+                    text-align: right;
+                    color: #C9CFE5;
+                    font-size: 12px;
+                    >span {
+                        margin: 0 4px;
+                    }
+                    img {
+                        width: 10px;
+                        height: 14px;
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+        .body-main {
+            flex: 1;
+            display: flex;
+            .scroll {
+                width: 600px;
+                margin: 0 70px;
+                background-color: rgba(84, 91, 94, .8);
+                .card {
+                    display: flex;
+                    height: 100px;
+                    padding: 10px;
+                    background-color: #373A3B;
+                    margin: 10px;
+                    color: #FEFFFE;
+                    border-radius: 5px;
+                    .img {
+                        img {
+                            width: 80px;
+                            height: 80px;
+                        }
+                    }
+                    .info {
+                        padding-left: 20px;
+                        padding-right: 20px;
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-around;
+                        .top {
+                            display: flex;
+                            .tags {
+                                text-align: right;
+                                flex: 1;
+                                color: #C9CFE5;
+                                font-size: 12px;
+                                >span {
+                                    margin: 0 4px;
+                                }
+                                img {
+                                    width: 10px;
+                                    height: 14px;
+                                    margin-right: 5px;
+                                }
+                            }
+                        }
+                        .bottom {
+                            display: flex;
+                            justify-content: space-between;
+                            .positon {
+                                font-size: 12px;
+                                vertical-align: middle;
+                                line-height: 20px;
+                                color: #797C95;
+                                img {
+                                    width: 16px;
+                                }
+                                .positon {
+                                    margin: 0 6px;
+                                }
+                            }
+                            .status {
+                                color: #C9CFE5;
+                                &.active {
+                                    color: #19C1AA;
+                                }
+                            }
+                        }
+                    }
+                }
+                .loading {
+                    text-align: center;
+                    font-size: 12px;
+                    color: rgba(255, 255, 255, .4); // background-color: rgba(0, 0, 0, .1);
+                    i {
+                        margin-left: 10px;
+                    }
+                }
+            }
+            .logo {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                img {
+                    filter: opacity(0.5);
+                    height: 120px;
+                }
+            }
+        }
+    }
 }

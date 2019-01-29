@@ -6,6 +6,7 @@ class index extends Component {
         return (
             <div className="active-person-list">
                 <Head></Head>
+                
             </div>
         );
     }
