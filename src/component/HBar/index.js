@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Tooltip} from "antd"
+import { Tooltip } from "antd"
 import './index.scss'
 
 class index extends Component {
@@ -14,10 +14,18 @@ class index extends Component {
     componentWillReceiveProps(props) {
         let yAxis = props.yAxis || []
         let max = Math.max(...yAxis)
+        console.log("max", max);
         let newYAxis = yAxis.map(v => {
-            return {
-                value: v,
-                percent: (v / max * 100).toFixed(2) + "%"
+            if (max === 0) {
+                return {
+                    value: v,
+                    percent: "0%"
+                }
+            } else {
+                return {
+                    value: v,
+                    percent: (v / max * 100).toFixed(2) + "%"
+                }
             }
         })
         this.setState({

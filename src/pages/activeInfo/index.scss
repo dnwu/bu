@@ -89,6 +89,9 @@ $padding-lr: 100px;
                         color: #fff;
                         font-weight: 700;
                         font-size: 18px;
+                        &.active {
+                            color: #19C1AA;
+                        }
                     }
                     .time {
                         margin-left: 10px;

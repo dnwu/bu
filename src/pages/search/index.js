@@ -232,7 +232,7 @@ class index extends Component {
                             <div className="tit" dangerouslySetInnerHTML={{ __html: v.name }}></div>
                             <div className="tags">
                                 {
-                                    v.tags.map((ele, index) => <div key={index}><img src={tagIcon} alt="" /><span dangerouslySetInnerHTML={{ __html: ele }}></span></div>)
+                                    v.tags && v.tags.map((ele, index) => <div key={index}><img src={tagIcon} alt="" /><span dangerouslySetInnerHTML={{ __html: ele }}></span></div>)
                                 }
                             </div>
                         </div>

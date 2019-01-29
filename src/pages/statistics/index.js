@@ -58,7 +58,7 @@ class index extends Component {
                     activityByCity: this.formatActivityByCity(activityByCity.data.data.citiesCount),
                     peopleAttribute: this.formatPeopleAttribute(peopleAttribute.data.data),
                     statisticsByPeopleNum: statisticsByPeopleNum.data.data.dailyCount,
-                    statisticsBypeopleList:this.formatStatisticsBypeopleList(statisticsBypeopleList.data.data.Ranking),
+                    statisticsBypeopleList: this.formatStatisticsBypeopleList(statisticsBypeopleList.data.data.Ranking),
                 }, () => {
                     this.fromatStatisticsByPeopleNum(this.state.statisticsByPeopleNum)
                     // console.log('state', this.state.statisticsBypeopleList);
@@ -86,8 +86,24 @@ class index extends Component {
     formatPeopleAttribute = (data) => {
         let totalAge = this.add(data.age)
         let totalGender = this.add(data.gender)
-        let Obj = {
-            gender: {
+        let age, gender
+        if (totalAge === 0) {
+            age = { young: 0, middle: 0, elderly: 0 }
+        } else {
+            age = {
+                young: Math.round(data.age[0] / totalAge * 10000) / 100.00,
+                middle: Math.round(data.age[1] / totalAge * 10000) / 100.00,
+                elderly: Math.round(data.age[2] / totalAge * 10000) / 100.00
+            }
+        }
+
+        if (totalGender === 0) {
+            gender = {
+                man: { percent: 0, val: 0 },
+                woman: { percent: 0, val: 0 }
+            }
+        } else {
+            gender = {
                 man: {
                     val: data.gender[0],
                     percent: Math.round(data.gender[0] / totalGender * 10000) / 100.00
@@ -96,14 +112,10 @@ class index extends Component {
                     val: data.gender[1],
                     percent: Math.round(data.gender[1] / totalGender * 10000) / 100.00
                 }
-            },
-            age: {
-                young: Math.round(data.age[0] / totalAge * 10000) / 100.00,
-                middle: Math.round(data.age[1] / totalAge * 10000) / 100.00,
-                elderly: Math.round(data.age[2] / totalAge * 10000) / 100.00
             }
         }
-        return Obj
+        let obj = { age, gender, type: data.type }
+        return obj
     }
     fromatStatisticsByPeopleNum = (data) => {
         let xAxis = Object.keys(data)
