@@ -81,6 +81,9 @@ class index extends Component {
             statistics: obj
         })
     }
+    goto = () => {
+        this.props.history.push('/search/person-active-list')
+    }
     render() {
         let { personInfo, statistics } = this.state
         return (
@@ -99,7 +102,7 @@ class index extends Component {
                             </div>
                         </div>
                         <div className="right">
-                            <Icon type="menu-unfold" />
+                            <Icon onClick={this.goto} type="menu-unfold" />
                             <p className="ch">出席活动列表</p>
                             <p className="en">Activities List</p>
                         </div>

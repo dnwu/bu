@@ -7,7 +7,9 @@ import AddPerson from '../pages/addPerson'
 import SearchIndex from './../pages/searchIndex'
 import Search from './../pages/search'
 import PersonInfo from './../pages/personInfo'
+import PersonActiveList from './../pages/personActiveList'
 import ActiveInfo from './../pages/activeInfo'
+import ActivePersonList from './../pages/activePersonList'
 import Statistics from './../pages/statistics'
 import NotFind from '../pages/404'
 
@@ -49,8 +51,16 @@ const routerConfig = [
         component: PersonInfo,
         auth: true,
     }, {
+        path: '/search/person-active-list',
+        component: PersonActiveList,
+        auth: true,
+    }, {
         path: '/search/active-info',
         component: ActiveInfo,
+        auth: true,
+    }, {
+        path: '/search/active-person-list',
+        component: ActivePersonList,
         auth: true,
     }, {
         path: '/statistics',
