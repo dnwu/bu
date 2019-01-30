@@ -118,7 +118,7 @@ class index extends Component {
         let { data } = await api.getPersonsBySearch(options)
         // console.log(data);
         if (data.code === 0) {
-            console.log('persons', data.data.persons);
+            // console.log('persons', data.data.persons);
             let list = JSON.parse(JSON.stringify(this.state.personsList))
             list.push(...data.data.persons)
             list = this.filterText(list)

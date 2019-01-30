@@ -10,31 +10,34 @@ import point from './../../static/point.svg'
 import defaultAva from './../../static/default.png'
 import tagSvg from './../../static/tag.svg'
 
-let vipPage = 1,
-    normPage = 1,
-    pageSize = 10
 class index extends Component {
-    state = {
-        vipList: [],
-        normList: [],
-        vipTotalInfo: {},
-        normTotalInfo: {},
-        cardInfo: {},  //右側信息
-        selectId: -1,
-        vipIsHas: true,
-        normIsHas: true
+    constructor(props) {
+        super(props)
+        this.state = {
+            vipList: [],
+            normList: [],
+            vipTotalInfo: {},
+            normTotalInfo: {},
+            cardInfo: {},  //右側信息
+            selectId: -1,
+            vipIsHas: true,
+            normIsHas: true
+        }
+        this.vipPage = 1
+        this.normPage = 1
+        this.pageSize = 10
     }
     componentDidMount() {
-        vipPage = 1
-        normPage = 1
+        this.vipPage = 1
+        this.normPage = 1
         this.getVipList(1)
         this.getNormList(1)
     }
     getVipList = async (page) => {
-        // type 0, 1, 2 分别代表全部, 陪访, vip人员
+        // type 0, 1, 2 3分别代表全部, 陪访, vip人员 其他
         let options = {
-            offset: (page - 1) * pageSize,
-            limit: pageSize,
+            offset: (page - 1) * this.pageSize,
+            limit: this.pageSize,
             type: 2,
         }
         let { data } = await api.getPersonList(options)
@@ -55,7 +58,7 @@ class index extends Component {
                     vipIsHas: true
                 })
             }
-            if (vipPage === 1) {
+            if (this.vipPage === 1) {
                 let id = data.data.persons[0].id
                 this.getPersonInfo(id)
             }
@@ -63,8 +66,8 @@ class index extends Component {
     }
     getNormList = async (page) => {
         let options = {
-            offset: (page - 1) * pageSize,
-            limit: pageSize,
+            offset: (page - 1) * this.pageSize,
+            limit: this.pageSize,
             type: 1,
         }
         let { data } = await api.getPersonList(options)
@@ -141,13 +144,13 @@ class index extends Component {
     }
     vipScrollEnd = async () => {
         if (this.state.vipList.length === this.state.vipTotalInfo.total) return
-        vipPage++
-        await this.getVipList(vipPage)
+        this.vipPage++
+        await this.getVipList(this.vipPage)
     }
     normScrollEnd = async () => {
         if (this.state.normList.length === this.state.normTotalInfo.total) return
-        normPage++
-        await this.getNormList(normPage)
+        this.normPage++
+        await this.getNormList(this.normPage)
     }
     goto = (path) => {
         sessionStorage.removeItem('cardInfo')
