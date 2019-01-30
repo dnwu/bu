@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './index.scss'
 import { Empty, Icon } from 'antd'
+import moment from 'moment'
 import api from './../../server'
 import Head from './../../component/Head'
 import IScroll from './../../component/IScroll'
@@ -146,15 +147,15 @@ class index extends Component {
             this.state.vipList.map((v, i) =>
                 <div className="card" key={i}>
                     <div className="left">
-                        <div className="img"><img src={defaultAva} alt="" /></div>
+                        <div className="img"><img src={v.picture ? v.picture : defaultAva} alt="" /></div>
                         <div className="info">
-                            <div className="name">名字</div>
-                            <div className="title">职位XXXX</div>
+                            <div className="name">{v.name}</div>
+                            <div className="title">{v.title}</div>
                         </div>
                     </div>
                     <div className="right">
-                        <div className="time">10:10</div>
-                        <div className="times"><span>到访次数:</span><span>10</span></div>
+                        <div className="time">{moment(v.createdTime * 1000).format("hh:mm")}</div>
+                        <div className="times"><span>到访次数:</span><span>{v.number}</span></div>
                     </div>
                 </div>
             )
@@ -163,15 +164,15 @@ class index extends Component {
             this.state.normList.map((v, i) =>
                 <div className="card" key={i}>
                     <div className="left">
-                        <div className="img"><img src={defaultAva} alt="" /></div>
+                        <div className="img"><img src={v.picture ? v.picture : defaultAva} alt="" /></div>
                         <div className="info">
-                            <div className="name">名字</div>
-                            <div className="title">职位XXXX</div>
+                            <div className="name">{v.name}</div>
+                            <div className="title">{v.title}</div>
                         </div>
                     </div>
                     <div className="right">
-                        <div className="time">10:10</div>
-                        <div className="times"><span>到访次数:</span><span>10</span></div>
+                        <div className="time">{moment(v.createdTime * 1000).format("hh:mm")}</div>
+                        <div className="times"><span>到访次数:</span><span>{v.number}</span></div>
                     </div>
                 </div>
             )
@@ -180,15 +181,15 @@ class index extends Component {
             this.state.otherList.map((v, i) =>
                 <div className="card" key={i}>
                     <div className="left">
-                        <div className="img"><img src={defaultAva} alt="" /></div>
+                        <div className="img"><img src={v.picture ? v.picture : defaultAva} alt="" /></div>
                         <div className="info">
-                            <div className="name">名字</div>
-                            <div className="title">职位XXXX</div>
+                            <div className="name">{v.name}</div>
+                            <div className="title">{v.title}</div>
                         </div>
                     </div>
                     <div className="right">
-                        <div className="time">10:10</div>
-                        <div className="times"><span>到访次数:</span><span>10</span></div>
+                        <div className="time">{moment(v.createdTime * 1000).format("hh:mm")}</div>
+                        <div className="times"><span>到访次数:</span><span>{v.number}</span></div>
                     </div>
                 </div>
             )
