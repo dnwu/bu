@@ -6,8 +6,11 @@
         .sroll-bar {
             .bar {
                 visibility: visible;
-                // transform: scaleX(2);
                 cursor: pointer;
+                transform-origin: center;
+                &:hover {
+                    transform: scaleX(2) translateX(-25%);
+                }
             }
         }
     }
@@ -38,6 +41,5 @@
             position: absolute;
             width: 100%;
         }
-        
     }
 }

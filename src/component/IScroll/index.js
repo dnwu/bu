@@ -13,13 +13,6 @@ class index extends Component {
         this.control = true
         this.scrollTop = 0
     }
-    // state = {
-    //     scrollTop: 0,  // 列表top值
-    //     barTop: 0,    //滚动条top值,
-    //     scrollEnd: null, // 滚动条触碰到底部,
-    //     isShowBar: true
-    //     // control: true,  // 页面触及底部,控制请求次数,
-    // }
     componentWillReceiveProps(props) {
         this.setState({
             scrollEnd: props.scrollEnd
@@ -79,24 +72,6 @@ class index extends Component {
         barDOM.style.top = '0px'
         this.scrollTop = 0
     }
-    computeDOMValue = () => {
-        let scrollDOM = this.refs.scrollBox
-        let scrollBoxH = scrollDOM.offsetHeight  // 获取滚动列表的高度
-        let listBoxH = this.refs.list.offsetHeight        //获取滚动盒子的高度
-        let barDOM = this.refs.bar        //获取左侧滚动条dom
-        let barBoxH = this.refs.barBox.offsetHeight   // 获取滚动条的容器的高度
-        // console.log(scrollBoxH, listBoxH);
-        // 计算滚动条的高度
-        let barH = barBoxH * listBoxH / scrollBoxH
-        if (listBoxH / scrollBoxH > 1) {
-            barDOM.style.display = "none"
-        }
-        // 设置滚动条的高
-        barDOM.style.height = barH + 'px'
-        barDOM.style.top = this.state.barTop + 'px'
-        scrollDOM.style.top = this.state.scrollTop + 'px'
-
-    }
     scrollUp = async () => {
         let scrollBoxDOM = this.refs.scrollBox  //获取滚动内容dom
         let listBoxDOM = this.refs.list  //获取滚动容器dom
@@ -148,6 +123,39 @@ class index extends Component {
             this.scrollDown()
         }
     }
+    mouseDown = (e) => {
+        let barDOM = this.refs.bar
+        let BarBoxDOM = this.refs.barBox
+        let listBoxDOM = this.refs.list  //获取滚动容器dom 
+        let scrollBoxDOM = this.refs.scrollBox  //获取滚动内容dom
+        // console.log('barDOM', barDOM);
+        // console.log(barDOM.offsetTop, e.pageY);
+        let mousePageY = e.pageY   // 鼠标点击处, 距离页面top部的距离
+        let barTop = barDOM.offsetTop // 鼠标点击时, 滚动条的top值
+
+        document.onmousemove = async (e) => {
+            let barH = barDOM.offsetHeight  //滚动条的高度
+            let barBoxH = BarBoxDOM.offsetHeight // 滚动条容器的高度
+            let listBoxH = listBoxDOM.offsetHeight // 滚动列表容器的高度
+            let disY = e.pageY - mousePageY  // 鼠标移动的距离, 带正负
+            let afterBarTop = barTop + disY
+            if (afterBarTop <= 0 || afterBarTop >= barBoxH - barH) return  // 如果鼠标top值小于0或者滚动到外边了 ,就不要拖动了
+            let percent = afterBarTop / barH  // 滚动条 滚动的距离占自身高度的比值
+            this.scrollTop = listBoxH * percent
+            barDOM.style.top = `${afterBarTop}px`
+            scrollBoxDOM.style.top = `${-this.scrollTop}px`
+            if (barBoxH - barH - afterBarTop <= 100) {
+                await this.state.scrollEnd('老大,请求数据')
+            }
+        }
+        document.onmouseup = () => {
+            document.onmousemove = null;
+            document.onmouseup = null;
+        };
+    }
+    mouseUp = () => {
+
+    }
     render() {
         let style
         if (this.state.isShowBar) {
@@ -162,7 +170,7 @@ class index extends Component {
         return (
             <div onWheel={this.scroll} className="i-scroll">
                 <div style={style} ref="barBox" className="sroll-bar">
-                    <div ref="bar" className="bar"></div>
+                    <div onMouseDown={this.mouseDown} onMouseUp={this.mouseUp} ref="bar" className="bar"></div>
                 </div>
                 <div ref="list" className="component-list">
                     <div ref="scrollBox" className="scroll-box">
