@@ -109,7 +109,6 @@ class index extends Component {
         // 滚动条和滚动条容易高度差
         let hBarDif = BarBoxDOM.offsetHeight - barDOM.offsetHeight
         this.scrollTop = this.scrollTop - 20
-        // console.log(scrollTop);
         let ratio = this.scrollTop / hdif
         let barTop = hBarDif * ratio
 
@@ -128,8 +127,6 @@ class index extends Component {
         let BarBoxDOM = this.refs.barBox
         let listBoxDOM = this.refs.list  //获取滚动容器dom 
         let scrollBoxDOM = this.refs.scrollBox  //获取滚动内容dom
-        // console.log('barDOM', barDOM);
-        // console.log(barDOM.offsetTop, e.pageY);
         let mousePageY = e.pageY   // 鼠标点击处, 距离页面top部的距离
         let barTop = barDOM.offsetTop // 鼠标点击时, 滚动条的top值
 
@@ -139,7 +136,7 @@ class index extends Component {
             let listBoxH = listBoxDOM.offsetHeight // 滚动列表容器的高度
             let disY = e.pageY - mousePageY  // 鼠标移动的距离, 带正负
             let afterBarTop = barTop + disY
-            if (afterBarTop <= 0 || afterBarTop >= barBoxH - barH) return  // 如果鼠标top值小于0或者滚动到外边了 ,就不要拖动了
+            if (afterBarTop <= 0 || afterBarTop >= barBoxH - barH + 1) return  // 如果鼠标top值小于0或者滚动到外边了 ,就不要拖动了
             let percent = afterBarTop / barH  // 滚动条 滚动的距离占自身高度的比值
             this.scrollTop = listBoxH * percent
             barDOM.style.top = `${afterBarTop}px`
@@ -152,9 +149,6 @@ class index extends Component {
             document.onmousemove = null;
             document.onmouseup = null;
         };
-    }
-    mouseUp = () => {
-
     }
     render() {
         let style
@@ -170,7 +164,7 @@ class index extends Component {
         return (
             <div onWheel={this.scroll} className="i-scroll">
                 <div style={style} ref="barBox" className="sroll-bar">
-                    <div onMouseDown={this.mouseDown} onMouseUp={this.mouseUp} ref="bar" className="bar"></div>
+                    <div onMouseDown={this.mouseDown} ref="bar" className="bar"></div>
                 </div>
                 <div ref="list" className="component-list">
                     <div ref="scrollBox" className="scroll-box">

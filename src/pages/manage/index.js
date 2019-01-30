@@ -91,7 +91,6 @@ class index extends Component {
     }
     getPersonInfo = async (id) => {
         let { data } = await api.getPersonInfo(id)
-        console.log(data);
         if (data.code === 0) {
             this.setState({
                 cardInfo: data.data,

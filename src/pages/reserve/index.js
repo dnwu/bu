@@ -82,7 +82,6 @@ class index extends Component {
             loading: true
         })
         let { data } = await api.getActiveInfo(id)
-        console.log(data.data);
         if (data.code === 0) {
             this.setState({
                 activeInfo: data.data,
@@ -152,7 +151,6 @@ class index extends Component {
         }
     }
     modifyActiveStatusBtn = (type) => {
-        console.log(type);
         let modalTit
         if (type === 'start') {
             modalTit = "确认要开始活动吗"

@@ -48,7 +48,6 @@ class index extends Component {
         if (activeInfo) {
             this.initActiveInfoPage(activeInfo)
         }
-        console.log(activeInfo);
         this.getCityList()
     }
     // 如果是从编辑按钮跳转过来的就调用这个函数 ,初始化页面信息
@@ -96,7 +95,6 @@ class index extends Component {
         } else {
             defaultEnd = parseInt(e[0]) + 0.5
         }
-        console.log(defaultStart, defaultEnd);
         this.setState({
             defaultTime: [defaultStart, defaultEnd]
         })
@@ -227,7 +225,6 @@ class index extends Component {
     addCityOk = async () => {
         let name = this.refs.addCityInput.state.value
         let { data } = await api.addCity(name)
-        console.log(data);
         if (data.code === 0) {
             message.success('城市添加成功')
             this.getCityList()
@@ -253,7 +250,6 @@ class index extends Component {
             let file = this.state.file
             if (file) {
                 let { data } = await api.uploadImg(file)
-                console.log('data', data);
                 if (data.code === 0) {
                     // return data.data.url
                     resolve(data.data.fileName)
@@ -319,7 +315,6 @@ class index extends Component {
     delete = async () => {
         let id = this.state.activeInfo.id
         let { data } = await api.deleteActive(id)
-        console.log(data);
         if (data.code === 0) {
             message.success("删除成功")
             this.props.history.push('/reserve')

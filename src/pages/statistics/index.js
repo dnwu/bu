@@ -52,17 +52,21 @@ class index extends Component {
                 statisticsByPeopleNum,
                 statisticsBypeopleList,
             ) => {
-                this.setState({
-                    activityRate: activityRate.data.data,
-                    activityRateByWeek: this.formatActivityRateByWeek(activityRateByWeek.data.data.weeklyCount),
-                    activityByCity: this.formatActivityByCity(activityByCity.data.data.citiesCount),
-                    peopleAttribute: this.formatPeopleAttribute(peopleAttribute.data.data),
-                    statisticsByPeopleNum: statisticsByPeopleNum.data.data.dailyCount,
-                    statisticsBypeopleList: this.formatStatisticsBypeopleList(statisticsBypeopleList.data.data.Ranking),
-                }, () => {
-                    this.fromatStatisticsByPeopleNum(this.state.statisticsByPeopleNum)
-                    // console.log('state', this.state.statisticsBypeopleList);
-                })
+                try {
+                    this.setState({
+                        activityRate: activityRate.data.data,
+                        activityRateByWeek: this.formatActivityRateByWeek(activityRateByWeek.data.data.weeklyCount),
+                        activityByCity: this.formatActivityByCity(activityByCity.data.data.citiesCount),
+                        peopleAttribute: this.formatPeopleAttribute(peopleAttribute.data.data),
+                        statisticsByPeopleNum: statisticsByPeopleNum.data.data.dailyCount,
+                        statisticsBypeopleList: this.formatStatisticsBypeopleList(statisticsBypeopleList.data.data.Ranking),
+                    }, () => {
+                        this.fromatStatisticsByPeopleNum(this.state.statisticsByPeopleNum)
+                        // console.log('state', this.state.statisticsBypeopleList);
+                    })
+                } catch (e) {
+
+                }
             }))
     }
     formatActivityRateByWeek = (data) => {
