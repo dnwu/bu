@@ -14,7 +14,6 @@ class index extends Component {
     componentWillReceiveProps(props) {
         let yAxis = props.yAxis || []
         let max = Math.max(...yAxis)
-        console.log("max", max);
         let newYAxis = yAxis.map(v => {
             if (max === 0) {
                 return {

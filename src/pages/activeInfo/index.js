@@ -39,6 +39,8 @@ class index extends Component {
     getActiveInfo = async (id) => {
         let { data } = await api.getActiveInfo(id)
         if (data.code === 0) {
+            // console.log(data.data);
+            sessionStorage.setItem("activeInfo", JSON.stringify(data.data))
             this.setState({ activeInfo: data.data })
         } else {
             message.warning(data.message)
@@ -47,7 +49,7 @@ class index extends Component {
     getActiveStatisticsInfo = async (id) => {
         let options = { id }
         let { data } = await api.getActiveStatisticsInfo(options)
-        console.log(data.data);
+        // console.log(data.data);
         if (data.code === 0) {
             let obj = this.fromatStatistics(data.data)
             this.setState({ statistics: obj })
