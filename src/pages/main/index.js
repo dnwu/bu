@@ -26,7 +26,8 @@ class index extends Component {
     }
     logout = async () => {
         let { data } = await api.logout()
-        if (data.code === 20103) {
+        console.log(data);
+        if (data.code === 0) {
             Message.success('登出成功,请重新登录');
             sessionStorage.removeItem('token')
             sessionStorage.removeItem('userName')

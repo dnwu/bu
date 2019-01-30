@@ -10,7 +10,7 @@ class index extends Component {
         window.history.go(-1)
     }
     goto = (path) => {
-        window.location.href = path
+        window.location.hash = path
     }
     render() {
         return (

@@ -11,8 +11,8 @@ axios.defaults.baseURL = 'http://192.168.101.220:8880';
 axios.interceptors.request.use(
     config => {
         let token = sessionStorage.getItem('token')
-        if(token) {
-            config.headers.Authorization =`Bearer ${token}`;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
@@ -23,9 +23,14 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-    //   console.log(response.data);
-      // 登录失效
-      return response;
+        // console.log("interceptors", response.data.code);
+        // token 失效
+        if (response.data.code === 20103) {
+            sessionStorage.removeItem("token")
+            window.location.hash = '/login'
+        }
+        // 登录失效
+        return response;
     },
     error => {
         if (error.response) {
