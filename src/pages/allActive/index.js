@@ -91,8 +91,9 @@ class index extends Component {
             startTIme: start,
             endTIme: end,
             activesList: []
-        }, () => {
-            this.getList(1)
+        },async () => {
+            await this.getList(1)
+            this.refs.iscroll.resetDOM()
         })
     }
     render() {
@@ -168,7 +169,7 @@ class index extends Component {
                     </div>
                     <div className="body-main">
                         <div className="list">
-                            <IScroll scrollEnd={this.listScrollEnd} isShowBar={false}>
+                            <IScroll ref="iscroll" scrollEnd={this.listScrollEnd} isShowBar={false}>
                                 {card}
                                 {this.state.activeIsHas ?
                                     <div className="loading">
