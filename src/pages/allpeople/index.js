@@ -175,15 +175,15 @@ class index extends Component {
                         <div className="bottom">
                             <div>
                                 <div className="title">VIP人员</div>
-                                <div className="num">10<img className="vip" src={vipImg} alt="" /></div>
+                                <div className="num">{this.state.vipTotal}<img className="vip" src={vipImg} alt="" /></div>
                             </div>
                             <div>
                                 <div className="title">陪访人员</div>
-                                <div className="num">10<img className="norm" src={normImg} alt="" /></div>
+                                <div className="num">{this.state.normTotal}<img className="norm" src={normImg} alt="" /></div>
                             </div>
                             <div>
                                 <div className="title">其他人员</div>
-                                <div className="num">10</div>
+                                <div className="num">{this.state.otherTotal}</div>
                             </div>
                         </div>
                     </div>
