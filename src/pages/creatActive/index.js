@@ -19,6 +19,7 @@ class index extends Component {
         endTime: "",
         transStartTime: "",
         transEndTIme: "",
+        defaultTime: [10.5, 12],
         tags: [],
         tagsLimit: 3,
         cityList: [],
@@ -64,12 +65,13 @@ class index extends Component {
         clientNameDOM.state.value = activeInfo.personName
         clientTypeDOM.state.value = activeInfo.personClass
         textAreaDOM.textAreaRef.value = activeInfo.remarks
+        this.initSliderTime(activeInfo.reserveStartTime, activeInfo.reserveFinishTime)
         this.setState({
             tags: activeInfo.tags,
             date: moment(activeInfo.reserveStartTime * 1000).format("YYYY-MM-DD"),
             transDate: moment(activeInfo.reserveStartTime * 1000).format("YYYY-MM-DD"),
-            startTime: moment(activeInfo.startTime * 1000).format("HH:mm"),
-            endTime: moment(activeInfo.finishTime * 1000).format("HH:mm"),
+            startTime: moment(activeInfo.reserveStartTime * 1000).format("HH:mm"),
+            endTime: moment(activeInfo.reserveFinishTime * 1000).format("HH:mm"),
             selectDetailId: activeInfo.location_id,
             selectCityId: activeInfo.city_id,
             title: "编辑活动",
@@ -79,6 +81,25 @@ class index extends Component {
             activeInfo
         })
 
+    }
+    initSliderTime = (start, end) => {
+        let s = moment(start * 1000).format("HH:mm").split(':')
+        let e = moment(end * 1000).format("HH:mm").split(':')
+        let defaultStart, defaultEnd
+        if (s[1] === "00") {
+            defaultStart = parseInt(s[0])
+        } else {
+            defaultStart = parseInt(s[0]) + 0.5
+        }
+        if (e[1] === "00") {
+            defaultEnd = parseInt(e[0])
+        } else {
+            defaultEnd = parseInt(e[0]) + 0.5
+        }
+        console.log(defaultStart, defaultEnd);
+        this.setState({
+            defaultTime: [defaultStart, defaultEnd]
+        })
     }
     getCityList = async () => {
         let { data: cityList } = await api.getCityList()
@@ -250,11 +271,10 @@ class index extends Component {
         let departmentDOM = this.refs.departmentDOM
         let clientNameDOM = this.refs.clientNameDOM
         let clientTypeDOM = this.refs.clientTypeDOM
-
         let options = {
             name: nameDOM.input.value,
-            reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`).format("x") / 1000),
-            reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`).format("x") / 1000),
+            reserveStartTime: parseInt(moment(`${this.state.date} ${this.state.startTime}`, "YYYY-MM-DD HH:mm").format("x") / 1000),
+            reserveFinishTime: parseInt(moment(`${this.state.date} ${this.state.endTime}`, "YYYY-MM-DD HH:mm").format("x") / 1000),
             city_id: this.state.selectCityId,
             location_id: this.state.selectDetailId,
             picture: fileName,
@@ -521,7 +541,7 @@ class index extends Component {
                             min={8}
                             range
                             step={0.5}
-                            defaultValue={[10, 18]}
+                            defaultValue={this.state.defaultTime}
                             onChange={this.sliderChange} />
                     </div>
                 </div>
