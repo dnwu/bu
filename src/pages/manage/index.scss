@@ -120,6 +120,17 @@
                         margin-left: 10px;
                     }
                 }
+                .empty {
+                    margin-top: 20px;
+                    color: #e0e0e0;
+                    font-size: 12px;
+                    .ant-empty-image {
+                        height: 40px;
+                        img {
+                            filter: opacity(0.4);
+                        }
+                    }
+                }
             }
             .vip-list {
                 margin: 10px 10px 10px 0;
