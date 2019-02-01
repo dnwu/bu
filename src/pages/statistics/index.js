@@ -52,21 +52,18 @@ class index extends Component {
                 statisticsByPeopleNum,
                 statisticsBypeopleList,
             ) => {
-                try {
-                    this.setState({
-                        activityRate: activityRate.data.data,
-                        activityRateByWeek: this.formatActivityRateByWeek(activityRateByWeek.data.data.weeklyCount),
-                        activityByCity: this.formatActivityByCity(activityByCity.data.data.citiesCount),
-                        peopleAttribute: this.formatPeopleAttribute(peopleAttribute.data.data),
-                        statisticsByPeopleNum: statisticsByPeopleNum.data.data.dailyCount,
-                        statisticsBypeopleList: this.formatStatisticsBypeopleList(statisticsBypeopleList.data.data.Ranking),
-                    }, () => {
-                        this.fromatStatisticsByPeopleNum(this.state.statisticsByPeopleNum)
-                        // console.log('state', this.state.statisticsBypeopleList);
-                    })
-                } catch (e) {
-
-                }
+                
+                this.setState({
+                    activityRate: activityRate.data.data,
+                    activityRateByWeek: this.formatActivityRateByWeek(activityRateByWeek.data.data.weeklyCount),
+                    activityByCity: this.formatActivityByCity(activityByCity.data.data.citiesCount),
+                    peopleAttribute: this.formatPeopleAttribute(peopleAttribute.data.data),
+                    statisticsByPeopleNum: statisticsByPeopleNum.data.data && statisticsByPeopleNum.data.data.dailyCount ,
+                    statisticsBypeopleList: this.formatStatisticsBypeopleList(statisticsBypeopleList.data.data.Ranking),
+                }, () => {
+                    
+                    this.state.statisticsByPeopleNum && this.fromatStatisticsByPeopleNum(this.state.statisticsByPeopleNum)
+                })
             }))
     }
     formatActivityRateByWeek = (data) => {
@@ -203,11 +200,8 @@ class index extends Component {
 
     }
     render() {
-        let activityRate = this.state.activityRate
-        let activityRateByWeek = this.state.activityRateByWeek
-        let activityByCity = this.state.activityByCity
-        let peopleAttribute = this.state.peopleAttribute
-        let statisticsBypeopleList = this.state.statisticsBypeopleList
+        var {activityRate, activityRateByWeek, activityByCity, peopleAttribute, statisticsBypeopleList} = this.state
+        
         return (
             <div className="statistics">
                 <Head></Head>

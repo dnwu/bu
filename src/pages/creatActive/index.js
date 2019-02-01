@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './index.scss'
-import { DatePicker, Input, Icon, Upload, Button, Slider, message, Modal } from 'antd'
+import { DatePicker, Input, Icon, Upload, Button, Slider, message, Modal, Spin } from 'antd'
 import api from './../../server'
 import Head from './../../component/Head'
 import IScroll from './../../component/IScroll'
@@ -13,6 +13,7 @@ class index extends Component {
     state = {
         title: "创建活动",
         loading: false,
+        createloading: false,
         date: "",
         transDate: moment().format("YYYY-MM-DD"),
         startTime: "",
@@ -262,6 +263,9 @@ class index extends Component {
         })
     }
     createActive = async () => {
+        this.setState({
+            createloading: true
+        })
         let fileName = await this.upload()
         let nameDOM = this.refs.nameDOM
         let textAreaDOM = this.refs.textarea
@@ -285,31 +289,48 @@ class index extends Component {
         }
         if (!options.name) {
             message.warning('活动名称不能为空')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (options.tags.length === 0) {
             message.warning('活动标签不能为空')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (!options.city_id) {
             message.warning('请选择活动地址')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (!this.state.date) {
             message.warning('请选择活动日期')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (!this.state.startTime) {
             message.warning('请选择活动时段')
+            this.setState({
+                createloading: false
+            })
             return
         }
         let { data } = await api.createActive(options)
         if (data.code === 0) {
             message.success('活动创建成功')
             // nameDOM.state.value = ""
-            // this.setState({
-            //     tags: []
-            // })
+            this.setState({
+                createloading: false
+            },() => {
+                this.props.history.push('/reserve')
+            })
         } else {
             message.warning(data.message)
         }
@@ -325,7 +346,17 @@ class index extends Component {
         }
     }
     modify = async () => {
+        let activeInfo = this.state.activeInfo
+        this.setState({
+            createloading: true
+        })
         let fileName = await this.upload()
+        if (!fileName && activeInfo.picture) {
+            fileName = activeInfo.picture.match(/images\/(\S*)/)[1]
+        } else if (!fileName) {
+            message.warning("请选择头像")
+            return
+        }
         let nameDOM = this.refs.nameDOM
         let textAreaDOM = this.refs.textarea
         let peopleDOM = this.refs.peopleDOM
@@ -349,28 +380,47 @@ class index extends Component {
         }
         if (!options.name) {
             message.warning('活动名称不能为空')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (options.tags.length === 0) {
             message.warning('活动标签不能为空')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (!options.city_id) {
             message.warning('请选择活动地址')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (!this.state.date) {
             message.warning('请选择活动日期')
+            this.setState({
+                createloading: false
+            })
             return
         }
         if (!this.state.startTime) {
             message.warning('请选择活动时段')
+            this.setState({
+                createloading: false
+            })
             return
         }
         let { data } = await api.modifyActive(options)
         if (data.code === 0) {
             message.success('活动编辑成功')
-            this.props.history.push("/reserve")
+            this.setState({
+                createloading: false
+            },() => {
+                this.props.history.push('/reserve')
+            })
         } else {
             message.warning(data.message)
         }
@@ -606,125 +656,127 @@ class index extends Component {
                 {timeModal}
                 {positionModal}
                 <Head></Head>
-                <div className="create-body">
-                    <div className="info-box">
-                        <div className="title">{this.state.title}</div>
-                        <div className="box">
-                            <div className="key">活动名称<span>*必填</span></div>
-                            <div className="value">
-                                <Input ref="nameDOM"></Input>
+                <Spin tip="创建中..."  spinning={this.state.createloading}>
+                    <div className="create-body">
+                        <div className="info-box">
+                            <div className="title">{this.state.title}</div>
+                            <div className="box">
+                                <div className="key">活动名称<span>*必填</span></div>
+                                <div className="value">
+                                    <Input ref="nameDOM"></Input>
+                                </div>
+                            </div>
+                            <div className="box tags">
+                                <div className="key">活动标签<span>*必填</span></div>
+                                <div className="value">
+                                    {this.state.tags.map((v, i) => (
+                                        <span key={i} className="tag">{v}</span>
+                                    ))}
+                                    <span onClick={this.showTagModal} className="addBtn"><Icon type="plus" /></span>
+                                </div>
+                            </div>
+                            <div className="box reserve-people">
+                                <div className="key">预约人员</div>
+                                <div className="value">
+                                    <Input ref="peopleDOM"></Input>
+                                </div>
+                            </div>
+                            <div className="box reserve-department">
+                                <div className="key">预约部门</div>
+                                <div className="value">
+                                    <Input ref="departmentDOM"></Input>
+                                </div>
+                            </div>
+                            <div className="box client-name">
+                                <div className="key">客户名称</div>
+                                <div className="value">
+                                    <Input ref="clientNameDOM"></Input>
+                                </div>
+                            </div>
+                            <div className="box client-type">
+                                <div className="key">客户类型</div>
+                                <div className="value">
+                                    <Input
+                                        onBlur={this.clientTypeBlur}
+                                        onFocus={this.clientTypeFocus}
+                                        ref="clientTypeDOM"
+                                        suffix={<Icon onClick={this.triggerClientTypeFocus} className="client-type-icon" type="down" />}
+                                    ></Input>
+                                    <ul ref="clientTypeListDOM">
+                                        {
+                                            this.state.clientType.map((v, i) =>
+                                                <li onClick={this.selectClientType.bind(this, v)} key={i}>{v}</li>
+                                            )
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="box mark">
+                                <div className="key">
+                                    备注
+                                </div>
+                                <div className="value">
+                                    <TextArea ref="textarea" autosize={{ minRows: 2, maxRows: 4 }}></TextArea>
+                                </div>
                             </div>
                         </div>
-                        <div className="box tags">
-                            <div className="key">活动标签<span>*必填</span></div>
-                            <div className="value">
-                                {this.state.tags.map((v, i) => (
-                                    <span key={i} className="tag">{v}</span>
-                                ))}
-                                <span onClick={this.showTagModal} className="addBtn"><Icon type="plus" /></span>
+                        <div className="info-box item2">
+                            <div className="box positon">
+                                <div className="key">活动详址<span>*必填</span></div>
+                                <div className="value">{this.state.selectCityName ? this.state.selectCityName + " " + this.state.selectDetailName : "未选择"}</div>
+                                <div className="select-btn">
+                                    <Button onClick={this.showPositionModal}>选择地址</Button>
+                                </div>
+                            </div>
+                            <div className="box date">
+                                <div className="key">活动日期<span>*必填</span></div>
+                                <div className="value">{this.state.date ? this.state.date : "未选择"}</div>
+                                <div className="select-btn">
+                                    <Button onClick={this.showSelectDateModel}>选择日期</Button>
+                                </div>
+                            </div>
+                            <div className="box time">
+                                <div className="key">活动时段<span>*必填</span></div>
+                                <div className="value">
+                                    <div className="start">{this.state.startTime ? this.state.startTime : "未选择"}</div>
+                                    <div className="line">-</div>
+                                    <div className="end">{this.state.endTime ? this.state.endTime : "未选择"}</div>
+                                </div>
+                                <div className="select-btn">
+                                    <Button onClick={this.showSelectTimeModal}>选择时段</Button>
+                                </div>
                             </div>
                         </div>
-                        <div className="box reserve-people">
-                            <div className="key">预约人员</div>
-                            <div className="value">
-                                <Input ref="peopleDOM"></Input>
+                        <div className="info-box item3">
+                            <div className="box img">
+                                <div className="key">活动照片</div>
+                                <div className="value">
+                                    <Upload
+                                        name="avatar"
+                                        listType="picture-card"
+                                        className="avatar-uploader"
+                                        showUploadList={false}
+                                        action=""
+                                        // beforeUpload={this.beforeUpload}
+                                        onChange={this.handleChange}
+                                    >
+                                        {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
+                                    </Upload>
+                                </div>
                             </div>
-                        </div>
-                        <div className="box reserve-department">
-                            <div className="key">预约部门</div>
-                            <div className="value">
-                                <Input ref="departmentDOM"></Input>
-                            </div>
-                        </div>
-                        <div className="box client-name">
-                            <div className="key">客户名称</div>
-                            <div className="value">
-                                <Input ref="clientNameDOM"></Input>
-                            </div>
-                        </div>
-                        <div className="box client-type">
-                            <div className="key">客户类型</div>
-                            <div className="value">
-                                <Input
-                                    onBlur={this.clientTypeBlur}
-                                    onFocus={this.clientTypeFocus}
-                                    ref="clientTypeDOM"
-                                    suffix={<Icon onClick={this.triggerClientTypeFocus} className="client-type-icon" type="down" />}
-                                ></Input>
-                                <ul ref="clientTypeListDOM">
-                                    {
-                                        this.state.clientType.map((v, i) =>
-                                            <li onClick={this.selectClientType.bind(this, v)} key={i}>{v}</li>
-                                        )
-                                    }
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="box mark">
-                            <div className="key">
-                                备注
-                            </div>
-                            <div className="value">
-                                <TextArea ref="textarea" autosize={{ minRows: 2, maxRows: 4 }}></TextArea>
+                            <div className="box btn">
+                                {
+                                    this.state.activeInfo ?
+                                        (<>
+                                            <Button className="delete" onClick={this.showDeleteModal}>删除</Button>
+                                            <Button className="sure" onClick={this.modify}>确认</Button>
+                                        </>) :
+                                        (<Button className="create" onClick={this.createActive}>创建</Button>)
+                                }
                             </div>
                         </div>
                     </div>
-                    <div className="info-box item2">
-                        <div className="box positon">
-                            <div className="key">活动详址<span>*必填</span></div>
-                            <div className="value">{this.state.selectCityName ? this.state.selectCityName + " " + this.state.selectDetailName : "未选择"}</div>
-                            <div className="select-btn">
-                                <Button onClick={this.showPositionModal}>选择地址</Button>
-                            </div>
-                        </div>
-                        <div className="box date">
-                            <div className="key">活动日期<span>*必填</span></div>
-                            <div className="value">{this.state.date ? this.state.date : "未选择"}</div>
-                            <div className="select-btn">
-                                <Button onClick={this.showSelectDateModel}>选择日期</Button>
-                            </div>
-                        </div>
-                        <div className="box time">
-                            <div className="key">活动时段<span>*必填</span></div>
-                            <div className="value">
-                                <div className="start">{this.state.startTime ? this.state.startTime : "未选择"}</div>
-                                <div className="line">-</div>
-                                <div className="end">{this.state.endTime ? this.state.endTime : "未选择"}</div>
-                            </div>
-                            <div className="select-btn">
-                                <Button onClick={this.showSelectTimeModal}>选择时段</Button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="info-box item3">
-                        <div className="box img">
-                            <div className="key">活动照片</div>
-                            <div className="value">
-                                <Upload
-                                    name="avatar"
-                                    listType="picture-card"
-                                    className="avatar-uploader"
-                                    showUploadList={false}
-                                    action=""
-                                    // beforeUpload={this.beforeUpload}
-                                    onChange={this.handleChange}
-                                >
-                                    {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
-                                </Upload>
-                            </div>
-                        </div>
-                        <div className="box btn">
-                            {
-                                this.state.activeInfo ?
-                                    (<>
-                                        <Button className="delete" onClick={this.showDeleteModal}>删除</Button>
-                                        <Button className="sure" onClick={this.modify}>确认</Button>
-                                    </>) :
-                                    (<Button className="create" onClick={this.createActive}>创建</Button>)
-                            }
-                        </div>
-                    </div>
-                </div>
+                </Spin>
             </div>
         );
     }

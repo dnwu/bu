@@ -2,8 +2,18 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    .create-body {
+    .ant-spin-nested-loading {
         flex: 1;
+        .ant-spin-container {
+            &.ant-spin-blur {
+                // opacity: 0;
+            }
+            height: 100%;
+        }
+    }
+    .create-body {
+        // flex: 1;
+        height: 100%;
         display: flex;
         .info-box {
             flex: 1;

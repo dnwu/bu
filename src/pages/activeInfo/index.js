@@ -104,6 +104,8 @@ class index extends Component {
     }
     render() {
         let { activeInfo, statistics } = this.state
+        console.log(activeInfo);
+        
         return (
             <div className="active-info">
                 <Head></Head>
@@ -154,16 +156,16 @@ class index extends Component {
                             </div>
                             <div className="info-time-card">
                                 <div className="time-card-left">
-                                    <div className="reserve-time">预约开始 {moment(activeInfo.reserveStartTime).format("hh:mm")}</div>
-                                    <div className="real">开始时间 {moment(activeInfo.startTime).format("hh:mm")}</div>
+                                    <div className="reserve-time">预约开始 {moment(activeInfo.reserveStartTime*1000).format("hh:mm")}</div>
+                                    <div className="real">开始时间 {moment(activeInfo.startTime*1000).format("hh:mm")}</div>
                                 </div>
                                 <div className="time-card-mid">
                                     <img src={pointImg} alt="" />
                                     <div className="line"></div>
                                 </div>
                                 <div className="time-card-right">
-                                    <div className="reserve-time">预约结束 {moment(activeInfo.reserveFinishTime).format("hh:mm")}</div>
-                                    <div className="real">结束时间 {moment(activeInfo.finishTime).format("hh:mm")}</div>
+                                    <div className="reserve-time">预约结束 {moment(activeInfo.reserveFinishTime*1000).format("hh:mm")}</div>
+                                    <div className="real">结束时间 {moment(activeInfo.finishTime*1000).format("hh:mm")}</div>
                                 </div>
                             </div>
                         </div>
