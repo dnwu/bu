@@ -253,6 +253,8 @@ class index extends Component {
                 if (data.code === 0) {
                     // return data.data.url
                     resolve(data.data.fileName)
+                }else {
+                    message.warning(data.message)
                 }
             } else {
                 resolve("")

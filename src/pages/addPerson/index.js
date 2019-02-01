@@ -84,6 +84,8 @@ class index extends Component {
             let { data } = await api.uploadImg(file)
             if (data.code === 0) {
                 return data.data.fileName
+            } else {
+                message.warning(data.message)
             }
         } else {
             return ""
