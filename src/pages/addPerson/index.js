@@ -82,10 +82,16 @@ class index extends Component {
         let file = this.state.file
         if (file) {
             let { data } = await api.uploadImg(file)
+            console.log(data);
+            
             if (data.code === 0) {
                 return data.data.fileName
-            } else {
+            } else if(data.code === 20201){
                 message.warning(data.message)
+                return 20201
+            }else {
+                message.warning(data.message)
+                return data.code
             }
         } else {
             return ""
@@ -128,7 +134,7 @@ class index extends Component {
         if (data.code === 0) {
             message.success("添加成功")
             this.props.history.push('/manage')
-        } else if (data.code === 20106) {
+        } else if (data.code === 20506) {
             let similarList = data.data.similar
             this.setState({
                 selectSimilarId: "",
@@ -168,10 +174,13 @@ class index extends Component {
         let cardInfo = this.state.cardInfo
         let id = cardInfo.id
         let picture = await this.upload()
+        if (picture === 20201) {
+            return
+        }
         if (!picture && cardInfo.picture) {
             picture = cardInfo.picture.match(/images\/(\S*)/)[1]
         } else if (!picture) {
-            message.warning("请选择头像")
+            message.warning("请选择头像",picture)
             return
         }
         let name = this.refs.nameDOM.state.value
@@ -193,7 +202,7 @@ class index extends Component {
         if (data.code === 0) {
             message.success("人员信息修改成功")
             this.props.history.push('/manage')
-        } else if (data.code === 20106) {
+        } else if (data.code === 20506) {
             let similarList = data.data.similar
             this.setState({
                 selectSimilarId: "",
@@ -201,7 +210,7 @@ class index extends Component {
                 similarList
             })
         } else {
-            message.error(data.message)
+            message.error("13212312",data.message)
         }
     }
     forciblyCreatePerson = async () => {
@@ -233,7 +242,7 @@ class index extends Component {
         if (data.code === 0) {
             message.success("添加成功")
             this.props.history.push('/manage')
-        } else if (data.code === 20106) {
+        } else if (data.code === 20506) {
             let similarList = data.data.similar
             this.setState({
                 selectSimilarId: "",
@@ -311,7 +320,7 @@ class index extends Component {
         if (data.code === 0) {
             message.success("人员信息全部覆盖成功")
             this.props.history.push('/manage')
-        } else if (data.code === 20106) {
+        } else if (data.code === 20506) {
             let similarList = data.data.similar
             this.setState({
                 selectSimilarId: "",
@@ -526,7 +535,7 @@ class index extends Component {
                                 className="avatar-uploader"
                                 showUploadList={false}
                                 action=""
-                                beforeUpload={this.beforeUpload}
+                                // beforeUpload={this.beforeUpload}
                                 onChange={this.handleChange}
                             >
                                 {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
