@@ -332,6 +332,9 @@ class index extends Component {
                 this.props.history.push('/reserve')
             })
         } else {
+            this.setState({
+                createloading: false
+            })
             message.warning(data.message)
         }
     }
@@ -422,6 +425,9 @@ class index extends Component {
                 this.props.history.push('/reserve')
             })
         } else {
+            this.setState({
+                createloading: false
+            })
             message.warning(data.message)
         }
     }
@@ -498,6 +504,12 @@ class index extends Component {
         this.refs.clientTypeDOM.state.value = item
         this.refs.clientTypeDOM.input.value = item
     }
+    disabledStartDate = (startValue) => {
+        if (!startValue) {
+            return false;
+        }
+        return startValue.valueOf() < moment().format("X")*1000 - 86400000;
+    } 
     render() {
         const imageUrl = this.state.imageUrl;
         const calibrationNum = ["08", "-1", "09", "-1", "10", "-1", "11", "-1", "12", "-1", "13", "-1", "14", "-1", "15", "-1", "16", "-1", "17", "-1", "18", "-1", "19", "-1", "20"]
@@ -553,7 +565,12 @@ class index extends Component {
             >
                 <div className="date-modal-body">
                     <p>活动日期选择</p>
-                    <DatePicker value={moment(this.state.transDate)} open locale={locale} onChange={this.dateChange} />
+                    <DatePicker 
+                        disabledDate={this.disabledStartDate}
+                        value={moment(this.state.transDate)} 
+                        open 
+                        locale={locale} 
+                        onChange={this.dateChange} />
                 </div>
                 <div className="btn">
                     <Button onClick={this.addTagCancel} className="cancel">取消</Button>

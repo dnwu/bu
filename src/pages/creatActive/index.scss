@@ -578,6 +578,17 @@
             .ant-calendar-cell {
                 .ant-calendar-date {
                     color: #fff;
+                    
+                }
+                &.ant-calendar-disabled-cell{
+                    .ant-calendar-date{
+                        background-color: rgba(0,0,0,0);
+                    }
+                }
+            }
+            .ant-calendar-cell.ant-calendar-today {
+                .ant-calendar-date{
+                    background-clip: content-box;
                 }
             }
             .ant-calendar-selected-day .ant-calendar-date {

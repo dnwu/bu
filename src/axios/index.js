@@ -5,7 +5,7 @@ import axios from 'axios'
 
 // axios 配置
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL = 'http://192.168.10.160:8880';
+axios.defaults.baseURL = 'http://192.168.22.209:8880';
 
 // http request 拦截器
 axios.interceptors.request.use(
@@ -33,6 +33,8 @@ axios.interceptors.response.use(
         return response;
     },
     error => {
+        console.log('error',error);
+        
         if (error.response) {
             switch (error.response.status) {
                 case 401:
