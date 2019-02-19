@@ -351,6 +351,14 @@ class index extends Component {
     selectSimilarItem = (id) => {
         this.setState({ selectSimilarId: id })
     }
+    deleteTag = (e,i) => {
+        e.stopPropagation();
+        let tags = this.state.tags
+        tags.splice(i,1)
+        this.setState({
+            tags
+        })
+    }
     render() {
         const imageUrl = this.state.imageUrl;
         const uploadButton = (
@@ -460,10 +468,10 @@ class index extends Component {
                             </div>
                         </div>
                         <div className="box tags">
-                            <div className="key">活动标签</div>
+                            <div className="key">人员标签</div>
                             <div className="value">
                                 {this.state.tags.map((v, i) => (
-                                    <span key={i} className="tag">{v}</span>
+                                    <span key={i} className="tag">{v}<Icon onClick={(e) => this.deleteTag(e,i)} type="close-circle" /></span>
                                 ))}
                                 <span onClick={this.showTagModal} className="addBtn"><Icon type="plus" /></span>
                             </div>

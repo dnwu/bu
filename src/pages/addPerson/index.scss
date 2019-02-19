@@ -92,6 +92,19 @@ $bg-color:rgba(203, 210, 218, 0.23);
                         color: rgba(203, 210, 218, 1);
                         background-color: rgba(203, 210, 218, 0.23);
                         flex-shrink: 1;
+                        position: relative;
+                        .anticon {
+                            position: absolute;
+                            right: -5px;
+                            top: -5px;
+                            cursor: pointer;
+                            visibility: hidden;
+                        }
+                        &:hover {
+                            .anticon {
+                                visibility: visible	;
+                            }
+                        }
                     }
                     .addBtn {
                         border-radius: 2px;

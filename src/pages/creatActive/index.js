@@ -20,7 +20,7 @@ class index extends Component {
         endTime: "",
         transStartTime: "",
         transEndTIme: "",
-        defaultTime: [10.5, 12],
+        defaultTime: [10, 12],
         tags: [],
         tagsLimit: 3,
         cityList: [],
@@ -510,6 +510,14 @@ class index extends Component {
         }
         return startValue.valueOf() < moment().format("X")*1000 - 86400000;
     } 
+    deleteTag = (e,i) => {
+        e.stopPropagation();
+        let tags = this.state.tags
+        tags.splice(i,1)
+        this.setState({
+            tags
+        })
+    }
     render() {
         const imageUrl = this.state.imageUrl;
         const calibrationNum = ["08", "-1", "09", "-1", "10", "-1", "11", "-1", "12", "-1", "13", "-1", "14", "-1", "15", "-1", "16", "-1", "17", "-1", "18", "-1", "19", "-1", "20"]
@@ -687,7 +695,7 @@ class index extends Component {
                                 <div className="key">活动标签<span>*必填</span></div>
                                 <div className="value">
                                     {this.state.tags.map((v, i) => (
-                                        <span key={i} className="tag">{v}</span>
+                                        <span key={i} className="tag">{v}<Icon onClick={(e) => this.deleteTag(e,i)} type="close-circle" /></span>
                                     ))}
                                     <span onClick={this.showTagModal} className="addBtn"><Icon type="plus" /></span>
                                 </div>
