@@ -55,6 +55,8 @@ class index extends Component {
             imgLimit: 3
         }
         let { data } = await api.getpersonStatisticsInfo(options)
+        console.log(data);
+        
         if (data.code === 0) {
             this.formatStatisticsData(data.data)
         } else {
