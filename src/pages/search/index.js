@@ -47,6 +47,8 @@ class index extends Component {
         this.refs.input.state.value = trans.value
         this.setState({
             city: trans.city
+        }, () => {
+            this.search()
         })
 
         // 初始化page
@@ -55,7 +57,7 @@ class index extends Component {
         this.getCityList()
         // this.getActives("", "", 1)
         // this.getPersons("", 1)
-        this.search()
+        
     }
     getCityList = async () => {
         let { data } = await api.getCityList()

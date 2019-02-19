@@ -201,7 +201,7 @@ class index extends Component {
                     <div className="top">
                         <div className="t-top">
                             <div className="left">
-                                <span>到访人员列表</span><span>10人</span>
+                                <span>到访人员列表</span><span>{this.state.vipTotal+this.state.normTotal+this.state.otherTotal}</span>
                             </div>
                             <div className="right">
                                 <div className="name">
@@ -225,10 +225,10 @@ class index extends Component {
                                 <div className="tit">陪访人员</div>
                                 <div className="num">{this.state.normTotal} <img className='norm' src={normImg} alt="" /></div>
                             </div>
-                            <div>
+                            {/* <div>
                                 <div className="tit">其他人员</div>
                                 <div className="num">{this.state.otherTotal}</div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="body-main">
@@ -262,7 +262,7 @@ class index extends Component {
                                 }
                             </IScroll>
                         </div>
-                        <div className="other">
+                        {/* <div className="other">
                             <IScroll scrollEnd={this.otherDownGetList} isShowBar={false}>
                                 {otherCard}
                                 {this.state.otherIsHas ?
@@ -276,7 +276,7 @@ class index extends Component {
                                         </div>
                                 }
                             </IScroll>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
