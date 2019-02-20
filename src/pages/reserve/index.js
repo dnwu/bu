@@ -11,7 +11,7 @@ import tagSvg from './../../static/tag.svg'
 import positonSvg from './../../static/positon.svg'
 import pointSvg from './../../static/point.svg'
 import logoImg from './../../static/logo.png'
-import defaultImg from './../../static/init.png'
+// import defaultImg from './../../static/init.png'
 
 let page = 1
 let pageSize = 10

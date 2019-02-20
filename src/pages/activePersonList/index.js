@@ -177,23 +177,23 @@ class index extends Component {
                 </div>
             )
         )
-        const otherCard = (
-            this.state.otherList.map((v, i) =>
-                <div className="card" key={i}>
-                    <div className="left">
-                        <div className="img"><img src={v.picture ? v.picture : defaultAva} alt="" /></div>
-                        <div className="info">
-                            <div className="name">{v.name}</div>
-                            <div className="title">{v.title}</div>
-                        </div>
-                    </div>
-                    <div className="right">
-                        <div className="time">{moment(v.createdTime * 1000).format("hh:mm")}</div>
-                        <div className="times"><span>到访次数:</span><span>{v.number}</span></div>
-                    </div>
-                </div>
-            )
-        )
+        // const otherCard = (
+        //     this.state.otherList.map((v, i) =>
+        //         <div className="card" key={i}>
+        //             <div className="left">
+        //                 <div className="img"><img src={v.picture ? v.picture : defaultAva} alt="" /></div>
+        //                 <div className="info">
+        //                     <div className="name">{v.name}</div>
+        //                     <div className="title">{v.title}</div>
+        //                 </div>
+        //             </div>
+        //             <div className="right">
+        //                 <div className="time">{moment(v.createdTime * 1000).format("hh:mm")}</div>
+        //                 <div className="times"><span>到访次数:</span><span>{v.number}</span></div>
+        //             </div>
+        //         </div>
+        //     )
+        // )
         return (
             <div className="active-person-list">
                 <Head></Head>

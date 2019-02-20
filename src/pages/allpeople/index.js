@@ -152,18 +152,18 @@ class index extends Component {
                 </div>
             )
         )
-        const otherCard = (
-            this.state.otherList.map((v, i) =>
-                <div key={i} className="card">
-                    <div className="left">
-                        <img src={defauleAva} alt="" />
-                    </div>
-                    <div className="right">
-                        <div className="name">{v.name}</div>
-                    </div>
-                </div>
-            )
-        )
+        // const otherCard = (
+        //     this.state.otherList.map((v, i) =>
+        //         <div key={i} className="card">
+        //             <div className="left">
+        //                 <img src={defauleAva} alt="" />
+        //             </div>
+        //             <div className="right">
+        //                 <div className="name">{v.name}</div>
+        //             </div>
+        //         </div>
+        //     )
+        // )
         return (
             <div className="all-people">
                 <Head></Head>
