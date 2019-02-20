@@ -62,7 +62,6 @@ $padding-lr: 100px;
                 p {
                     margin: 0;
                 }
-                .ch {}
                 .en {
                     color: #48525E;
                     font-size: 12px;
@@ -119,6 +118,7 @@ $padding-lr: 100px;
             .right-img {
                 margin: 10px;
                 width: 258px;
+                height: 258px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -150,8 +150,8 @@ $padding-lr: 100px;
                     justify-content: space-around;
                     align-items: center;
                     .img-box {
-                        width: 100px;
-                        height: 100px;
+                        width: 110px;
+                        height: 110px;
                         background-color: #282723;
                         padding: 10px;
                         img {
