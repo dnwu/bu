@@ -445,7 +445,7 @@ class index extends Component {
                         </IScroll>
                     </div>
                     <div className="btn">
-                        <Button onClick={this.forciblyCreatePerson}>新建人员</Button>
+                        {/* <Button onClick={this.forciblyCreatePerson}>新建人员</Button> */}
                     </div>
                 </div>
                 <div className="right">
