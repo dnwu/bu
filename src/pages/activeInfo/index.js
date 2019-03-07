@@ -245,7 +245,7 @@ class index extends Component {
                                 </div>
                                 <div className="num">
                                     <div className="key">{this.add(statistics.type)}</div>
-                                    <div className="val">本次活动人次</div>
+                                    <div className="val">本次事件人次</div>
                                 </div>
                             </div>
                         </div>

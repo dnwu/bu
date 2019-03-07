@@ -11,7 +11,7 @@ moment.locale('zh-cn');
 const { TextArea } = Input;
 class index extends Component {
     state = {
-        title: "创建活动",
+        title: "创建事件",
         loading: false,
         createloading: false,
         date: "",
@@ -45,7 +45,7 @@ class index extends Component {
             sessionStorage.setItem('activeInfo', JSON.stringify(activeInfo))
         }
         activeInfo = activeInfo || JSON.parse(sessionStorage.getItem('activeInfo'))
-        // 如果有activeInfo, 就初始化活动信息页
+        // 如果有activeInfo, 就初始化事件信息页
         if (activeInfo) {
             this.initActiveInfoPage(activeInfo)
         }
@@ -74,7 +74,7 @@ class index extends Component {
             endTime: moment(activeInfo.reserveFinishTime * 1000).format("HH:mm"),
             selectDetailId: activeInfo.location_id,
             selectCityId: activeInfo.city_id,
-            title: "编辑活动",
+            title: "编辑事件",
             imageUrl: activeInfo.picture,
             selectCityName: activeInfo.city,
             selectDetailName: activeInfo.location,
@@ -288,35 +288,35 @@ class index extends Component {
             personName: clientNameDOM.input.value
         }
         if (!options.name) {
-            message.warning('活动名称不能为空')
+            message.warning('事件名称不能为空')
             this.setState({
                 createloading: false
             })
             return
         }
         if (options.tags.length === 0) {
-            message.warning('活动标签不能为空')
+            message.warning('事件标签不能为空')
             this.setState({
                 createloading: false
             })
             return
         }
         if (!options.city_id) {
-            message.warning('请选择活动地址')
+            message.warning('请选择事件地址')
             this.setState({
                 createloading: false
             })
             return
         }
         if (!this.state.date) {
-            message.warning('请选择活动日期')
+            message.warning('请选择事件日期')
             this.setState({
                 createloading: false
             })
             return
         }
         if (!this.state.startTime) {
-            message.warning('请选择活动时段')
+            message.warning('请选择事件时段')
             this.setState({
                 createloading: false
             })
@@ -324,7 +324,7 @@ class index extends Component {
         }
         let { data } = await api.createActive(options)
         if (data.code === 0) {
-            message.success('活动创建成功')
+            message.success('事件创建成功')
             // nameDOM.state.value = ""
             this.setState({
                 createloading: false
@@ -382,35 +382,35 @@ class index extends Component {
             personName: clientNameDOM.input.value
         }
         if (!options.name) {
-            message.warning('活动名称不能为空')
+            message.warning('事件名称不能为空')
             this.setState({
                 createloading: false
             })
             return
         }
         if (options.tags.length === 0) {
-            message.warning('活动标签不能为空')
+            message.warning('事件标签不能为空')
             this.setState({
                 createloading: false
             })
             return
         }
         if (!options.city_id) {
-            message.warning('请选择活动地址')
+            message.warning('请选择事件地址')
             this.setState({
                 createloading: false
             })
             return
         }
         if (!this.state.date) {
-            message.warning('请选择活动日期')
+            message.warning('请选择事件日期')
             this.setState({
                 createloading: false
             })
             return
         }
         if (!this.state.startTime) {
-            message.warning('请选择活动时段')
+            message.warning('请选择事件时段')
             this.setState({
                 createloading: false
             })
@@ -418,7 +418,7 @@ class index extends Component {
         }
         let { data } = await api.modifyActive(options)
         if (data.code === 0) {
-            message.success('活动编辑成功')
+            message.success('事件编辑成功')
             this.setState({
                 createloading: false
             },() => {
@@ -572,7 +572,7 @@ class index extends Component {
                 destroyOnClose={true}
             >
                 <div className="date-modal-body">
-                    <p>活动日期选择</p>
+                    <p>事件日期选择</p>
                     <DatePicker 
                         disabledDate={this.disabledStartDate}
                         value={moment(this.state.transDate)} 
@@ -597,7 +597,7 @@ class index extends Component {
                 destroyOnClose={true}
             >
                 <div className="date-modal-body">
-                    <p>活动时段选择</p>
+                    <p>事件时段选择</p>
                     <div className="slider">
                         <div className="calibration">
                             {calibrationNum.map((v, i) => (
@@ -686,13 +686,13 @@ class index extends Component {
                         <div className="info-box">
                             <div className="title">{this.state.title}</div>
                             <div className="box">
-                                <div className="key">活动名称<span>*必填</span></div>
+                                <div className="key">事件名称<span>*必填</span></div>
                                 <div className="value">
                                     <Input ref="nameDOM"></Input>
                                 </div>
                             </div>
                             <div className="box tags">
-                                <div className="key">活动标签<span>*必填</span></div>
+                                <div className="key">事件标签<span>*必填</span></div>
                                 <div className="value">
                                     {this.state.tags.map((v, i) => (
                                         <span key={i} className="tag">{v}<Icon onClick={(e) => this.deleteTag(e,i)} type="close-circle" /></span>
@@ -747,21 +747,21 @@ class index extends Component {
                         </div>
                         <div className="info-box item2">
                             <div className="box positon">
-                                <div className="key">活动详址<span>*必填</span></div>
+                                <div className="key">事件详址<span>*必填</span></div>
                                 <div className="value">{this.state.selectCityName ? this.state.selectCityName + " " + this.state.selectDetailName : "未选择"}</div>
                                 <div className="select-btn">
                                     <Button onClick={this.showPositionModal}>选择地址</Button>
                                 </div>
                             </div>
                             <div className="box date">
-                                <div className="key">活动日期<span>*必填</span></div>
+                                <div className="key">事件日期<span>*必填</span></div>
                                 <div className="value">{this.state.date ? this.state.date : "未选择"}</div>
                                 <div className="select-btn">
                                     <Button onClick={this.showSelectDateModel}>选择日期</Button>
                                 </div>
                             </div>
                             <div className="box time">
-                                <div className="key">活动时段<span>*必填</span></div>
+                                <div className="key">事件时段<span>*必填</span></div>
                                 <div className="value">
                                     <div className="start">{this.state.startTime ? this.state.startTime : "未选择"}</div>
                                     <div className="line">-</div>
@@ -774,7 +774,7 @@ class index extends Component {
                         </div>
                         <div className="info-box item3">
                             <div className="box img">
-                                <div className="key">活动照片</div>
+                                <div className="key">事件照片</div>
                                 <div className="value">
                                     <Upload
                                         name="avatar"

@@ -60,7 +60,7 @@ class index extends Component {
                         <div onClick={this.goto.bind(this, '/reserve')} className="nav">
                             <div className="img"><img src={nav1} alt="" /></div>
                             <div className="desc">
-                                <div className="ch">活动预约</div>
+                                <div className="ch">事件预约</div>
                                 <div className="en">Activity arrangement</div>
                             </div>
                         </div>

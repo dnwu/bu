@@ -107,7 +107,7 @@ class index extends Component {
                         <p className="en">Query by time</p>
                     </div>
                     <div className="picker">
-                        <p>活动日期选择</p>
+                        <p>事件日期选择</p>
                         <RangePicker onChange={this.rangePickerChange} open></RangePicker>
                     </div>
                     <div className="info">
@@ -155,15 +155,15 @@ class index extends Component {
                 <div className="body">
                     <div className="body-head">
                         <div className="left">
-                            <h4>所有活动列表</h4>
+                            <h4>所有事件列表</h4>
                             <div>
-                                <div className="title">所有活动</div>
+                                <div className="title">所有事件</div>
                                 <div className="num">{this.state.acitiveTotal}</div>
                             </div>
                         </div>
                         <div className="right">
                             <Icon onClick={this.showDrawer} type="schedule" />
-                            <div className="ch">活动时段</div>
+                            <div className="ch">事件时段</div>
                             <div className="en">Query by time</div>
                         </div>
                     </div>

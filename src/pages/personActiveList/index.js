@@ -102,9 +102,9 @@ class index extends Component {
                 <div className="body">
                     <div className="body-head">
                         <div className="left">
-                            <div className="tit">出席活动列表</div>
+                            <div className="tit">出席事件列表</div>
                             <div className="num">
-                                <div className="title">出席活动</div>
+                                <div className="title">出席事件</div>
                                 <div className="num">{activesInfo.total}</div>
                             </div>
                         </div>

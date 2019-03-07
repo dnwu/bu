@@ -106,7 +106,7 @@ class index extends Component {
                         </div>
                         <div className="right">
                             <Icon onClick={this.goto} type="menu-unfold" />
-                            <p className="ch">出席活动列表</p>
+                            <p className="ch">出席事件列表</p>
                             <p className="en">Activities List</p>
                         </div>
                     </div>
@@ -135,7 +135,7 @@ class index extends Component {
                             </div>
                             <div className="num">
                                 <div className="num">{statistics.activityTotal}</div>
-                                <div className="desc">出席活动次数</div>
+                                <div className="desc">出席事件次数</div>
                             </div>
                         </div>
                         <div className="right-img">
@@ -144,7 +144,7 @@ class index extends Component {
                     </div>
                     <div className="statistics-card">
                         <div className="left">
-                            <div className="title">活动频次<img src={pointImg} alt="" /></div>
+                            <div className="title">事件频次<img src={pointImg} alt="" /></div>
                             <div className="statistics-box">
                                 <VBar
                                     xAxis={statistics.times.xAxis}

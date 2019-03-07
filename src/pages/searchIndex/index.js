@@ -49,7 +49,7 @@ class index extends Component {
                         </div>
                         <div className="box">
                             <img onClick={this.goto.bind(this, "/search/all-active")} src={activeImg} alt="" />
-                            <div className="ch">所有活动</div>
+                            <div className="ch">所有事件</div>
                             <div className="en">All Activitise</div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@ class index extends Component {
                         <Icon type="ellipsis" /><Icon type="search" /><Icon type="ellipsis" />
                     </div>
                     <div className="input">
-                        <Input ref="input" style={{ width: 400 }} placeholder="输入要搜索的活动名称、标签或人员姓名"></Input>
+                        <Input ref="input" style={{ width: 400 }} placeholder="输入要搜索的事件名称、标签或人员姓名"></Input>
                         <Button onClick={this.search}>搜索</Button>
                         <Select value={this.state.city} defaultValue="" style={{ width: 120 }} onChange={this.selectChange}>
                             {

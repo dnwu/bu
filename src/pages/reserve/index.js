@@ -60,7 +60,7 @@ class index extends Component {
                     isHas: true
                 })
             }
-            // 如果是第一次请求, 然后初始化活动详情
+            // 如果是第一次请求, 然后初始化事件详情
             if (page === 1) {
                 if (data.data.activities[0]) {
                     await this.getActiveInfo(data.data.activities[0].id)
@@ -77,7 +77,7 @@ class index extends Component {
         await this.getActiveList(page, this.state.status)
         // this.getActiveInfo(this.state.selectId)
     }
-    // 获取右侧活动信息
+    // 获取右侧事件信息
     getActiveInfo = async (id) => {
         this.setState({
             loading: true
@@ -143,9 +143,9 @@ class index extends Component {
                     await this.getActiveList(1, this.state.selectType)
                     await this.getActiveInfo(id)
                     if (type === 'start') {
-                        message.success("活动开始啦")
+                        message.success("事件开始啦")
                     } else if (type === 'end') {
-                        message.success("活动结束")
+                        message.success("事件结束")
                     }
                 })
             }, 2000)
@@ -154,9 +154,9 @@ class index extends Component {
     modifyActiveStatusBtn = (type) => {
         let modalTit
         if (type === 'start') {
-            modalTit = "确认要开始活动吗"
+            modalTit = "确认要开始事件吗"
         } else if (type === 'end') {
-            modalTit = "确认要结束活动吗"
+            modalTit = "确认要结束事件吗"
         }
         this.setState({ deleteModalVisible: true, type, modalTit })
     }
@@ -222,18 +222,18 @@ class index extends Component {
                         </Radio.Group>
                         <div className="info">
                             <div className="box">
-                                <p className="title">所有活动</p>
+                                <p className="title">所有事件</p>
                                 <p className="num">{this.state.activesInfo.total}</p>
                             </div>
                             <div className="box">
-                                <p className="title">本月活动</p>
+                                <p className="title">本月事件</p>
                                 <p className="num">{this.state.activesInfo.totalThisMonth}</p>
                             </div>
                         </div>
                     </div>
                     <div className="create">
                         <div className="icon"><Icon type="ellipsis" /></div>
-                        <div className="btn"><Button onClick={this.goto.bind(this, '/create-active')}>创建活动</Button></div>
+                        <div className="btn"><Button onClick={this.goto.bind(this, '/create-active')}>创建事件</Button></div>
                         <div className="icon"><Icon type="ellipsis" /></div>
                     </div>
                     <div className="manage-box">

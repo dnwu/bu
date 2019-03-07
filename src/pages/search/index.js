@@ -307,7 +307,7 @@ class index extends Component {
                 <div className="body">
                     <div className="top">
                         <div className="t-left">
-                            <Input ref="input" style={{ width: 500 }} placeholder="输入要搜索的活动名称、标签或人员姓名"></Input>
+                            <Input ref="input" style={{ width: 500 }} placeholder="输入要搜索的事件名称、标签或人员姓名"></Input>
                             <Button onClick={this.search}>搜索</Button>
                             <Select value={this.state.city} defaultValue="" style={{ width: 120 }} onChange={this.selectChange}>
                                 {
@@ -334,7 +334,7 @@ class index extends Component {
                                     </div>
                             }
                             <div className="box">
-                                <p>活动</p>
+                                <p>事件</p>
                                 <p>{this.state.acitiveTotal}</p>
                             </div>
                         </div>

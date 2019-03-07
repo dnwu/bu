@@ -37,9 +37,9 @@ class index extends Component {
     getAllData = () => {
 
         axios.all([
-            api.getActivityRate(), // 活动频次统计
-            api.getActivityRateByWeek(0, 10), // 活动频次统计
-            api.getActivityByCity(),    // 活动地点历史统计
+            api.getActivityRate(), // 事件频次统计
+            api.getActivityRateByWeek(0, 10), // 事件频次统计
+            api.getActivityByCity(),    // 事件地点历史统计
             api.getPeopleAttribute(),    // 访客属性统计
             api.getStatisticsByPeopleNum(0, 7),  // 系统访问总人数
             api.getStatisticsBypeopleList(0, 10)  // 人员到访列表
@@ -218,7 +218,7 @@ class index extends Component {
                         <div className="b-t-right box">
                             <div className="header">
                                 <span className="block"></span>
-                                <span className="word">活动频次统计</span>
+                                <span className="word">事件频次统计</span>
                             </div>
                             <div className="item">
                                 <div className="title">
@@ -226,7 +226,7 @@ class index extends Component {
                                         <img src={pointImg} alt="" />
                                     </div>
                                     <div className="num">
-                                        <div className="key">活动总数</div>
+                                        <div className="key">事件总数</div>
                                         <div className="val">{activityRate.total}</div>
                                     </div>
                                     <div className="point">
@@ -243,7 +243,7 @@ class index extends Component {
                                         <div className="value">{activityRate.finished}</div>
                                     </div>
                                     <div>
-                                        <div className="key">本月活动</div>
+                                        <div className="key">本月事件</div>
                                         <div className="value">{activityRate.thisMonth}</div>
                                     </div>
                                 </div>
@@ -339,11 +339,11 @@ class index extends Component {
                             <div className="b-b-r-top box">
                                 <div className="header">
                                     <span className="block"></span>
-                                    <span className="word">活动频次统计</span>
+                                    <span className="word">事件频次统计</span>
                                 </div>
                                 <div className="item">
                                     <div className="title">
-                                        <span>活动次数</span><img src={pointImg} alt="" />
+                                        <span>事件次数</span><img src={pointImg} alt="" />
                                     </div>
                                     <div className="v-bar">
                                         <VBar yAxis={activityRateByWeek.y} xAxis={activityRateByWeek.x}></VBar>
@@ -353,16 +353,16 @@ class index extends Component {
                             <div className="b-b-r-bottom box">
                                 <div className="header">
                                     <span className="block"></span>
-                                    <span className="word">活动地点历史统计</span>
+                                    <span className="word">事件地点历史统计</span>
                                 </div>
                                 <div className="item">
                                     <div className="title layout">
-                                        <div className="position">活动地点</div>
-                                        <div className="times">活动次数</div>
-                                        <div className="all-num">活动人员数</div>
+                                        <div className="position">事件地点</div>
+                                        <div className="times">事件次数</div>
+                                        <div className="all-num">事件人员数</div>
                                         <div className="norm-num">陪访人员</div>
                                         <div className="vip-num">vip人员</div>
-                                        <div className="done-times">已完成活动</div>
+                                        <div className="done-times">已完成事件</div>
                                     </div>
                                     <div className="table">
                                         {
