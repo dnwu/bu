@@ -1,0 +1,98 @@
+.search-by-people {
+    min-height: 100vh;
+    background: url('./../../static/bg3.png');
+    display: flex;
+    flex-direction: column;
+    .search-by-people-page {
+        flex: 1;
+        display: flex;
+        .nav {
+            width: 400px;
+            background-color: rgba(22, 27, 31, .4);
+        }
+        .search-by-people-condition {
+            flex: 1;
+            padding: 100px 0 100px 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            .condition {
+                .ant-select-selection {
+                    color: #CBD2DA;
+                    border-radius: 5px;
+                    background-color: #3F474D;
+                    border-color: #3F474D;
+                }
+                input.info-filter {
+                    width: 460px;
+                    color: #CBD2DA;
+                    background-color: #3F474D;
+                    border-color: #3F474D;
+                }
+                .point {
+                    margin-bottom: 20px;
+                    img {
+                        width: 80px;
+                    }
+                }
+                .key {
+                    color: #7E8791;
+                    margin-bottom: 10px;
+                }
+            }
+            .condition:nth-of-type(1) {
+                .detail {
+                    display: flex;
+                    >div {
+                        width: 100px;
+                        margin-right: 20px;
+                    }
+                }
+            }
+            .condition:nth-of-type(3) {
+                .value {
+                    display: flex;
+                    .icon {
+                        width: 32px;
+                        background-color: #41494B;
+                        border-radius: 3px;
+                        margin-right: 10px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        color: #fff;
+                        font-size: 20px;
+                    }
+                    .start,
+                    .end {
+                        input {
+                            color: #fff;
+                            background-color: #1F2628;
+                            border-color: #1F2628;
+                        }
+                    }
+                    .word {
+                        width: 32px;
+                        color: #7E8791;
+                        text-align: center;
+                        line-height: 32px;
+                    }
+                }
+            }
+            .btn {
+                button {
+                    width: 300px;
+                    background: linear-gradient(to left, #5565FB, #5599FB);
+                    border-color: #5599FB;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
+
+.ant-calendar-disabled-cell {
+    .ant-calendar-date {
+        background-color: rgb(45, 55, 58) !important;
+    }
+}

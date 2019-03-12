@@ -71,7 +71,7 @@ class index extends Component {
                                 <div className="en">Data statistics and analysis</div>
                             </div>
                         </div>
-                        <div onClick={this.goto.bind(this, '/search/index')} className="nav search">
+                        <div onClick={this.goto.bind(this, '/search-by-people')} className="nav search">
                             <div className="img"><img src={nav3} alt="" /></div>
                             <div className="desc">
                                 <div className="ch">搜索查询</div>

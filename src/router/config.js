@@ -15,6 +15,7 @@ import ActivePersonList from './../pages/activePersonList'
 import Statistics from './../pages/statistics'
 import NotFind from '../pages/404'
 
+import SearchByPeople from './../pages/searchBypeople'
 
 const routerConfig = [
     {
@@ -79,6 +80,9 @@ const routerConfig = [
     }, {
         path: '/404',
         component: NotFind,
+    }, {
+        path: "/search-by-people",
+        component: SearchByPeople
     }
 ]
 
